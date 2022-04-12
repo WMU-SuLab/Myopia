@@ -1,0 +1,123 @@
+<div class="page">
+    <!-- <span>{{ student.phenotype }}</span> -->
+    <!-- <div class="subpage"> -->
+    <h1>温州医科大学眼科体检报告</h1>
+    <b>基本信息</b>
+    <br>
+    <div style="display: flex;flex-direction: row;">
+        <div style="flex: auto">姓名：{{ student.name }}</div>
+        <div style="flex: auto">性别：{{ student.gender }}</div>
+        <div style="flex: auto">年龄：{{ student.age }}</div>
+    </div>
+    <br>
+    <b>检查内容</b>
+    <br>
+    <table>
+        <thead>
+        <tr>
+            <th colspan="2" style="width: 30%">项目</th>
+            <th style="width: 50px;">右眼</th>
+            <th style="width: 50px;">左眼</th>
+            <th>备注</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td colspan="2">
+                日常习惯视力
+                <br>
+                (矫正视力)
+            </td>
+            <td>{{ student.corrected_visual_acuity_right }}</td>
+            <td>{{ student.corrected_visual_acuity_left }}</td>
+            <td>
+                <p>
+                    即日常生活中常用的视力，戴眼镜者以戴镜后矫正视力为准，矫正视力低于1.0(5.0)提示可能欠矫；未戴眼镜者以裸眼视力为准。
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">眼压(mmHg)</td>
+            <td>{{ student.intraocular_tension_right }}</td>
+            <td>{{ student.intraocular_tension_left }}</td>
+            <td>
+                <p>
+                    正常值范围：10~21mmHg，角膜厚度影响测量结果，角膜越厚眼压测量值越高，需综合考虑。
+                    <br>
+                    眼压偏高或偏低建议至正规眼科医院行进一步检查及随访。
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">眼轴(mm)</td>
+            <td>{{ student.axial_length_right }}</td>
+            <td>{{ student.axial_length_left }}</td>
+            <td>
+                <p>
+                    正视的成年人平均为24mm，眼轴＞26.5mm建议每年复查眼底情况。
+                </p>
+            </td>
+        </tr>
+        {#                <tr>#}
+        {#                    <td colspan="2">角膜曲率</td>#}
+        {#                    <td></td>#}
+        {#                    <td></td>#}
+        {#                    <td></td>#}
+        {#                </tr>#}
+        <tr>
+            <td colspan="2">角膜厚度(μm)</td>
+            <td>{{ student.corneal_thickness_right }}</td>
+            <td>{{ student.corneal_thickness_left }}</td>
+            <td></td>
+        </tr>
+        <tr>
+            <td rowspan="4" style="width: 15%">
+                电脑验光
+                <br>
+                (裸眼)
+            </td>
+            <td>球镜(D)</td>
+            <td>{{ student.spherical_right }}</td>
+            <td>{{ student.spherical_left }}</td>
+            <td rowspan="4">
+                <p>
+                    1)等效球镜度(-0.50D~-3.00D)为低度近视，(-3.00~-6.00)为中度近视，(-6.00~-10.00)为高度近视,(＜-10.00D)为重度近视。
+                    <br>
+                    2)等效球镜度(+0.75D~+3.00D)为低度远视，(+3.00D~+5.00D)为中度远视，(＞+5.00D)为高度远视。
+                    <br>
+                    3)柱镜即为散光大小，轴位即为散光所在的位置，如“柱镜：-3.00×90°即散光300度，在90°的方向上。
+                    <br>
+                    4)电脑验光度数仅作为参考作用，不可用于临床配镜处方，如有配镜需求，建议至正规眼科医院行主觉验光及试戴等进一步检查。
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td>柱镜(D)</td>
+            <td>{{ student.column_right }}</td>
+            <td>{{ student.column_left }}</td>
+        </tr>
+        <tr>
+            <td>轴位(°)</td>
+            <td>{{ student.axis_right }}</td>
+            <td>{{ student.axis_left }}</td>
+        </tr>
+        <tr>
+            <td>
+                等效球镜(D)
+                <br>
+                (验光视力)
+            </td>
+            <td>{{ student.spherical_equivalent_right }}</td>
+            <td>{{ student.spherical_equivalent_left }}</td>
+        </tr>
+        </tbody>
+    </table>
+    <br>
+    <p>初步筛查建议：
+        <br>
+        {% for suggestion in suggestions %}
+            {{ forloop.counter }}. {{ suggestion }}
+        {% endfor %}
+    </p>
+    <!-- </div> -->
+</div>

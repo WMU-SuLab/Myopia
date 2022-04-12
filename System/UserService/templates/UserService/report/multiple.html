@@ -1,0 +1,5 @@
+{% extends 'UserService/report/base.html' %}
+
+{% for student in students %}
+    {% include 'UserService/report/content.html' %}
+{% endfor %}

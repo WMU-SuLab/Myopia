@@ -1,0 +1,53 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pipreqs = "*"
+python-dotenv = "*"
+requests = "*"
+pycryptodome = "*"
+pandas = "*"
+pydantic = "*"
+django = "*"
+#database
+django-mysql = "*"
+pymysql = "*"
+#注意不是python-memcached也不是memcache
+pymemcache = "*"
+django-hashid-field = "*"
+#API
+#注意不是django-rest-framework
+djangorestframework = "*"
+djangorestframework-simplejwt = "*"
+#drf-yasg = "*"
+#这个支持到OpenAPI3.0
+drf-spectacular = "*"
+#django-ninja="*"
+#jinja2支持
+#jinja2 = "*"
+#django-jinja = "*"
+django-simpleui = "*"
+django-cors-headers = "*"
+django-sslserver = "*"
+#pdf
+weasyprint = "*"
+PyPDF2 = "*"
+pdfplumber = "*"
+#不需要django-celery
+celery = "*"
+openpyxl = "*"
+gevent = "*"
+waitress = { version = "*", sys_platform = "== 'win32'" }
+gunicorn = { version = "*", sys_platform = "!= 'win32'" }
+#supervisor建议装在全局环境下，通过系统的包管理工具进行安装
+#supervisor = "*"
+
+[dev-packages]
+autopep8 = "*"
+pylint = "*"
+pretty_errors = "*"
+
+[requires]
+python_version = "3.9"
