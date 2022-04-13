@@ -29,7 +29,20 @@ class Manager(Base):
         verbose_name = verbose_name_plural = '管理员'
 
     def __str__(self):
-        return f'<Manager :self.user.username>'
+        return f'<Manager :{self.user.username}>'
+
+
+class Employee(Base):
+    """
+    员工
+    """
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employee_role', verbose_name='用户')
+
+    class Meta:
+        verbose_name = verbose_name_plural = '员工'
+
+    def __str__(self):
+        return f'<Employee :{self.user.username}>'
 
 
 class Student(Base):

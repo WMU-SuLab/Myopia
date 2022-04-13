@@ -12,7 +12,7 @@
 - [温医大-苏建忠组](https://github.com/WMU-SuLab)
 - 功能基因组-眼健康筛查系统开发团队
     - [21-电子信息-孙浩钧](https://github.com/diklios5768)
-    - [代伟]()
+    - [代伟](https://github.com/weidai00)
     - [连俊宇](https://github.com/allennico)
 
 ## [文档](Docs/index.md)

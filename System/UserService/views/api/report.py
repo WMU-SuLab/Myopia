@@ -43,13 +43,19 @@ def get_teacher_report_data(request):
     )))
 
 
+# todo：目前先动态生成，后续改为对象存储的静态文件
 def get_student_report_pdf_file(request):
     """
-    目前先动态生成，后续改为对象存储的静态文件
+
     :param request:
     :return:
     """
     data = request.json
+    dir_path = os.path.join(settings.BASE_DIR, 'Common', 'static_dev', 'pdf')
+    file_name = 'student-' + data['student_number'] + '-report.pdf'
+    file_path = os.path.join(dir_path, file_name)
+    if os.path.exists(file_path):
+        return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
     report_str = render_to_string(
         template_name='UserService/report/single.html',
         context=generate_student_report_data(
@@ -57,9 +63,6 @@ def get_student_report_pdf_file(request):
             data['identification_card_number'],
             data['student_number']
         ))
-    dir_path = os.path.join(settings.BASE_DIR, 'Common', 'static_dev', 'pdf')
-    file_name = 'student-' + data['student_number'] + '-report.pdf'
-    file_path = os.path.join(dir_path, file_name)
     HTML(string=report_str).write_pdf(file_path)
 
     return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
@@ -72,6 +75,12 @@ def get_teacher_report_pdf_file(request):
     :return:
     """
     data = request.json
+
+    dir_path = os.path.join(settings.BASE_DIR, 'Common', 'static_dev', 'pdf')
+    file_name = 'teacher-' + data['teacher_number'] + '-report.pdf'
+    file_path = os.path.join(dir_path, file_name)
+    if os.path.exists(file_path):
+        return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
     report_str = render_to_string(
         template_name='UserService/report/single.html',
         context=generate_teacher_report_data(
@@ -79,9 +88,6 @@ def get_teacher_report_pdf_file(request):
             data['identification_card_number'],
             data['teacher_number']
         ))
-    dir_path = os.path.join(settings.BASE_DIR, 'Common', 'static_dev', 'pdf')
-    file_name = 'teacher-' + data['teacher_number'] + '-report.pdf'
-    file_path = os.path.join(dir_path, file_name)
     HTML(string=report_str).write_pdf(file_path)
 
     return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)

@@ -114,6 +114,14 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(blank=True, null=True, default=True, verbose_name='是否活跃')
     is_staff = models.BooleanField(default=False, verbose_name='是否可以访问管理站点')
 
+    @property
+    def is_admin(self):
+        return False if self.manager_role.DoesNotExist else True
+
+    @property
+    def is_employee(self):
+        return False if self.employee_role.DoesNotExist else True
+
     # 用户管理器
     objects = UserManager()
 

@@ -44,6 +44,7 @@ def init_permission():
 
 # 暂时不想写批量导入数据的方法，因为数据量不是很大
 # todo:待完善用户和教师的数据导入和数据补充
+# todo:支持重复导入
 @print_accurate_execute_time
 def import_student_sampling_data(file_path: str):
     if not validate_file_path(file_path):
