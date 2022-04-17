@@ -15,12 +15,13 @@ __auth__ = 'diklios'
 
 import os
 from datetime import timedelta
+from zoneinfo import ZoneInfo
 
 from . import BASE_DIR
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
+DEFAULT_CHARSET = 'utf-8'
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-k7t++81e%dpa!a^#2$7equ8+-=pu+52jf9x8bro#k2-k8!2n3e')
 HASHID_FIELD_SALT = os.environ.get('HASHID_FIELD_SALT', 'wmu su-lab hashids salt secret key')
@@ -29,6 +30,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'simpleui',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -36,14 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_mysql',
-    'simpleui',
     "corsheaders",
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
     'Common',
-    # 'Screening',
+    'Screening',
     'UserService',
 ]
 
@@ -53,10 +54,11 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'Common.utils.middlewares.JSONMiddleware',
 ]
 
 ROOT_URLCONF = 'Config.urls'
@@ -65,9 +67,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'Common','templates'),
-            os.path.join(BASE_DIR, 'Screening','templates'),
-            os.path.join(BASE_DIR, 'UserService','templates'),
+            os.path.join(BASE_DIR, 'Common', 'templates'),
+            os.path.join(BASE_DIR, 'Screening', 'templates'),
+            os.path.join(BASE_DIR, 'UserService', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -97,11 +99,12 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-#
+
+# 缓存配置
 # CACHES = {
 #     "default": {
 #         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-#         "LOCATION": "redis://127.0.0.1:6379",
+#         "LOCATION": os.environ.get('REDIS_URL', 'redis://localhost:6379/0'),
 #     }
 # }
 
@@ -129,11 +132,16 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+# TIME_ZONE = 'UTC'
 
-USE_I18N = True
+TIME_ZONE = 'Asia/Shanghai'
+TZ_INFO = ZoneInfo(TIME_ZONE)
 
 USE_TZ = True
+
+USE_I18N = True
+# 数据和时间格式
+USE_L10N = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
@@ -141,7 +149,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'Common', 'static')
 # 引用位于 STATIC_ROOT 中的静态文件时要使用的 URL
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    # 'Common/static_dev',
+    'Common/static_dev',
+    'Screening/static',
+    'UserService/static',
 ]
 
 # Default primary key field type
@@ -154,9 +164,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     # 权限
     # 'DEFAULT_PERMISSION_CLASSES': (
-        # 'rest_framework.permissions.DjangoModelPermissions',
-        # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
-        # 'rest_framework.permissions.IsAuthenticated',
+    # 'rest_framework.permissions.DjangoModelPermissions',
+    # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
+    # 'rest_framework.permissions.IsAuthenticated',
     # ),
     # jwt
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -252,7 +262,7 @@ SIMPLE_JWT = {
 }
 
 # drf-spectacular文档配置
-SPECTACULAR_SETTINGS={
+SPECTACULAR_SETTINGS = {
     'TITLE': 'Myopia Project API',
     'DESCRIPTION': 'Myopia System',
     'VERSION': '1.0.0',
@@ -294,16 +304,48 @@ CORS_ALLOW_HEADERS = (
     'Pragma',
 )
 
-
-# Project setting
-
-mina={
-    'user_service':{
-        'appid':os.environ.get('MINA_USER_SERVICE_APPID',None),
-        'app_secret': os.environ.get('MINA_USER_SERVICE_APP_SECRET', None),
-    },
-    'screening':{
-        'appid': os.environ.get('MINA_SCREENING_APPID', None),
-        'app_secret': os.environ.get('MINA_SCREENING_APP_SECRET', None),
-    }
-}
+# 邮件配置
+# 管理员邮箱配置
+ADMINS = (
+    ('diklios', '1061995104@qq.com'),
+)
+MANAGERS = (
+    ('xingsl', 'xingsl@wmu.edu.cn'),
+)
+# 发送邮件的后端
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# 邮件smtp服务地址
+EMAIL_HOST = 'smtp.126.com'
+# EMAIL_HOST = "smtp.163.com"
+# EMAIL_HOST = 'smtp.qq.com'
+# SMTP端口号
+# 默认是25，当其他端口号Connection unexpectedly closed的时候不妨试试默认的
+EMAIL_PORT = 25
+# QQ
+# EMAIL_PORT = 465
+# 网易
+# EMAIL_PORT = 587
+# EMAIL_USE_SSL和EMAIL_USE_TLS是互斥的，即只能有一个为True。
+# 与SMTP服务器通信时，是否启动TLS链接(安全链接)，默认False，这用于显式 TLS 连接，一般在 587 端口
+EMAIL_USE_TLS = True
+# 是否启动SSL链接(安全链接)，默认False，它通常在 465 端口使用
+EMAIL_USE_SSL = False
+# ssl_certfile
+EMAIL_SSL_CERTFILE = None
+# ssl_keyfile
+EMAIL_SSL_KEYFILE = None
+# 超时
+EMAIL_TIMEOUT = None
+# 是否以当地时区（True）或UTC（False）发送SMTP Date 邮件头
+EMAIL_USE_LOCALTIME = True
+# 邮箱登录用户名
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', '')
+# 邮箱登录密码
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
+# 邮件标题前缀，默认是'[django]'
+EMAIL_SUBJECT_PREFIX = '[WMU-IBBD]'
+# 错误信息来自的电子邮件地址，例如发送到 ADMINS 和 MANAGERS 的邮件，这个地址只用于错误信息，它不是用 send_mail() 发送普通邮件的地址
+SERVER_EMAIL= EMAIL_HOST_USER
+# 邮件发送人地址，默认电子邮件地址，用于网站管理员的各种自动通信
+# fred @ example.com 和 Fred < fred @ example.com > 形式都是合法的
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

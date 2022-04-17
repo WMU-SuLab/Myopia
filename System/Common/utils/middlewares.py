@@ -21,7 +21,7 @@ from django.urls import reverse
 from django.utils.deprecation import MiddlewareMixin
 
 
-class NewMiddlewareMixin(MiddlewareMixin):
+class TestMiddlewareMixin(MiddlewareMixin):
     def __init__(self, get_response=None):
         self.get_response = get_response
         super(MiddlewareMixin, self).__init__()

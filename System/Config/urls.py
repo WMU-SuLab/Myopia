@@ -22,14 +22,12 @@ admin.site.site_title = '用户权限管理'
 admin.site.site_header = '用户权限管理'
 
 
-# def index_redirect(request):
-#     return redirect(reverse('Screening:web:index'))
-
-
+def index_redirect(request):
+    return redirect(reverse('Screening:manage:index'))
 
 
 urlpatterns = [
-    # path('', index_redirect, name='index'),
+    path('', index_redirect, name='index'),
     path('user_service/', include('UserService.views', namespace='UserService')),
     path('screening/', include('Screening.views', namespace='Screening')),
     # Django 后台

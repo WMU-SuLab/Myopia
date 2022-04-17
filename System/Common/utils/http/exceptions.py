@@ -49,6 +49,21 @@ class ServerError(APIException):
     chinese_msg = '服务器错误'
 
 
+class EmailError(BaseError):
+    msg = 'email related error'
+    chinese_msg = '邮箱相关错误'
+
+
+class EmailSendError(EmailError):
+    msg = 'email send error'
+    chinese_msg = '邮箱发送失败'
+
+
+class EmailBadHeaderError(EmailError):
+    msg = 'email bad header error'
+    chinese_msg = '邮件头部错误'
+
+
 class ParameterError(BaseError):
     status_code = 400
     msg = 'parameter error'

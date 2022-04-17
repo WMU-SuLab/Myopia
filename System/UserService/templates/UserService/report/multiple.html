@@ -1,5 +1,7 @@
 {% extends 'UserService/report/base.html' %}
 
-{% for student in students %}
-    {% include 'UserService/report/content.html' %}
-{% endfor %}
+{% block body %}
+    {% for student in students %}
+        {% include 'UserService/report/content.html' %}
+    {% endfor %}
+{% endblock %}

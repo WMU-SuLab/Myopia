@@ -13,19 +13,15 @@
 """
 __auth__ = 'diklios'
 
-from django.urls import path
+from django.urls import path, include
 
 from Common.utils.auth.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView, TokenBlacklistView
-from .report import get_student_report_data, get_teacher_report_data, get_student_report_pdf_file, \
-    get_teacher_report_pdf_file
+from UserService import app_name
 from .test import test
 
 urlpatterns = [
+    path('mina/', include(('UserService.views.api.mina', app_name), namespace='mina')),
     path('test', test, name='test'),
-    path('get_student_report_data', get_student_report_data, name='get_student_report_data'),
-    path('get_student_report_pdf_file', get_student_report_pdf_file, name='get_student_report_pdf_file'),
-    path('get_teacher_report_data', get_teacher_report_data, name='get_teacher_report_data'),
-    path('get_teacher_report_pdf_file', get_teacher_report_pdf_file, name='get_teacher_report_pdf_file'),
     path('login', TokenObtainPairView.as_view(), name='login'),
     path('token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify', TokenVerifyView.as_view(), name='token_verify'),

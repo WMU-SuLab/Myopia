@@ -13,7 +13,7 @@
 """
 __auth__ = 'diklios'
 
-from .base import *
+from .project import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -60,5 +60,29 @@ DATABASES = {
         'OPTIONS': {
             'timeout': 60,
         },
+        'TEST': {
+            'NAME': os.path.join(BASE_DIR, 'myopia-test.sqlite3'),
+        }
     },
+    # 'default': {
+    #     # 如果使用MySQL数据库，会重新建一个test_项目名称_db的数据库，或者自己手动配置
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'HOST': os.environ.get('DEV_DATABASE_DOMAIN', '127.0.0.1'),
+    #     'PORT': os.environ.get('DATABASE_PORT', '3306'),
+    #     # 'PORT': os.environ.get('DATABASE_PORT','33060'),
+    #     'NAME': os.environ.get('DATABASE_NAME', 'Myopia'),
+    #     'USER': os.environ.get('DATABASE_USER', 'root'),
+    #     'PASSWORD': os.environ.get('DATABASE_DEFAULT_PASSWORD', ''),
+    #     'OPTIONS': {
+    #         # 'init_command': 'SET default_storage_engine=INNODB;',
+    #         'charset': 'utf8mb4',
+    #         # 'timezone': 'Asia/Shanghai',
+    #         # 'timeout': 60,
+    #     },
+    #     # gevent和多线程的时候不要用
+    #     # 'CONN_MAX_AGE': 36000,
+    #     'TEST': {
+    #         'NAME': 'MyopiaTest'
+    #     }
+    # },
 }

@@ -4,7 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pipreqs = "*"
 python-dotenv = "*"
 requests = "*"
 pycryptodome = "*"
@@ -18,26 +17,22 @@ pymysql = "*"
 pymemcache = "*"
 django-hashid-field = "*"
 #API
+#django-ninja="*"
 #注意不是django-rest-framework
 djangorestframework = "*"
 djangorestframework-simplejwt = "*"
 #drf-yasg = "*"
 #这个支持到OpenAPI3.0
 drf-spectacular = "*"
-#django-ninja="*"
-#jinja2支持
-#jinja2 = "*"
-#django-jinja = "*"
 django-simpleui = "*"
 django-cors-headers = "*"
-django-sslserver = "*"
 #pdf
 weasyprint = "*"
 PyPDF2 = "*"
 pdfplumber = "*"
 #不需要django-celery
-celery = "*"
-openpyxl = "*"
+#celery = "*"
+#openpyxl = "*"
 gevent = "*"
 waitress = { version = "*", sys_platform = "== 'win32'" }
 gunicorn = { version = "*", sys_platform = "!= 'win32'" }
@@ -48,6 +43,11 @@ gunicorn = { version = "*", sys_platform = "!= 'win32'" }
 autopep8 = "*"
 pylint = "*"
 pretty_errors = "*"
+pytest = "*"
+#jinja2支持
+#jinja2 = "*"
+#django-jinja = "*"
+#django-sslserver = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "^3.9"

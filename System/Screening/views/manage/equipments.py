@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   successes.py    
-@Create Time    :   2022/4/11 9:10
+@File Name      :   equipments.py    
+@Create Time    :   2022/4/14 9:52
 @Description    :   
 @Version        :   
 @License        :   MIT
@@ -13,17 +13,3 @@
 """
 __auth__ = 'diklios'
 
-from .response import BaseHTTPJSONStructure
-
-
-class Success(BaseHTTPJSONStructure):
-    success = True
-    code = 0
-    status_code = 200
-    msg = 'success'
-    chinese_msg = '成功'
-
-
-class EmailSendSuccess(Success):
-    msg = 'email send success'
-    chinese_msg = '邮件发送成功'

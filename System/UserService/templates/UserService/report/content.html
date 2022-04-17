@@ -115,8 +115,8 @@
     <br>
     <p>初步筛查建议：
         <br>
-        {% for suggestion in suggestions %}
-            {{ forloop.counter }}. {{ suggestion }}
+        {% for suggestion in student.suggestions %}
+            {{ forloop.counter }}. {{ suggestion.issue }}
         {% endfor %}
     </p>
     <!-- </div> -->

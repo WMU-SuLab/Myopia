@@ -15,6 +15,8 @@ __auth__ = 'diklios'
 
 from django.urls import path
 
-urlpatterns=[
+from .index import index
 
+urlpatterns = [
+    path('', index, name='index'),
 ]

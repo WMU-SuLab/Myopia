@@ -1,0 +1,48 @@
+[tool.poetry]
+name = "myopia"
+version = "0.1.0"
+description = ""
+authors = ["diklios <47837462+diklios5768@users.noreply.github.com>"]
+license = "MIT"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+python-dotenv = "^0.20.0"
+requests = "^2.27.1"
+pycryptodome = "^3.14.1"
+pandas = "^1.4.2"
+openpyxl = "^3.0.9"
+pydantic = "^1.9.0"
+Django = "^4.0.4"
+django-mysql = "^4.5.0"
+PyMySQL = "^1.0.2"
+pymemcache = "^3.5.2"
+django-hashid-field = "^3.3.4"
+#django-ninja="*"
+djangorestframework = "^3.13.1"
+djangorestframework-simplejwt = "^5.1.0"
+#drf-yasg = "*"
+drf-spectacular = "^0.22.0"
+django-simpleui = "^2022.4.9"
+django-cors-headers = "^3.11.0"
+weasyprint = "^54.3"
+PyPDF2 = "^1.27.4"
+gevent = "^21.12.0"
+waitress = { version = "^2.1.1", platform = "win32" }
+gunicorn = { version = "^20.1.0", markers = "sys_platform != 'win32'" }
+
+
+[tool.poetry.dev-dependencies]
+autopep8 = "^1.6.0"
+#pylint = "*"
+#pretty_errors = "*"
+#pytest = "*"
+#jinja2 = "*"
+#django-jinja = "*"
+#django-sslserver = "*"
+#pdfplumber = "^0.6.0"
+
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

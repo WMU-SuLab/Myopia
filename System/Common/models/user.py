@@ -83,14 +83,12 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
 
     phone = models.CharField(max_length=32, blank=True, null=True, default=None, unique=True, verbose_name='手机号')
     name = models.CharField(max_length=64, blank=True, null=True, default=None, db_index=True, verbose_name='姓名')
-    identification_card_type = models.IntegerField(
-        max_length=1, choices=identification_card_type_choices,
+    identification_card_type = models.IntegerField(choices=identification_card_type_choices,
         blank=True, null=True, default=1, verbose_name='证件类型')
     identification_card_number = models.CharField(
         max_length=32, null=True,
         blank=True, default=None, db_index=True, unique=True, verbose_name='身份证号')
-    gender = models.CharField(
-        max_length=32, choices=gender_choices, blank=True, null=True, default=0, verbose_name='性别')
+    gender = models.IntegerField(choices=gender_choices, blank=True, null=True, default=0, verbose_name='性别')
 
     @property
     def sex(self):
@@ -115,7 +113,7 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False, verbose_name='是否可以访问管理站点')
 
     @property
-    def is_admin(self):
+    def is_manager(self):
         return False if self.manager_role.DoesNotExist else True
 
     @property

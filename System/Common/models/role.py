@@ -24,6 +24,8 @@ class Manager(Base):
     管理员
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='manager_role', verbose_name='用户')
+    entry_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='入职时间')
+    departure_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='离职时间')
 
     class Meta:
         verbose_name = verbose_name_plural = '管理员'
@@ -37,6 +39,8 @@ class Employee(Base):
     员工
     """
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employee_role', verbose_name='用户')
+    entry_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='入职时间')
+    departure_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='离职时间')
 
     class Meta:
         verbose_name = verbose_name_plural = '员工'
@@ -91,6 +95,6 @@ class WeChat(Base):
 
 
 class QQ(Base):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='wechat_role', verbose_name='用户')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='QQ_role', verbose_name='用户')
     nickname = models.CharField(max_length=32, blank=True, null=True, default=None, verbose_name='QQ昵称')
     avatar_url = models.URLField(blank=True, null=True, default=None, verbose_name='QQ头像地址')

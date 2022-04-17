@@ -13,6 +13,9 @@
 """
 __auth__ = 'diklios'
 
+from django.conf import settings
+from django.utils import timezone
+
 
 def is_identity_card(identity_card: str):
     if len(identity_card) != 18:
@@ -35,5 +38,13 @@ def get_sex(identity_card: str):
             return 'female'
         else:
             return 'male'
+    else:
+        return None
+
+
+def get_age(identity_card: str):
+    if is_identity_card(identity_card):
+        return (timezone.now() - timezone.datetime.strptime(identity_card[6:14], '%Y%m%d').astimezone(
+            settings.TZ_INFO)).days // 365
     else:
         return None

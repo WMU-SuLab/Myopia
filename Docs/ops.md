@@ -131,6 +131,14 @@
 
 ## 服务器
 
+### 上传文件
+
+- 推荐使用filezilla等软件上传
+- 上传文件之前请一定要注意磁盘空间是否足够，否则会导致上传失败
+- 使用密钥(.pem)文件
+  - 上传文件：`scp -i 密钥文件 文件路径 root@wmu-bio-data.top:目标文件夹`
+  - 上传整个目录：`scp -i 密钥文件 -r 目录 root@wmubio-data.top:目标文件夹`
+
 ### Gunicorn
 
 ### NGINX

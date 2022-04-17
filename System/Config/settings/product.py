@@ -13,7 +13,7 @@
 """
 __auth__ = 'diklios'
 
-from .base import *
+from .project import *
 
 # 日志配置
 LOGGING = {
@@ -54,11 +54,11 @@ DATABASES = {
     'default': {
         # 如果使用MySQL数据库，会重新建一个test_项目名称_db的数据库，或者自己手动配置
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
-        # 'PORT': '33060',
-        'NAME': 'Myopia',
-        'USER': 'root',
+        'HOST': os.environ.get('DATABASE_DOMAIN', '127.0.0.1'),
+        'PORT': os.environ.get('DATABASE_PORT', '3306'),
+        # 'PORT': os.environ.get('DATABASE_PORT','33060'),
+        'NAME': os.environ.get('DATABASE_NAME', 'Myopia'),
+        'USER': os.environ.get('DATABASE_USER', 'root'),
         'PASSWORD': os.environ.get('DATABASE_DEFAULT_PASSWORD', ''),
         'OPTIONS': {
             # 'init_command': 'SET default_storage_engine=INNODB;',
@@ -73,3 +73,25 @@ DATABASES = {
         }
     },
 }
+
+# SECURITY安全设置 - 支持https时建议开启
+# Django以下的几个安全设置均依赖 'django.middleware.security.SecurityMiddleware' 中间件，请注意是否在 MIDDLEWARE 中添加
+# 和代理服务器配合，保证这是安全的HTTPS连接
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# 将所有非SSL(http)请求永久重定向到SSL(https), 与Nginx的301重定向设置选其一即可
+SECURE_SSL_REDIRECT = True
+# 如果一个 URL 路径与这个列表中的正则表达式相匹配，那么请求将不会被重定向到 HTTPS
+# SECURE_REDIRECT_EXEMPT = []
+# 仅通过https传输cookie
+SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_HTTPONLY = True
+# 避免不甚用 HTTP 传输 CSRF cookie
+CSRF_COOKIE_SECURE = True
+# 严格要求使用https协议传输，SecurityMiddleware 在 HTTP 严格传输安全 头中添加 includeSubDomains 指令。除非 SECURE_HSTS_SECONDS 被设置为非零值，否则它没有任何效果。
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# SecurityMiddleware 在 HTTP 严格传输安全头中添加 preload 指令。除非 SECURE_HSTS_SECONDS 设置为非零值，否则没有效果
+SECURE_HSTS_PRELOAD = True
+# HSTS为单位时间，单位秒
+SECURE_HSTS_SECONDS = 60
+# 防止浏览器猜测资产的内容类型
+SECURE_CONTENT_TYPE_NOSNIFF = True

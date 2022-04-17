@@ -16,6 +16,10 @@ __auth__ = 'diklios'
 from copy import deepcopy
 
 
+def parameters_to_dict(**kwargs) -> dict:
+    return kwargs
+
+
 def dict_level_order_traversal(raw_dict: dict) -> list:
     """
     字典的层次遍历，并在第一个节点（即根节点）构建树形结构

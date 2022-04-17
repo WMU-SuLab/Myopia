@@ -20,7 +20,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from Common.utils.http.successes import Success
-
+from Common.models.user import User
+from Common.models.role import *
+from Common.models.equipments import *
 
 @extend_schema(
     description='测试接口',
