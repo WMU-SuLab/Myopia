@@ -19,7 +19,7 @@ import os
 from Config.settings.base import BASE_DIR
 
 # 绑定ip和端口号
-bind = '0.0.0.0:5000'
+bind = '0.0.0.0:8000'
 # 监听队列
 backlog = 512
 # gunicorn要切换到的目的工作目录
@@ -38,6 +38,6 @@ threads = 3
 loglevel = 'info'
 access_log_format = '%(t)s %(p)s %(h)s "%(r)s" %(s)s %(L)s %(b)s %(f)s" "%(a)s"'
 # 访问日志文件
-accesslog = os.path.join(BASE_DIR, 'logs', 'gunicorn', "access.log")
+accesslog = os.path.join(BASE_DIR, 'Common', 'logs', 'gunicorn', "access.log")
 # 错误日志文件
-errorlog = os.path.join(BASE_DIR, 'logs', 'gunicorn', "error.log")
+errorlog = os.path.join(BASE_DIR, 'Common', 'logs', 'gunicorn', "error.log")

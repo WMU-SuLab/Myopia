@@ -91,22 +91,23 @@
 - 配置gunicorn
     - 可以修改`System/gunicorn.py`文件中的端口等内容，默认不需要进行修改
         - 如果不准备使用supervisor可以将gunicorn改为后台运行
+    - 创建gunicorn的日志文件夹，路径为：`ProjectRoot/System/Common/logs/gunicorn`
     - 创建日志文件
-        - `touch ProjectRoot/logs/gunicorn/access.log`
-        - `touch ProjectRoot/logs/gunicorn/error.log`
+        - `touch ProjectRoot/System/Common/logs/gunicorn/access.log`
+        - `touch ProjectRoot/System/Common/logs/gunicorn/error.log`
     - 启动：`gunicorn Config.wsgi -c gunicorn.py`
 - 配置supervisor
+    - 创建supervisor的日志文件夹，路径为：`ProjectRoot/System/Common/logs/supervisor`
     - 创建日志文件
-        - `touch ProjectRoot/logs/supervisor/access.log`
-        - `touch ProjectRoot/logs/supervisor/error.log`
+        - `touch ProjectRoot/System/Common/logs/supervisor/access.log`
+        - `touch ProjectRoot/System/Common/logs/supervisor/error.log`
     - 你可以选择使用默认的`/etc/supervisord.conf`和`/etc/supervisord.d`文件夹，或者像下面这样进行配置
         - 创建supervisor配置文件夹
             - `mkdir -p /etc/supervisor`
             - `mkdir -p /etc/supervisor/supervisord.d`
     - 备份supervisor配置文件：`echo_supervisord_conf > /etc/supervisor/supervisord.conf`
     - 修改supervisord.conf文件最后的include部分为：`files = /etc/supervisor/supervisord.d/*.ini`
-    -
-  链接本项目的supervisor配置文件：`sudo ln -s /.../ProjectRoot/System/supervisor.ini /etc/supervisor/supervisord.d/wmu-bio-data.ini`
+    - 链接本项目的supervisor配置文件：`sudo ln -s /.../ProjectRoot/System/supervisor.ini /etc/supervisor/supervisord.d/myopia.ini`
     - 启动服务：`supervisord -c /etc/supervisor/supervisord.conf`
         - 问题
             - BACKOFF Exited too quickly (process log may have details)
@@ -136,8 +137,8 @@
 - 推荐使用filezilla等软件上传
 - 上传文件之前请一定要注意磁盘空间是否足够，否则会导致上传失败
 - 使用密钥(.pem)文件
-  - 上传文件：`scp -i 密钥文件 文件路径 root@wmu-bio-data.top:目标文件夹`
-  - 上传整个目录：`scp -i 密钥文件 -r 目录 root@wmubio-data.top:目标文件夹`
+    - 上传文件：`scp -i 密钥文件 文件路径 root@wmu-bio-data.top:目标文件夹`
+    - 上传整个目录：`scp -i 密钥文件 -r 目录 root@wmubio-data.top:目标文件夹`
 
 ### Gunicorn
 

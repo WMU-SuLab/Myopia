@@ -49,7 +49,10 @@ def import_student_sampling_data(file_path: str):
     if not validate_file_path(file_path):
         return False
     df = pd.read_excel(file_path, sheet_name='温医大学生结果导出0414', engine='openpyxl', dtype={"学籍号": str})
+    # 解决MySQL数据库nan提交不了的问题
+    df= df.astype(object).where(pd.notnull(df), None)
     for index, row in df.iterrows():
+        print(index)
         try:
             user = User.objects.get(username=row['学籍号'])
         except User.DoesNotExist:
@@ -74,7 +77,7 @@ def import_student_sampling_data(file_path: str):
                 'is_finished': True,
                 # 没法用isnull()或者isna()方法来判断
                 'finished_time': datetime.strptime(str(row['创建时间']), '%Y-%m-%d %H:%M:%S').astimezone(
-                    settings.TZ_INFO) if row['创建时间'] is not pd.NaT else None,
+                    settings.TZ_INFO) if row['创建时间'] is not pd.NaT and row['创建时间'] is not None else None,
             }
         )
         update_or_create_project_data(project, row)
@@ -91,6 +94,7 @@ def import_teacher_sampling_data(file_path: str):
     if not validate_file_path(file_path):
         return False
     df = pd.read_excel(file_path, sheet_name='Sheet1', engine='openpyxl')
+    df = df.astype(object).where(pd.notnull(df), None)
     for index, row in df.iterrows():
         try:
             user = User.objects.get(username=row['教工号'])
@@ -111,7 +115,7 @@ def import_teacher_sampling_data(file_path: str):
                 'name': '22年温医大茶山校区大学生眼健康筛查项目-教师',
                 'is_finished': True,
                 'finished_time': datetime.strptime(str(row['创建时间']), '%Y-%m-%d %H:%M:%S').astimezone(
-                    settings.TZ_INFO) if row['创建时间'] is not pd.NaT else None,
+                    settings.TZ_INFO) if row['创建时间'] is not pd.NaT and row['创建时间'] is not None else None,
             }
         )
         update_or_create_project_data(project, row)

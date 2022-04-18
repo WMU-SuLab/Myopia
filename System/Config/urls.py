@@ -23,15 +23,15 @@ admin.site.site_header = '用户权限管理'
 
 
 def index_redirect(request):
-    return redirect(reverse('Screening:manage:index'))
-
+    # return redirect(reverse('Screening:manage:index'))
+    return redirect(reverse('admin:index'))
 
 urlpatterns = [
     path('', index_redirect, name='index'),
     path('user_service/', include('UserService.views', namespace='UserService')),
     path('screening/', include('Screening.views', namespace='Screening')),
     # Django 后台
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls, name='admin'),
     # DRF 提供的一系列身份认证的接口，用于在页面中认证身份，详情查阅DRF文档
     path('api/auth/', include('rest_framework.urls', namespace='rest_framework')),
     # YOUR PATTERNS，会获得api的yaml文件

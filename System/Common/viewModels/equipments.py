@@ -21,4 +21,7 @@ def count_spherical_equivalent(spherical: float, column: float) -> float:
     :param column: 柱镜
     :return:
     """
-    return spherical + 1 / 2 * column
+    if spherical and column:
+        return spherical + 1 / 2 * column
+    else:
+        return 0
