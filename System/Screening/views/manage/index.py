@@ -17,4 +17,4 @@ from django.shortcuts import render
 
 
 def index(request):
-    return render(request, 'Screening/admin/index.html')
+    return render(request, 'Screening/manage/index.html')

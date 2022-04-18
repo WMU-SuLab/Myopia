@@ -67,7 +67,7 @@
         - 修改日志路径
         - 修改django服务器相关部分
         - 修改ssl相关配置
-    - 全部修改完成后将配置链接到nginx的配置文件:`sudo ln -s /.../ProjectRoot/System/nginx.conf /etc/nginx/conf.d/wmu-bio-data.conf`
+    - 全部修改完成后将配置链接到nginx的配置文件:`sudo ln -s /.../ProjectRoot/System/nginx.conf /etc/nginx/conf.d/myopia.conf`
     - 启动NGINX：`sudo systemctl start nginx`
         - 或者`sudo service nginx start`
         - 如果已经启动，则重载配置：`sudo nginx -s reload`
@@ -94,7 +94,7 @@
     - 创建日志文件
         - `touch ProjectRoot/logs/gunicorn/access.log`
         - `touch ProjectRoot/logs/gunicorn/error.log`
-    - 启动：`gunicorn Manage.wsgi -c gunicorn.py`
+    - 启动：`gunicorn Config.wsgi -c gunicorn.py`
 - 配置supervisor
     - 创建日志文件
         - `touch ProjectRoot/logs/supervisor/access.log`

@@ -163,6 +163,17 @@ python-versions = "*"
 django = "*"
 
 [[package]]
+name = "django-sslserver"
+version = "0.22"
+description = "An SSL-enabled development server for Django"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Django = ">=1.8"
+
+[[package]]
 name = "djangorestframework"
 version = "3.13.1"
 description = "Web APIs for Django, made easy."
@@ -731,7 +742,7 @@ test = ["pytest"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "fa422e4eca44323aa17c391ade6d5944666bc0bca4736e66328f31bc5429d99d"
+content-hash = "71c4cb322b4cde3ae974f1025b8c8da8c5cd25375592f4ac38b165cb951c6eba"
 
 [metadata.files]
 asgiref = [
@@ -924,6 +935,9 @@ django-mysql = [
 ]
 django-simpleui = [
     {file = "django-simpleui-2022.4.9.tar.gz", hash = "sha256:cdfe307ea9987d2b539a24d5ee9a74e02e564d5eab1a3c5f6e97a3202f3be1a3"},
+]
+django-sslserver = [
+    {file = "django_sslserver-0.22-py3-none-any.whl", hash = "sha256:c598a363d2ccdc2421c08ddb3d8b0973f80e8e47a3a5b74e4a2896f21c2947c5"},
 ]
 djangorestframework = [
     {file = "djangorestframework-3.13.1-py3-none-any.whl", hash = "sha256:24c4bf58ed7e85d1fe4ba250ab2da926d263cd57d64b03e8dcef0ac683f8b1aa"},
