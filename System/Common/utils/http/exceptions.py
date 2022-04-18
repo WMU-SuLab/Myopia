@@ -13,6 +13,7 @@
 """
 __auth__ = 'diklios'
 
+from pydantic import ValidationError as PydanticValidationError
 from rest_framework.views import Response
 from rest_framework.views import exception_handler as _exception_handler
 
@@ -23,6 +24,8 @@ from .response import BaseHTTPJSONStructure
 def exception_handler(exc, context):
     if isinstance(exc, APIException):
         return Response(exc.to_dict())
+    elif isinstance(exc, PydanticValidationError):
+        return Response(ParameterError(msg=str(exc)).to_dict())
     else:
         return _exception_handler(exc, context)
 

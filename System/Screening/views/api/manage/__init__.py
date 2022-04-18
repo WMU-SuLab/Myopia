@@ -14,6 +14,10 @@
 __auth__ = 'diklios'
 
 from django.urls import path
+from Common.models.user import User
+from Common.models.role import *
+from Common.models.equipments import *
+
 
 urlpatterns = [
 

@@ -13,16 +13,29 @@
 """
 __auth__ = 'diklios'
 
+from pydantic import BaseModel
+
 from . import mail_managers
+
+
+class StudentFeedback(BaseModel):
+    name: str
+    student_number: str
+    identification_card_number: str = ''
+    phone: str = ''
+    email: str = ''
+    feedback: str = ''
+
 
 # todo:是否需要把反馈写入数据库？
 def handle_lack_student_report_data(data: dict):
+    data = StudentFeedback(**data).dict()
     message = f"""学生信息如下：
         姓名:{data.get('name', '无')}
         学号:{data.get('student_number', '无')}
         身份证号:{data.get('identification_card_number', '无')}
         手机号:{data.get('phone', '无')}
         邮箱:{data.get('email', '无')}
-        留言:{data.get('message', '无')}
+        留言:{data.get('feedback', '无')}
     """
     return mail_managers('学生报告信息缺少反馈', message, fail_silently=False)

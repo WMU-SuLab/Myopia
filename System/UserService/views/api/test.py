@@ -20,9 +20,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from Common.utils.http.successes import Success
-from Common.models.user import User
-from Common.models.role import *
-from Common.models.equipments import *
+
 
 @extend_schema(
     description='测试接口',
@@ -40,4 +38,4 @@ from Common.models.equipments import *
 @api_view(['GET', 'POST'])
 @permission_classes([AllowAny])
 def test(request):
-    return Response(Success(msg='test success'))
+    return Response(Success(data={'args': request.GET.dict(), 'json': request.json}, msg='test success'))
