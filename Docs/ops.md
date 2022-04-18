@@ -57,6 +57,10 @@
         - DATABASE_DEFAULT_PASSWORD
         - DATABASE_SILENCER_ATLAS_PASSWORD
         - DATABASE_MYOPIA_PASSWORD
+- 创建资源文件夹
+    - 使用`mkdir -p`创建多级目录
+    - `ProjectRoot/System/Common/libs`
+        - `ProjectRoot/System/Common/libs/pdf`
 - 配置NGINX
     - 先收集静态文件:`python manage.py collectstatic`
     - 修改`nginx.conf`
@@ -106,18 +110,19 @@
             - `mkdir -p /etc/supervisor`
             - `mkdir -p /etc/supervisor/supervisord.d`
         - 以下操作都使用**创建supervisor配置文件夹**的形式配置，如果不需要，请删除路径中的`supervisor`文件夹
-          - 备份supervisor配置文件：`echo_supervisord_conf > /etc/supervisor/supervisord.conf`
-          - 修改supervisord.conf文件最后的include部分为：`files = /etc/supervisor/supervisord.d/*.ini`
-          - 链接本项目的supervisor配置文件：`sudo ln -s /.../ProjectRoot/System/supervisor.ini /etc/supervisor/supervisord.d/myopia.ini`
-          - 启动服务：`supervisord -c /etc/supervisor/supervisord.conf`
-              - 问题
-                  - BACKOFF Exited too quickly (process log may have details)
-                      - 根目录出错
-                      - 日志文件或者其目录不存在
-                  - 无法使用source等终端命令：使用bash -c "command"
-                  - 不断exit status 0; not expected
-                      - supervisor无法处理不在前台的程序，如nohup、gunicorn设置了守护进程等
-                      - 多次出现是因为没有监测到前台程序不断重启
+            - 备份supervisor配置文件：`echo_supervisord_conf > /etc/supervisor/supervisord.conf`
+            - 修改supervisord.conf文件最后的include部分为：`files = /etc/supervisor/supervisord.d/*.ini`
+            -
+            链接本项目的supervisor配置文件：`sudo ln -s /.../ProjectRoot/System/supervisor.ini /etc/supervisor/supervisord.d/myopia.ini`
+            - 启动服务：`supervisord -c /etc/supervisor/supervisord.conf`
+                - 问题
+                    - BACKOFF Exited too quickly (process log may have details)
+                        - 根目录出错
+                        - 日志文件或者其目录不存在
+                    - 无法使用source等终端命令：使用bash -c "command"
+                    - 不断exit status 0; not expected
+                        - supervisor无法处理不在前台的程序，如nohup、gunicorn设置了守护进程等
+                        - 多次出现是因为没有监测到前台程序不断重启
 
 ## 数据库
 

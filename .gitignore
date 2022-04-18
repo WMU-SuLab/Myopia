@@ -151,3 +151,7 @@ gen
 
 #测试文件夹
 test
+
+# 本项目特有的文件或文件夹
+System/Common/libs
+System/Common/logs

@@ -72,9 +72,6 @@ def get_student_report_pdf_file(request):
     student_info = StudentReportSearch(**data)
 
     dir_path = os.path.join(settings.BASE_DIR, 'Common', 'libs', 'pdf')
-    if not os.path.exists(dir_path):
-        os.mkdir(dir_path)
-
     file_name = 'student-' + data['student_number'] + '-report.pdf'
     file_path = os.path.join(dir_path, file_name)
     if os.path.exists(file_path):
@@ -98,9 +95,6 @@ def get_teacher_report_pdf_file(request):
     teacher_info = TeacherReportSearch(**data)
 
     dir_path = os.path.join(settings.BASE_DIR, 'Common', 'libs', 'pdf')
-    if not os.path.exists(dir_path):
-        os.mkdir(dir_path)
-
     file_name = 'teacher-' + data['teacher_number'] + '-report.pdf'
     file_path = os.path.join(dir_path, file_name)
     if os.path.exists(file_path):
