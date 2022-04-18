@@ -48,6 +48,8 @@
     - 完成MySQL数据导入
     - 将项目首页临时重定向为simpleui admin
     - 增加对于pydantic验证错误的异常处理
+    - 增加问题记录文档
+    - 为poetry换源
 
 ## Screening
 

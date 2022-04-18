@@ -5,6 +5,12 @@ description = ""
 authors = ["diklios <47837462+diklios5768@users.noreply.github.com>"]
 license = "MIT"
 
+[[tool.poetry.source]]
+name = "tsinghua"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
+# 添加一个 default 参数, 使 poetry 的默认回调行为都调用到这个清华镜像上
+default = true
+
 [tool.poetry.dependencies]
 python = "^3.10"
 python-dotenv = "^0.20.0"
