@@ -310,7 +310,8 @@ ADMINS = (
     ('diklios', '1061995104@qq.com'),
 )
 MANAGERS = (
-    ('xingsl', 'xingsl@wmu.edu.cn'),
+    ('diklios', '1061995104@qq.com'),
+    # ('xingsl', 'xingsl@wmu.edu.cn'),
 )
 # 发送邮件的后端
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -320,22 +321,22 @@ EMAIL_HOST = 'smtp.126.com'
 # EMAIL_HOST = 'smtp.qq.com'
 # SMTP端口号
 # 默认是25，当其他端口号Connection unexpectedly closed的时候不妨试试默认的
-EMAIL_PORT = 25
-# QQ
-# EMAIL_PORT = 465
-# 网易
-# EMAIL_PORT = 587
+# EMAIL_PORT = 25
+# 服务器默认不能使用25端口，需要根据使用的邮件服务商情况改为别的端口
 # EMAIL_USE_SSL和EMAIL_USE_TLS是互斥的，即只能有一个为True。
-# 与SMTP服务器通信时，是否启动TLS链接(安全链接)，默认False，这用于显式 TLS 连接，一般在 587 端口
-EMAIL_USE_TLS = True
+EMAIL_PORT = 465
 # 是否启动SSL链接(安全链接)，默认False，它通常在 465 端口使用
-EMAIL_USE_SSL = False
+EMAIL_USE_SSL = True
+# EMAIL_PORT = 587
+# 与SMTP服务器通信时，是否启动TLS链接(安全链接)，默认False，这用于显式 TLS 连接，一般在 587 端口
+#EMAIL_USE_TLS = True
 # ssl_certfile
 EMAIL_SSL_CERTFILE = None
 # ssl_keyfile
 EMAIL_SSL_KEYFILE = None
-# 超时
-EMAIL_TIMEOUT = None
+# 超时，单位：s（秒）
+# EMAIL_TIMEOUT= None
+EMAIL_TIMEOUT = 20
 # 是否以当地时区（True）或UTC（False）发送SMTP Date 邮件头
 EMAIL_USE_LOCALTIME = True
 # 邮箱登录用户名

@@ -35,6 +35,7 @@ PyPDF2 = "^1.27.4"
 gevent = "^21.12.0"
 waitress = { version = "^2.1.1", platform = "win32" }
 gunicorn = { version = "^20.1.0", markers = "sys_platform != 'win32'" }
+weasyprint = "^54.3"
 
 
 [tool.poetry.dev-dependencies]
@@ -46,7 +47,7 @@ autopep8 = "^1.6.0"
 #django-jinja = "*"
 #django-sslserver = "*"
 #pdfplumber = "^0.6.0"
-weasyprint = "^54.3"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

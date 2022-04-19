@@ -23,8 +23,11 @@
     - pip:`ProjectRoot/Dependencies/requirements-pip.txt`
 - 首先需要进入项目文件夹：`cd ProjectRoot`
 - 提供了以下几种环境安装方法
+    - poetry(推荐)
+        - 安装 poetry：`pip install poetry`
+        - 安装依赖：`poetry install`
     - pipenv(推荐)
-        - 安装pipenv：`pip install pipenv`
+        - 安装 pipenv：`pip install pipenv`
         - 安装依赖：`pipenv install`
     - conda
         - 使用导出的环境文件重建虚拟环境：`conda env create -f Dependencies/conda.yaml`
@@ -42,8 +45,25 @@
 
 - 导出conda环境
     - `conda env export > conda.yaml`
-    - `conda list -e > requirements-conda.txt`
+    - 或者`conda list -e > requirements-conda.txt`
 - 导出pip环境：`pip freeze > requirements-pip.txt`
+    - 如果使用conda管理环境，导出的pip文件是有问题的，不能使用
+    - 可以使用`pip list --format=freeze > requirements-pip.txt`
+        - 但是需要手动删除一些基础包，也不好用
+- pipenv, poetry, pdm 环境管理不需要导出，会自动写入配置文件
+
+### 服务器端口
+
+- 打开NGINX端口:80和443
+    - 根据情况也可以是别的端口
+- 数据库端口
+    - 打开MySQL端口:3306
+        - 便于开发调试
+    - 打开Redis端口:6379
+        - 便于开发调试
+    - 打开Memcached端口:11211
+        - 便于开发调试
+- 打开邮件通信端口:25或者465或者587(根据自己服务器的情况)
 
 ## 项目启动（需要先激活虚拟环境）
 
@@ -53,10 +73,45 @@
     - 配置`DJANGO_ENV`:`develop`或者`product`
     - 配置`SECRET_KEY`:任意值
     - 配置`HASHID_FIELD_SALT`:任意值
-    - 配置数据库密码字段
-        - DATABASE_DEFAULT_PASSWORD
-        - DATABASE_SILENCER_ATLAS_PASSWORD
-        - DATABASE_MYOPIA_PASSWORD
+    - 配置邮箱字段
+    - 配置数据库字段
+        - MySQL
+            - 密码字段：DATABASE_DEFAULT_PASSWORD
+            - 其他字段详见总示例
+            - 根据是否使用多数据库添加其他数据库相应字段
+        - Redis URL:REDIS_URL
+    - 配置小程序
+
+```dotenv
+# .env文件示例
+SECRET_KEY=''
+HASHID_FIELD_SALT=''
+
+DJANGO_ENV='develop'
+#DJANGO_ENV='product'
+
+EMAIL_HOST_USER=''
+EMAIL_HOST_PASSWORD=''
+
+DEV_SERVER_DOMAIN='localhost'
+SERVER_DOMAIN=''
+
+DEV_DATABASE_DOMAIN='localhost'
+DATABASE_DOMAIN=''
+DATABASE_PORT=''
+DATABASE_NAME=''
+DATABASE_USER=''
+DATABASE_DEFAULT_PASSWORD=''
+
+REDIS_URL=''
+
+MINA_SCREENING_APPID=''
+MINA_SCREENING_APP_SECRET=''
+MINA_USER_SERVICE_APPID=''
+MINA_USER_SERVICE_APP_SECRET=''
+
+```
+
 - 创建资源文件夹
     - 使用`mkdir -p`创建多级目录
     - `ProjectRoot/System/Common/libs`
@@ -87,11 +142,11 @@
     - 迁移数据库
         - `python manage.py makemigrations`
         - 创建表：`python manage.py migrate`
-        - 创建DjangoAuth数据库表：`python manage.py migrate --database=DjangoAuth`
-        - 创建SilencerAtlas数据库表：`python manage.py migrate --database=SilencerAtlas`
+        - 创建数据库表：`python manage.py migrate`
     - 创建django-admin的超级用户：`python manage.py createsuperuser`
 - 启动Memcached:`service memcached start`
     - `memcached -d -u root -l 127.0.0.1 -p 11211 -m 128`
+- 启动Redis:``
 - 配置gunicorn
     - 可以修改`System/gunicorn.py`文件中的端口等内容，默认不需要进行修改
         - 如果不准备使用supervisor可以将gunicorn改为后台运行
@@ -113,7 +168,7 @@
             - 备份supervisor配置文件：`echo_supervisord_conf > /etc/supervisor/supervisord.conf`
             - 修改supervisord.conf文件最后的include部分为：`files = /etc/supervisor/supervisord.d/*.ini`
             -
-            链接本项目的supervisor配置文件：`sudo ln -s /.../ProjectRoot/System/supervisor.ini /etc/supervisor/supervisord.d/myopia.ini`
+          链接本项目的supervisor配置文件：`sudo ln -s /.../ProjectRoot/System/supervisor.ini /etc/supervisor/supervisord.d/myopia.ini`
             - 启动服务：`supervisord -c /etc/supervisor/supervisord.conf`
                 - 问题
                     - BACKOFF Exited too quickly (process log may have details)
@@ -135,6 +190,8 @@
     - 登录：mysql -uroot -p
 
 ### Redis
+
+### Memcached
 
 ## 服务器
 
