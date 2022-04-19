@@ -264,7 +264,6 @@ def generate_report_data_from_project(project) -> dict:
         **eye_data,
         'suggestions': suggestions
     }
-    print(report_data)
     project.remarks_json['report_data'] = report_data
     project.save()
     return report_data

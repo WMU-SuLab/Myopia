@@ -329,7 +329,7 @@ EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 # EMAIL_PORT = 587
 # 与SMTP服务器通信时，是否启动TLS链接(安全链接)，默认False，这用于显式 TLS 连接，一般在 587 端口
-#EMAIL_USE_TLS = True
+# EMAIL_USE_TLS = True
 # ssl_certfile
 EMAIL_SSL_CERTFILE = None
 # ssl_keyfile

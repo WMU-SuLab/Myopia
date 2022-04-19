@@ -21,7 +21,7 @@ from . import mail_managers
 class StudentFeedback(BaseModel):
     name: str
     student_number: str
-    identification_card_number: str = ''
+    identification_card_number: str
     phone: str = ''
     email: str = ''
     feedback: str = ''

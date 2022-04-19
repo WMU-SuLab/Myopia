@@ -16,7 +16,7 @@ __auth__ = 'diklios'
 import multiprocessing
 import os
 
-from Config.settings.base import BASE_DIR
+from Config.settings import BASE_DIR
 
 # 绑定ip和端口号
 bind = '0.0.0.0:8000'
