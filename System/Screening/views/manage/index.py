@@ -17,4 +17,8 @@ from django.shortcuts import render
 
 
 def index(request):
-    return render(request, 'Screening/manage/index.html')
+    title = '眼健康检测管理系统'
+    return render(request, 'Screening/manage/index.html',context={
+        'site_title': title,
+        'site_header': title,
+    })

@@ -54,11 +54,11 @@ DATABASES = {
     'default': {
         # 如果使用MySQL数据库，会重新建一个test_项目名称_db的数据库，或者自己手动配置
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': os.environ.get('DATABASE_DOMAIN', '127.0.0.1'),
-        'PORT': os.environ.get('DATABASE_PORT', '3306'),
-        # 'PORT': os.environ.get('DATABASE_PORT','33060'),
-        'NAME': os.environ.get('DATABASE_NAME', 'Myopia'),
-        'USER': os.environ.get('DATABASE_USER', 'root'),
+        'HOST': os.environ.get('DATABASE_DEFAULT_DOMAIN', '127.0.0.1'),
+        'PORT': os.environ.get('DATABASE_DEFAULT_PORT', '3306'),
+        # 'PORT': os.environ.get('DATABASE_DEFAULT_PORT','33060'),
+        'NAME': os.environ.get('DATABASE_DEFAULT_NAME', 'Myopia'),
+        'USER': os.environ.get('DATABASE_DEFAULT_USER', 'root'),
         'PASSWORD': os.environ.get('DATABASE_DEFAULT_PASSWORD', ''),
         'OPTIONS': {
             # 'init_command': 'SET default_storage_engine=INNODB;',
@@ -69,7 +69,7 @@ DATABASES = {
         # gevent和多线程的时候不要用
         # 'CONN_MAX_AGE': 36000,
         'TEST': {
-            'NAME': 'MyopiaTest'
+            'NAME': os.environ.get('DATABASE_DEFAULT_NAME_TEST', 'MyopiaTest'),
         }
     },
 }

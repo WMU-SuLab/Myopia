@@ -71,15 +71,15 @@
 - 配置环境变量
     - `ProjectRoot/System`文件夹下创建`.env`文件
     - 配置`DJANGO_ENV`:`develop`或者`product`
-    - 配置`SECRET_KEY`:任意值
-    - 配置`HASHID_FIELD_SALT`:任意值
-    - 配置邮箱字段
-    - 配置数据库字段
+    - 配置加密
+        - 配置`SECRET_KEY`
+        - 配置`HASHID_FIELD_SALT`
+    - 配置邮箱
+    - 配置数据库
         - MySQL
-            - 密码字段：DATABASE_DEFAULT_PASSWORD
-            - 其他字段详见总示例
             - 根据是否使用多数据库添加其他数据库相应字段
-        - Redis URL:REDIS_URL
+        - Redis
+        - Memcached
     - 配置小程序
 
 ```dotenv
@@ -93,18 +93,29 @@ DJANGO_ENV='develop'
 EMAIL_HOST_USER=''
 EMAIL_HOST_PASSWORD=''
 
-DEV_SERVER_DOMAIN='localhost'
+SERVER_DOMAIN_DEV='localhost'
 SERVER_DOMAIN=''
 
-DEV_DATABASE_DOMAIN='localhost'
-DATABASE_DOMAIN=''
-DATABASE_PORT=''
-DATABASE_NAME=''
-DATABASE_USER=''
-DATABASE_DEFAULT_PASSWORD=''
+# Database
+#MySQL
+DATABASE_DEFAULT_DOMAIN_DEV='47.103.108.251'
+DATABASE_DEFAULT_PORT_DEV='3306'
+DATABASE_DEFAULT_NAME_DEV='Myopia'
+DATABASE_DEFAULT_NAME_TEST_DEV='MyopiaTest'
+DATABASE_DEFAULT_USER_DEV='root'
+DATABASE_DEFAULT_PASSWORD_DEV='wmu-sulab-myopia'
 
-REDIS_URL=''
+DATABASE_DEFAULT_DOMAIN='localhost'
+DATABASE_DEFAULT_PORT='3306'
+DATABASE_DEFAULT_NAME='Myopia'
+DATABASE_DEFAULT_NAME_TEST='MyopiaTest'
+DATABASE_DEFAULT_USER='root'
+DATABASE_DEFAULT_PASSWORD='wmu-sulab-myopia'
 
+#Redis
+REDIS_URL='redis://127.0.0.1:6379'
+
+#MINA
 MINA_SCREENING_APPID=''
 MINA_SCREENING_APP_SECRET=''
 MINA_USER_SERVICE_APPID=''
@@ -197,7 +208,7 @@ MINA_USER_SERVICE_APP_SECRET=''
 
 ### 上传文件
 
-- 推荐使用filezilla等软件上传
+- 推荐使用filezilla等软件使用 SFTP 上传
 - 上传文件之前请一定要注意磁盘空间是否足够，否则会导致上传失败
 - 使用密钥(.pem)文件
     - 上传文件：`scp -i 密钥文件 文件路径 root@wmu-bio-data.top:目标文件夹`

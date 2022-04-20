@@ -135,10 +135,10 @@ class TonoMeter(Base):
 
     tension_validators = [MinValueValidator(0), MaxValueValidator(50), DecimalValidator(3, 1)]
 
-    intraocular_tension_right = models.FloatField(validators=tension_validators, null=True, blank=True, default=None,
-                                                  verbose_name='右眼眼压(mmHg)')
-    intraocular_tension_left = models.FloatField(validators=tension_validators, null=True, blank=True, default=None,
-                                                 verbose_name='左眼眼压(mmHg)')
+    intraocular_tension_right = models.FloatField(
+        validators=tension_validators, null=True, blank=True, default=None, verbose_name='右眼眼压(mmHg)')
+    intraocular_tension_left = models.FloatField(
+        validators=tension_validators, null=True, blank=True, default=None, verbose_name='左眼眼压(mmHg)')
 
     class Meta:
         verbose_name = verbose_name_plural = '眼压计'
@@ -152,9 +152,19 @@ class EyeGround(Base):
     眼底照
     """
     project = models.OneToOneField(Project, on_delete=models.CASCADE, verbose_name='项目')
+    image_path_right = models.FilePathField(max_length=255, null=True, blank=True, default=None, verbose_name='右眼眼底图路径')
+    image_path_left = models.FilePathField(max_length=255, null=True, blank=True, default=None, verbose_name='左眼眼底图路径')
+    image_url_right = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='右眼眼底图远程URL')
+    image_url_left = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='左眼眼底图远程URL')
 
-    image_url_right = models.CharField(max_length=255, null=True, blank=True, default=None, verbose_name='右眼眼底图路径')
-    image_url_left = models.CharField(max_length=255, null=True, blank=True, default=None, verbose_name='左眼眼底图路径')
+    @property
+    def image_location(self):
+        return {
+            'image_path_right': self.image_path_right,
+            'image_path_left': self.image_path_left,
+            'image_url_right': self.image_url_right,
+            'image_url_left': self.image_url_left,
+        }
 
     class Meta:
         verbose_name = verbose_name_plural = '眼底照'
@@ -169,7 +179,12 @@ class Sequence(Base):
     """
     project = models.OneToOneField(Project, on_delete=models.CASCADE, verbose_name='项目')
     serial_number = models.CharField(max_length=32, null=True, blank=True, default=None, verbose_name='测序编号')
-    file_url = models.CharField(max_length=255, null=True, blank=True, default=None, verbose_name='测序文件url')
+    file_path = models.FilePathField(null=True, blank=True, default=None, verbose_name='测序文件路径')
+    file_url = models.URLField(max_length=512,null=True, blank=True, default=None, verbose_name='测序文件远程URL')
+
+    @property
+    def file_location(self):
+        return {'file_path': self.file_path, 'file_url': self.file_url}
 
     class Meta:
         verbose_name = verbose_name_plural = '测序'
@@ -183,7 +198,12 @@ class InformedConsent(Base):
     知情同意书
     """
     project = models.OneToOneField(Project, on_delete=models.CASCADE, verbose_name='项目')
-    file_url = models.CharField(max_length=255, null=True, blank=True, default=None, verbose_name='知情同意书文件url')
+    file_path = models.FilePathField(null=True, blank=True, default=None, verbose_name='知情同意书文件路径')
+    file_url = models.CharField(max_length=512,null=True, blank=True, default=None, verbose_name='知情同意书文件远程URL')
+
+    @property
+    def file_location(self):
+        return {'file_path': self.file_path, 'file_url': self.file_url}
 
     class Meta:
         verbose_name = verbose_name_plural = '知情同意书'

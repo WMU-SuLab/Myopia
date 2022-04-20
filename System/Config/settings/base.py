@@ -23,8 +23,11 @@ from . import BASE_DIR
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 DEFAULT_CHARSET = 'utf-8'
 # SECURITY WARNING: keep the secret key used in production secret!
+# 使用from django.core.management.utils import get_random_secret_key 生成 secret_key
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-k7t++81e%dpa!a^#2$7equ8+-=pu+52jf9x8bro#k2-k8!2n3e')
-HASHID_FIELD_SALT = os.environ.get('HASHID_FIELD_SALT', 'wmu su-lab hashids salt secret key')
+# django-hashid-field插件的id加密配置
+HASHID_FIELD_SALT = os.environ.get('HASHID_FIELD_SALT', 'WMU-SuLab hashids salt secret key')
+# 允许的主机
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -130,10 +133,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
 # TIME_ZONE = 'UTC'
-
 TIME_ZONE = 'Asia/Shanghai'
 TZ_INFO = ZoneInfo(TIME_ZONE)
 

@@ -18,13 +18,14 @@ from django.shortcuts import redirect, reverse
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
-admin.site.site_title = '谱希基因眼健康检测和管理系统'
-admin.site.site_header = '谱希基因眼健康检测和管理系统'
+admin.site.site_title = '数据库后台管理系统'
+admin.site.site_header = '数据库后台管理系统'
 
 
 def index_redirect(request):
-    # return redirect(reverse('Screening:manage:index'))
-    return redirect(reverse('admin:index'))
+    return redirect(reverse('Screening:manage:index'))
+    # return redirect(reverse('admin:index'))
+
 
 urlpatterns = [
     path('', index_redirect, name='index'),
