@@ -15,119 +15,62 @@ __auth__ = 'diklios'
 
 import os
 from datetime import datetime
+from typing import Union
 
 from django.conf import settings
 from django.http.response import FileResponse
 from django.template.loader import render_to_string
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from weasyprint import HTML
 
-from Common.utils.email_handler.report import handle_lack_student_report_data
 from Common.utils.http.successes import Success
-from UserService.utils.report import generate_student_report_data, generate_report_data
+from UserService.utils.schemes.role import StudentRole, TeacherRole
+from UserService.viewModels.report import generate_user_report_data
 
 
-class UserReportSearch(BaseModel):
+class UserReportSearchForm(BaseModel):
     name: str
     identification_card_number: str
-    user_role: dict = None
+    user_role: Union[StudentRole, TeacherRole]
     project_name: str = None
     finished_time: datetime = None
 
+    @validator('name')
+    def validate_name(cls, v):
+        if len(v) > 20:
+            raise ValueError('姓名长度不能超过20个字符')
+        return v
 
-class StudentRole(BaseModel):
-    name: str
-    student_number: str
-
-
-# todo:后续换成标准化的方式
-class StudentReportSearch(BaseModel):
-    name: str
-    identification_card_number: str
-    student_number: str
-    project_name: str = None
-    finished_time: datetime = None
-
-
-class TeacherRole(BaseModel):
-    name: str
-    teacher_number: str
-
-
-class TeacherReportSearch(UserReportSearch):
-    user_role: TeacherRole
+    @validator('identification_card_number')
+    def validate_identification_card_number(cls, v):
+        if len(v) != 4:
+            raise ValueError('只需要输入身份证号后4位')
+        return v
 
 
 @api_view(['POST'])
-def get_student_report_data(request):
+def get_user_report_data(request):
     data = request.json
-    student_info = StudentReportSearch(**data)
-    return Response(Success(data=generate_report_data(
-        name=student_info.name,
-        identification_card_number=student_info.identification_card_number,
-        user_role={
-            'name': 'student',
-            'student_number': student_info.student_number
-        })))
-
-
-@api_view(['POST'])
-def lack_student_report_data(request):
-    data = request.json
-    return Response(handle_lack_student_report_data(data))
-
-
-@api_view(['POST'])
-def get_teacher_report_data(request):
-    data = request.json
-    teacher_info = TeacherReportSearch(**data)
-    return Response(Success(data=generate_report_data(**teacher_info.dict())))
+    user_info = UserReportSearchForm(**data)
+    return Response(Success(data=generate_user_report_data(**user_info.dict())))
 
 
 # todo：目前先动态生成，后续改为对象存储的静态文件
 @api_view(['GET'])
-def get_student_report_pdf_file(request):
-    """
-
-    :param request:
-    :return:
-    """
+def get_user_report_pdf_file(request):
     data = request.GET.dict()
-    student_info = StudentReportSearch(**data)
+    user_info = UserReportSearchForm(**data)
 
     dir_path = os.path.join(settings.BASE_DIR, 'Common', 'libs', 'pdf')
-    file_name = 'student-' + data['student_number'] + '-report.pdf'
+    file_name = str(user_info.user_role) + '-report.pdf'
     file_path = os.path.join(dir_path, file_name)
     if os.path.exists(file_path):
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
     report_str = render_to_string(
         template_name='UserService/report/single.html',
-        context={'user': generate_student_report_data(**student_info.dict())}
-    )
-    HTML(string=report_str).write_pdf(file_path)
-    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
-
-
-@api_view(['POST'])
-def get_teacher_report_pdf_file(request):
-    """
-    目前先动态生成，后续改为对象存储的静态文件
-    :param request:
-    :return:
-    """
-    data = request.GET.dict()
-    teacher_info = TeacherReportSearch(**data)
-
-    dir_path = os.path.join(settings.BASE_DIR, 'Common', 'libs', 'pdf')
-    file_name = 'teacher-' + data['teacher_number'] + '-report.pdf'
-    file_path = os.path.join(dir_path, file_name)
-    if os.path.exists(file_path):
-        return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
-    report_str = render_to_string(
-        template_name='UserService/report/single.html',
-        context={'user': generate_report_data(**teacher_info.dict())}
+        context={'user': generate_user_report_data(**user_info.dict())}
     )
     HTML(string=report_str).write_pdf(file_path)
     return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)

@@ -48,7 +48,7 @@ def init_permission():
 def import_student_sampling_data(file_path: str):
     if not validate_file_path(file_path):
         return False
-    df = pd.read_excel(file_path, sheet_name='温医大学生结果导出0414', engine='openpyxl', dtype={"学籍号": str})
+    df = pd.read_excel(file_path, sheet_name='Students', engine='openpyxl', dtype={"学籍号": str})
     # 解决MySQL数据库nan提交不了的问题
     df= df.astype(object).where(pd.notnull(df), None)
     for index, row in df.iterrows():
@@ -93,7 +93,7 @@ def supply_student_info(file_path: str):
 def import_teacher_sampling_data(file_path: str):
     if not validate_file_path(file_path):
         return False
-    df = pd.read_excel(file_path, sheet_name='Sheet1', engine='openpyxl')
+    df = pd.read_excel(file_path, sheet_name='Teachers', engine='openpyxl', dtype={"教工号": str})
     df = df.astype(object).where(pd.notnull(df), None)
     for index, row in df.iterrows():
         try:

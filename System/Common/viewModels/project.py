@@ -21,6 +21,7 @@ from Common.utils.text_handler.identity_card import get_age
 from Common.viewModels.equipments import count_spherical_equivalent
 
 
+# 不使用序列化快速书写的原因是导出需要中文
 def update_or_create_project_data(project: Project, row):
     # 视力表
     uncorrected_visual_acuity_left = row['左裸眼视力']

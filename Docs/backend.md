@@ -1,6 +1,6 @@
 # 后端说明文档
 
-- 本文档主要是架构设计、模块使用、运维方法等相关内容。
+- 本文档主要是架构设计、模块使用等相关内容。
 
 ## 开始开发
 
@@ -23,16 +23,30 @@
         - nginx.conf: nginx配置文件
         - supervisor.ini: supervisor配置文件
         - test.py: 测试程序文件
-    - .gitignore: .gitignore文件
+        - uwsgi.ini: uwsgi配置文件
+    - .gitignore: git 会的忽略文件或文件夹的配置文件
     - LICENSE: 许可证
     - README.md: 主说明文档
     - Pipfile: pipenv 环境配置文件
+    - Pipfile.lock: pipenv 模块锁定文件
+    - pyproject.toml: poetry 环境配置文件
+    - poetry.lock: poetry 模块锁定文件
 
 # Common
 
 ## models:数据库模型
 
+## serializers:数据库序列化部分
+
+- 基于 drf 的serializers模块构建
+
+## viewModel:视图-数据库结构
+
+- 常放置对于数据库模型的通用操作
+
 ## admin:后台管理模型
+
+- 放对于django自带的后台管理的配置和操作
 
 ## utils:通用工具(重点看这个)
 
@@ -44,11 +58,15 @@
 
 ### forms:表单验证
 
+- 基于django的forms模块构建
+- **和数据库模型没有必然联系，所以是utils模块中的子模块，而不是和models模块同级**
 - 在基于JSON数据传输的今天，可能表单都不怎么使用了，但是依留存这个模块，便于前后端不分离的情况下使用
 
 ### schemes:数据验证
 
 - 注意：这并不是django rest framework的Schemes
+- 和form部分不同的是，本部分基于 pydantic 模块构建
+- **虽然和数据库序列化很相似，但是实际上和数据库模型的字段没有必然关系，和form部分是一样的功效**
 - 完全服务于JSON形式的数据验证，可以更好的提高数据安全性和超高的解析速度
 
 ### throttles:限流(节流)
