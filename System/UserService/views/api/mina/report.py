@@ -14,6 +14,7 @@
 __auth__ = 'diklios'
 
 import os
+from datetime import datetime
 
 from django.conf import settings
 from django.http.response import FileResponse
@@ -25,26 +26,51 @@ from weasyprint import HTML
 
 from Common.utils.email_handler.report import handle_lack_student_report_data
 from Common.utils.http.successes import Success
-from UserService.utils.report import generate_student_report_data, generate_teacher_report_data
+from UserService.utils.report import generate_student_report_data, generate_report_data
 
 
+class UserReportSearch(BaseModel):
+    name: str
+    identification_card_number: str
+    user_role: dict = None
+    project_name: str = None
+    finished_time: datetime = None
+
+
+class StudentRole(BaseModel):
+    name: str
+    student_number: str
+
+
+# todo:后续换成标准化的方式
 class StudentReportSearch(BaseModel):
     name: str
     identification_card_number: str
     student_number: str
+    project_name: str = None
+    finished_time: datetime = None
 
 
-class TeacherReportSearch(BaseModel):
+class TeacherRole(BaseModel):
     name: str
-    identification_card_number: str
     teacher_number: str
+
+
+class TeacherReportSearch(UserReportSearch):
+    user_role: TeacherRole
 
 
 @api_view(['POST'])
 def get_student_report_data(request):
     data = request.json
     student_info = StudentReportSearch(**data)
-    return Response(Success(data=generate_student_report_data(**student_info.dict())))
+    return Response(Success(data=generate_report_data(
+        name=student_info.name,
+        identification_card_number=student_info.identification_card_number,
+        user_role={
+            'name': 'student',
+            'student_number': student_info.student_number
+        })))
 
 
 @api_view(['POST'])
@@ -57,7 +83,7 @@ def lack_student_report_data(request):
 def get_teacher_report_data(request):
     data = request.json
     teacher_info = TeacherReportSearch(**data)
-    return Response(Success(data=generate_teacher_report_data(**teacher_info.dict())))
+    return Response(Success(data=generate_report_data(**teacher_info.dict())))
 
 
 # todo：目前先动态生成，后续改为对象存储的静态文件
@@ -101,7 +127,7 @@ def get_teacher_report_pdf_file(request):
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
     report_str = render_to_string(
         template_name='UserService/report/single.html',
-        context={'user': generate_teacher_report_data(**teacher_info.dict())}
+        context={'user': generate_report_data(**teacher_info.dict())}
     )
     HTML(string=report_str).write_pdf(file_path)
     return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)

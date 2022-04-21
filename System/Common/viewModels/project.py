@@ -118,6 +118,10 @@ def update_or_create_project_data(project: Project, row):
     )
 
 
+def export_project_data(project:Project.objects.filter()):
+    # todo
+    pass
+
 class Suggestion(BaseModel):
     eye: str = None
     key: str = None

@@ -151,7 +151,7 @@ class EyeGround(Base):
     """
     眼底照
     """
-    project = models.OneToOneField(Project, on_delete=models.CASCADE, verbose_name='项目')
+    project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='eye_ground', verbose_name='项目')
     image_path_right = models.FilePathField(max_length=255, null=True, blank=True, default=None, verbose_name='右眼眼底图路径')
     image_path_left = models.FilePathField(max_length=255, null=True, blank=True, default=None, verbose_name='左眼眼底图路径')
     image_url_right = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='右眼眼底图远程URL')
@@ -177,10 +177,10 @@ class Sequence(Base):
     """
     测序
     """
-    project = models.OneToOneField(Project, on_delete=models.CASCADE, verbose_name='项目')
+    project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='sequence', verbose_name='项目')
     serial_number = models.CharField(max_length=32, null=True, blank=True, default=None, verbose_name='测序编号')
     file_path = models.FilePathField(null=True, blank=True, default=None, verbose_name='测序文件路径')
-    file_url = models.URLField(max_length=512,null=True, blank=True, default=None, verbose_name='测序文件远程URL')
+    file_url = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='测序文件远程URL')
 
     @property
     def file_location(self):
@@ -197,9 +197,10 @@ class InformedConsent(Base):
     """
     知情同意书
     """
-    project = models.OneToOneField(Project, on_delete=models.CASCADE, verbose_name='项目')
+    project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='informed_consent',
+                                   verbose_name='项目')
     file_path = models.FilePathField(null=True, blank=True, default=None, verbose_name='知情同意书文件路径')
-    file_url = models.CharField(max_length=512,null=True, blank=True, default=None, verbose_name='知情同意书文件远程URL')
+    file_url = models.CharField(max_length=512, null=True, blank=True, default=None, verbose_name='知情同意书文件远程URL')
 
     @property
     def file_location(self):
@@ -216,7 +217,7 @@ class Questionnaire(Base):
     """
     问卷
     """
-    project = models.OneToOneField(Project, on_delete=models.CASCADE, verbose_name='项目')
+    project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='questionnaire', verbose_name='项目')
     content = models.JSONField(null=True, blank=True, default=list, verbose_name='问卷内容')
 
     class Meta:
