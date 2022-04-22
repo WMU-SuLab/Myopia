@@ -13,11 +13,10 @@
 """
 __auth__ = 'diklios'
 
-from Common.models.role import *
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from UserService.utils.email.report import handle_user_feedback
+from UserService.viewModels.feedback import handle_user_feedback
 
 
 @api_view(['POST'])
