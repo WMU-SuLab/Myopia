@@ -86,3 +86,11 @@ DATABASES = {
     #     }
     # },
 }
+
+# 开发环境下的邮件配置
+EMAIL_PORT = 25
+EMAIL_USE_SSL = False
+EMAIL_USE_TLS = True
+MANAGERS = (
+    ('diklios', '1061995104@qq.com'),
+)

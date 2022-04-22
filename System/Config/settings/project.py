@@ -15,6 +15,10 @@ __auth__ = 'diklios'
 
 from .base import *
 
+# Hash
+# 必须使用Fernet.generate_key()生成，而且是字节类型
+CRYPTOGRAPHY_SECRET_KEY = os.environ.get('CRYPTOGRAPHY_SECRET_KEY','diklios')
+
 # Project settings
 SERVER_DOMAIN = os.environ.get('SERVER_DOMAIN', 'localhost')
 # Screening-Manage

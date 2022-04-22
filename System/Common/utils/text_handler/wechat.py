@@ -13,14 +13,10 @@
 """
 __auth__ = 'diklios'
 
-
-
-
 import base64
 import json
 
 from crypto.Cipher import AES
-
 
 
 class WXBizDataCrypt:
@@ -45,4 +41,3 @@ class WXBizDataCrypt:
 
     def _unpad(self, s):
         return s[:-ord(s[len(s) - 1:])]
-

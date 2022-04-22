@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   __init__.py.py    
-@Create Time    :   2022/4/13 22:00
+@File Name      :   hash.py    
+@Create Time    :   2022/4/22 12:36
 @Description    :   
 @Version        :   
 @License        :   MIT
@@ -13,11 +13,14 @@
 """
 __auth__ = 'diklios'
 
-from django.urls import path
+from django.conf import settings
 
-from .report import get_user_report_data, get_user_report_pdf_file
+from Common.utils.text_handler.hash import encrypt_by_cryptography, decrypt_by_cryptography
 
-urlpatterns = [
-    path('get_user_report_data', get_user_report_data, name='get_user_report_data'),
-    path('get_user_report_pdf_file', get_user_report_pdf_file, name='get_user_report_pdf_file'),
-]
+
+def encrypt(text):
+    return encrypt_by_cryptography(text, settings.CRYPTOGRAPHY_SECRET_KEY)
+
+
+def decrypt(text):
+    return decrypt_by_cryptography(text, settings.CRYPTOGRAPHY_SECRET_KEY)

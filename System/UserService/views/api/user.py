@@ -14,6 +14,16 @@
 __auth__ = 'diklios'
 
 from Common.models.role import *
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+from UserService.utils.email.report import handle_user_feedback
+
+
+@api_view(['POST'])
+def user_feedback(request):
+    data = request.json
+    return Response(handle_user_feedback(data))
 
 
 def register(request):

@@ -24,7 +24,7 @@ class Project(Base):
     name = models.CharField(max_length=63, null=True, blank=True, default=None, verbose_name='项目名称')
     is_finished = models.BooleanField(default=False, verbose_name='是否完成')
     finished_time = models.DateTimeField(null=True, blank=True, auto_now_add=True, verbose_name='完成时间')
-    report_url = models.URLField(max_length=512, null=True, blank=True, default=dict, verbose_name='报告文件url')
+    report_file_url = models.URLField(max_length=512, null=True, blank=True, default=dict, verbose_name='报告文件url')
 
     class Meta:
         verbose_name = verbose_name_plural = '项目'

@@ -18,6 +18,7 @@ from django.urls import path, include
 from Common.utils.auth.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView, TokenBlacklistView
 from UserService import app_name
 from .test import test
+from .user import user_feedback
 
 urlpatterns = [
     path('mina/', include(('UserService.views.api.mina', app_name), namespace='mina')),
@@ -26,4 +27,5 @@ urlpatterns = [
     path('token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify', TokenVerifyView.as_view(), name='token_verify'),
     path('logout', TokenBlacklistView.as_view(), name='logout'),
+    path('user/feedback', user_feedback, name='user_feedback'),
 ]

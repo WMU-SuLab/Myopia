@@ -13,6 +13,7 @@
 """
 __auth__ = 'diklios'
 
+import json
 import os
 from datetime import datetime
 from typing import Union
@@ -28,7 +29,7 @@ from weasyprint import HTML
 from Common.utils.http.successes import Success
 from UserService.utils.schemes.role import StudentRole, TeacherRole
 from UserService.viewModels.report import generate_user_report_data
-
+from UserService.utils.text_handler.hash import decrypt
 
 class UserReportSearchForm(BaseModel):
     name: str
@@ -61,7 +62,8 @@ def get_user_report_data(request):
 @api_view(['GET'])
 def get_user_report_pdf_file(request):
     data = request.GET.dict()
-    user_info = UserReportSearchForm(**data)
+    user_info_json=json.loads(decrypt(data['user_info_json']))
+    user_info = UserReportSearchForm(**user_info_json)
 
     dir_path = os.path.join(settings.BASE_DIR, 'Common', 'libs', 'pdf')
     file_name = str(user_info.user_role) + '-report.pdf'

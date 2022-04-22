@@ -24,7 +24,7 @@ from . import BASE_DIR
 DEFAULT_CHARSET = 'utf-8'
 # SECURITY WARNING: keep the secret key used in production secret!
 # 使用from django.core.management.utils import get_random_secret_key 生成 secret_key
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-k7t++81e%dpa!a^#2$7equ8+-=pu+52jf9x8bro#k2-k8!2n3e')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-secret-key')
 # django-hashid-field插件的id加密配置
 HASHID_FIELD_SALT = os.environ.get('HASHID_FIELD_SALT', 'WMU-SuLab hashids salt secret key')
 # 允许的主机
@@ -313,8 +313,7 @@ ADMINS = (
     ('diklios', '1061995104@qq.com'),
 )
 MANAGERS = (
-    ('diklios', '1061995104@qq.com'),
-    # ('xingsl', 'xingsl@wmu.edu.cn'),
+    ('xingsl', 'xingsl@wmu.edu.cn'),
 )
 # 发送邮件的后端
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

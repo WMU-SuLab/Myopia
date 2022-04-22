@@ -85,6 +85,7 @@
 ```dotenv
 # .env文件示例
 SECRET_KEY=''
+CRYPTOGRAPHY_SECRET_KEY=''
 HASHID_FIELD_SALT=''
 
 DJANGO_ENV='develop'
