@@ -11,7 +11,7 @@
     - [ ] 域名
     - [x] SSL
     - [x] NGINX
-    - [x] supervisor
+    - [x] Supervisor
 - [x] 研究PDM和Poetry安装环境
 - [ ] 用户身份认证的backend
 - [ ] 导出数据脚本

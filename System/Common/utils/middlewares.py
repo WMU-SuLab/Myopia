@@ -19,6 +19,10 @@ import time
 from django.http import HttpResponse
 from django.urls import reverse
 from django.utils.deprecation import MiddlewareMixin
+from pydantic import ValidationError as PydanticValidationError
+
+from Common.utils.http.exceptions import APIException, ParameterError
+from Common.utils.http.response import JsonResponse
 
 
 class TestMiddlewareMixin(MiddlewareMixin):
@@ -103,3 +107,26 @@ class JSONMiddleware(MiddlewareMixin):
         else:
             request.json = None
         return self.get_response(request)
+
+
+class ExceptionMiddleware(MiddlewareMixin):
+    """
+    原生Django全局异常处理
+    """
+
+    def process_exception(self, request, exception):
+        if isinstance(exception, APIException):
+            return JsonResponse(**exception.to_dict())
+        elif isinstance(exception, PydanticValidationError):
+            return JsonResponse(**ParameterError(msg=str(exception)).to_dict())
+
+        return exception
+
+
+class DisableDRFCSRFCheckMiddleware(MiddlewareMixin):
+    """
+    关掉因为DRF的SessionAuthentication强制开启CSRF检查导致的403错误
+    """
+
+    def process_request(self, request):
+        setattr(request, '_dont_enforce_csrf_checks', True)

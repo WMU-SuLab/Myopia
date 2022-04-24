@@ -97,6 +97,12 @@ class NotAuthenticated(APIException):
     chinese_msg = '未认证'
 
 
+class NotActive(APIException):
+    status_code = 401
+    msg = 'account not active'
+    chinese_msg = '账户未激活'
+
+
 class PermissionDenied(APIException):
     status_code = 403
     msg = 'permission denied'

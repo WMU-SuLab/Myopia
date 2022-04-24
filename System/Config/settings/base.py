@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    # simpleui需要保证在django.contrib.admin之前，以保证admin页面会被覆盖和自定义的admin模板能够正常使用
     'simpleui',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -62,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'Common.utils.middlewares.JSONMiddleware',
+    'Common.utils.middlewares.DisableDRFCSRFCheckMiddleware'
 ]
 
 ROOT_URLCONF = 'Config.urls'
@@ -173,6 +175,7 @@ REST_FRAMEWORK = {
     # ),
     # jwt
     'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.SessionAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
     # 返回格式
@@ -190,7 +193,6 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     # 节流
     'DEFAULT_THROTTLE_CLASSES': [
-
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
         'rest_framework.throttling.ScopedRateThrottle',

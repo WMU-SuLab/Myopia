@@ -29,6 +29,7 @@ def index_redirect(request):
 
 urlpatterns = [
     path('', index_redirect, name='index'),
+    path('common/', include('Common.views', namespace='Common')),
     path('user_service/', include('UserService.views', namespace='UserService')),
     path('screening/', include('Screening.views', namespace='Screening')),
     # Django 后台

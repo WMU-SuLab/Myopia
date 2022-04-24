@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
 @File Name      :   __init__.py.py    
-@Create Time    :   2022/4/4 16:06
+@Create Time    :   2022/4/24 9:17
 @Description    :   
 @Version        :   
 @License        :   MIT
@@ -15,12 +15,8 @@ __auth__ = 'diklios'
 
 from django.urls import path, include
 
-from UserService import app_name
-from .test import test
-from .user import user_feedback
+from Common import app_name
 
 urlpatterns = [
-    path('test', test, name='test'),
-    path('mina/', include(('UserService.views.api.mina', app_name), namespace='mina')),
-    path('user/feedback', user_feedback, name='user_feedback'),
+    path('api/', include(('Common.views.api', app_name), namespace='api')),
 ]

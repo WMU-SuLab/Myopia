@@ -13,14 +13,16 @@
 """
 __auth__ = 'diklios'
 
+import json
+
 from django.conf import settings
 
 from Common.utils.text_handler.hash import encrypt_by_cryptography, decrypt_by_cryptography
 
 
-def encrypt(text):
-    return encrypt_by_cryptography(text, settings.CRYPTOGRAPHY_SECRET_KEY)
+def encrypt_dict_to_text(data: dict) -> bytes:
+    return encrypt_by_cryptography(json.dumps(data), settings.CRYPTOGRAPHY_SECRET_KEY)
 
 
-def decrypt(text):
-    return decrypt_by_cryptography(text, settings.CRYPTOGRAPHY_SECRET_KEY)
+def decrypt_text_to_dict(text: str) -> dict:
+    return json.loads(decrypt_by_cryptography(text, settings.CRYPTOGRAPHY_SECRET_KEY))

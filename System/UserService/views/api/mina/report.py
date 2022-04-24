@@ -13,42 +13,19 @@
 """
 __auth__ = 'diklios'
 
-import json
 import os
-from datetime import datetime
-from typing import Union
 
 from django.conf import settings
 from django.http.response import FileResponse
 from django.template.loader import render_to_string
-from pydantic import BaseModel, validator
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from weasyprint import HTML
 
 from Common.utils.http.successes import Success
-from UserService.utils.schemes.role import StudentRole, TeacherRole
+from UserService.utils.schemes.report import UserReportSearchForm
+from UserService.utils.text_handler.hash import decrypt_text_to_dict
 from UserService.viewModels.report import generate_user_report_data
-from UserService.utils.text_handler.hash import decrypt
-
-class UserReportSearchForm(BaseModel):
-    name: str
-    identification_card_number: str
-    user_role: Union[StudentRole, TeacherRole]
-    project_name: str = None
-    finished_time: datetime = None
-
-    @validator('name')
-    def validate_name(cls, v):
-        if len(v) > 20:
-            raise ValueError('姓名长度不能超过20个字符')
-        return v
-
-    @validator('identification_card_number')
-    def validate_identification_card_number(cls, v):
-        if len(v) != 4:
-            raise ValueError('只需要输入身份证号后4位')
-        return v
 
 
 @api_view(['POST'])
@@ -62,7 +39,7 @@ def get_user_report_data(request):
 @api_view(['GET'])
 def get_user_report_pdf_file(request):
     data = request.GET.dict()
-    user_info_json=json.loads(decrypt(data['user_info_json']))
+    user_info_json = decrypt_text_to_dict(data['user_info_json'])
     user_info = UserReportSearchForm(**user_info_json)
 
     dir_path = os.path.join(settings.BASE_DIR, 'Common', 'libs', 'pdf')

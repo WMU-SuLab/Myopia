@@ -27,3 +27,29 @@ class Success(BaseHTTPJSONStructure):
 class EmailSendSuccess(Success):
     msg = 'email send success'
     chinese_msg = '邮件发送成功'
+
+
+# 用户管理部分
+class UserRegisterSuccess(Success):
+    msg = 'user register success'
+    chinese_msg = '用户注册成功'
+
+
+class UserLoginSuccess(Success):
+    msg = 'user login success'
+    chinese_msg = '用户登录成功'
+
+
+class UserLogoutSuccess(Success):
+    msg = 'user logout success'
+    chinese_msg = '用户退出成功'
+
+
+class UserInfoUpdateSuccess(Success):
+    msg = 'user update success'
+    chinese_msg = '用户信息更新成功'
+
+
+class UserDeleteSuccess(Success):
+    msg = 'user delete success'
+    chinese_msg = '用户注销成功'
