@@ -54,8 +54,7 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
-
-        return self._create_user(username, password, **extra_fields)
+        return
 
 
 class User(Base, AbstractBaseUser, PermissionsMixin):
@@ -84,7 +83,7 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
     phone = models.CharField(max_length=32, blank=True, null=True, default=None, unique=True, verbose_name='手机号')
     name = models.CharField(max_length=64, blank=True, null=True, default=None, db_index=True, verbose_name='姓名')
     identification_card_type = models.IntegerField(choices=identification_card_type_choices,
-        blank=True, null=True, default=1, verbose_name='证件类型')
+                                                   blank=True, null=True, default=1, verbose_name='证件类型')
     identification_card_number = models.CharField(
         max_length=32, null=True,
         blank=True, default=None, db_index=True, unique=True, verbose_name='身份证号')
@@ -114,11 +113,19 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
 
     @property
     def is_manager(self):
-        return False if self.manager_role.DoesNotExist else True
+        if self.is_superuser:
+            return True
+        if self.is_active and self.is_authenticated and not self.manager_role.DoesNotExist:
+            return True
+        return False
 
     @property
     def is_employee(self):
-        return False if self.employee_role.DoesNotExist else True
+        if self.is_superuser:
+            return True
+        if self.is_active and self.is_authenticated and not self.employee_role.DoesNotExist:
+            return True
+        return False
 
     # 用户管理器
     objects = UserManager()

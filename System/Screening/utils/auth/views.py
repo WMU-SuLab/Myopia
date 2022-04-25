@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   user.py    
-@Create Time    :   2022/4/14 9:52
+@File Name      :   vies.py    
+@Create Time    :   2022/4/25 15:48
 @Description    :   
 @Version        :   
 @License        :   MIT
@@ -13,14 +13,11 @@
 """
 __auth__ = 'diklios'
 
-from django.shortcuts import render, reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import View
 
-from .index import title, login_api_view_name
 
-
-def login(request):
-    return render(request, 'Screening/manage/login.html', context={
-        'site_title': title,
-        'site_header': title,
-        'app_path': reverse(login_api_view_name)
-    })
+class LoginRequiredView(LoginRequiredMixin, View):
+    login_url = 'Screening:manage:index'
+    # 因为next是python的关键字，使用next会导致字典获取不到值，所以使用next_url
+    redirect_field_name = 'next_url'

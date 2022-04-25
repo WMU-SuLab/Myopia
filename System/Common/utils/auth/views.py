@@ -13,8 +13,6 @@
 """
 __auth__ = 'diklios'
 
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views import View
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -25,11 +23,6 @@ from rest_framework_simplejwt.views import TokenObtainPairView as _TokenObtainPa
 
 from .serializers import TokenObtainPairSerializer, TokenRefreshSerializer, TokenVerifySerializer, \
     TokenBlacklistSerializer, TokenObtainSlidingSerializer, TokenRefreshSlidingSerializer
-
-
-class LoginRequiredView(LoginRequiredMixin, View):
-    login_url = 'Screening:manage:index'
-    redirect_field_name = 'next'
 
 
 class LoginRequiredAPIView(APIView):

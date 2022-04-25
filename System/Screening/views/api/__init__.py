@@ -20,6 +20,6 @@ from .test import test
 
 urlpatterns = [
     path('test', test, name='test'),
-    path('mina', include(('Screening.views.api.mina', app_name), namespace='mina')),
-    path('manage', include(('Screening.views.api.manage', app_name), namespace='manage')),
+    path('mina/', include(('Screening.views.api.mina', app_name), namespace='mina')),
+    path('manage/', include(('Screening.views.api.manage', app_name), namespace='manage')),
 ]

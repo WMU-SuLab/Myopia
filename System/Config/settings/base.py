@@ -204,8 +204,10 @@ REST_FRAMEWORK = {
 }
 
 # 校验后端
+# AUTHENTICATION_BACKENDS 的顺序很重要，所以如果同一个用户名和密码在多个后端都有效，Django 会在第一个正向匹配时停止处理
+# 如果一个后端抛出 PermissionDenied 异常，则验证流程立马终止，Django 不会继续检查其后的后端
 AUTHENTICATION_BACKENDS = (
-
+    'Common.utils.auth.backends.UserBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 

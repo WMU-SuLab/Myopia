@@ -14,87 +14,67 @@
 __auth__ = 'diklios'
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.backends import BaseBackend,ModelBackend
+from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
-from rest_framework_simplejwt.serializers import ValidationError
+
+from Common.utils.auth.validator import validate_verification_code
+from Common.utils.http.exceptions import ValidationError, ParameterError
 
 UserModel = get_user_model()
 
-# todo：完善用户认证后端
+
+# todo:完善微信的登录
 class UserBackend(ModelBackend):
-    def authenticate(self, request, username=None, password=None, **kwargs):
+    def authenticate(self, request, username: str = None, password: str = None, **kwargs):
+        email = kwargs.get('email', None)
+        phone = kwargs.get('phone', None)
+        open_id = kwargs.get('open_id', None)
+        union_id = kwargs.get('union_id', None)
+        verification_code = kwargs.get('verification_code', None)
+        # user = UserModel._default_manager.get_by_natural_key(username)
         if username is None:
-            username = kwargs.get(UserModel.USERNAME_FIELD)
-        try:
-            # user = UserModel._default_manager.get_by_natural_key(username)
-            # You can customise what the given username is checked against, here I compare to both
-            # username and email fields of the User model
-            user = UserModel.objects.get(
-                Q(username__iexact=username) | Q(email__iexact=username) | Q(phone=username)
-
+            username = kwargs.get(UserModel.USERNAME_FIELD, '')
+        if username:
+            user = UserModel.objects.filter(
+                Q(username__iexact=username) | Q(email__iexact=username) | Q(phone__iexact=username) |
+                Q(wechat_role__open_id__iexact=username) | Q(wechat_role__union_id__iexact=username)
             )
-        except UserModel.DoesNotExist:
-            # Run the default password hasher once to reduce the timing
-            # difference between an existing and a nonexistent user (#20760).
-            UserModel().set_password(password)
+        elif email:
+            user = UserModel.objects.filter(email=email)
+        elif phone:
+            user = UserModel.objects.filter(phone=phone)
+        elif open_id:
+            user = UserModel.objects.filter(wechat_role__open_id=open_id)
+        elif union_id:
+            user = UserModel.objects.filter(wechat_role__union_id=union_id)
         else:
+            raise ParameterError('username or email or phone or open_id or union_id is required')
+
+        if user.exist():
+            user = user.first()
+        else:
+            raise ValidationError(msg='User dose not exist.', chinese_msg='用户不存在')
+
+        if password:
             if user.check_password(password) and self.user_can_authenticate(user):
-                return user
-        return super().authenticate(request, username, password, **kwargs)
-
-
-class PhoneBackend(ModelBackend):
-    def authenticate(self, request, username=None, password=None, **kwargs):
-        # print(request.data) 参考请求的其他数据
-        # print(request.data['demo']) 比如说key是demo的数据用来做你要的数据校验
-        try:
-            # 小编这里添加了一个手机验证，如果需要其他验证再加就ok了
-            try:
-                user = UserModel.objects.get(Q(username=username) | Q(phone=username))
-            except Exception:
-                raise ValidationError({'': '账号没有注册'})
-
-            if user.check_password(password):
-                return user
+                # Run the default password hasher once to reduce the timing
+                # difference between an existing and a nonexistent user (#20760).
+                # 使用密码验证
+                return user if self.user_can_authenticate(user) else None
             else:
-                # 如果不想密码登录也可以验证码在这里写
-                # 这里做验证码的操作
-                raise ValidationError({'': '密码错误'})
-
-        except Exception as e:
-            raise e
-
-
-class OpenIdAuth(BaseBackend):
-    """
-    Authenticates against settings.AUTH_USER_MODEL.
-    """
-
-    def authenticate(self, request, openid=None, **kwargs):
-        if openid is None:
-            return
-        try:
-            user = UserModel.objects.get(openid=openid)
-        except UserModel.DoesNotExist:
-            return None
+                # UserModel().set_password(password)
+                raise ValidationError(msg='Password is incorrect.', chinese_msg='密码错误')
+        elif verification_code:
+            if validate_verification_code(
+                    verification_code=verification_code,
+                    username=username,
+                    email=email,
+                    phone=phone):
+                # 使用验证码验证
+                return user if self.user_can_authenticate(user) else None
+            else:
+                # UserModel().set_password(password)
+                raise ValidationError(msg='Verification_code is incorrect.', chinese_msg='验证码错误')
         else:
-            # if user is not None:
-            #     return user
-            # return None
-            return user if self.user_can_authenticate(user) else None
-
-    def user_can_authenticate(self, user):
-        """
-        Reject users with is_active=False. Custom user models that don't have
-        that attribute are allowed.
-        """
-        is_active = getattr(user, 'is_active', None)
-        return is_active or is_active is None
-
-    def get_user(self, user_id):
-        try:
-            user = UserModel.objects.get(pk=user_id)
-        except UserModel.DoesNotExist:
-            return None
-        return user if self.user_can_authenticate(user) else None
-
+            raise ParameterError('password or verification_code is required')
+        # return super().authenticate(request, username, password, **kwargs)

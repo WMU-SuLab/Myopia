@@ -48,6 +48,7 @@ def session_login(request):
         return Response(AuthenticationFailed(message='用户名或密码错误'))
 
 
+@api_view(['GET'])
 def session_logout(request):
     logout(request)
     return redirect('Screening:manage:index')

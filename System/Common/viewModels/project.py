@@ -119,9 +119,10 @@ def update_or_create_project_data(project: Project, row):
     )
 
 
-def export_project_data(project:Project.objects.filter()):
+def export_project_data(project: Project.objects.filter()):
     # todo
     pass
+
 
 class Suggestion(BaseModel):
     eye: str = None
@@ -232,7 +233,7 @@ def generate_report_data_from_project(project) -> dict:
     uncorrected_visual_acuity_left = project.visual_chart.uncorrected_visual_acuity_left
     corrected_visual_acuity_right = project.visual_chart.corrected_visual_acuity_right
     corrected_visual_acuity_left = project.visual_chart.corrected_visual_acuity_left
-    if corrected_visual_acuity_right and corrected_visual_acuity_left:
+    if not corrected_visual_acuity_right and not corrected_visual_acuity_left and uncorrected_visual_acuity_right and uncorrected_visual_acuity_left:
         corrected_visual_acuity_right = uncorrected_visual_acuity_right
         corrected_visual_acuity_left = uncorrected_visual_acuity_left
 
@@ -264,7 +265,7 @@ def generate_report_data_from_project(project) -> dict:
         'student_number': project.user.student_role.student_number,
         'classname': project.user.student_role.classname,
         'sex': project.user.gender,
-        'gender':project.user.get_gender_display(),
+        'gender': project.user.get_gender_display(),
         'age': get_age(project.user.identification_card_number),
         **eye_data,
         'suggestions': suggestions

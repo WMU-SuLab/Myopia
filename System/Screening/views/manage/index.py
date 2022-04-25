@@ -13,12 +13,18 @@
 """
 __auth__ = 'diklios'
 
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
+title = '眼健康筛查管理系统'
+login_view_name = 'Screening:manage:login'
+login_api_view_name = 'Screening:api:manage:login'
+redirect_field_name = 'next_url'
 
+
+@login_required(login_url=login_view_name, redirect_field_name=redirect_field_name)
 def index(request):
-    title = '眼健康检测管理系统'
-    return render(request, 'Screening/manage/index.html',context={
+    return render(request, 'Screening/manage/index.html', context={
         'site_title': title,
         'site_header': title,
     })
