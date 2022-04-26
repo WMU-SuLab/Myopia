@@ -30,7 +30,7 @@ class UserReportSearchForm(BaseModel):
 
     @validator('name')
     def validate_name(cls, v):
-        if len(v) > 20:
+        if v and len(v) > 20:
             raise ValueError('姓名长度不能超过20个字符')
         return v
 

@@ -31,8 +31,8 @@ class BaseHTTPJSONStructure:
         return self.status_code
 
     def __init__(
-            self, data: dict or list=None, success: bool = None, code: int = None, status_code: int = None, msg: str = None,
-            chinese_msg: str = None, **kwargs):
+            self, data: dict or list = None, success: bool = None, code: int = None, status_code: int = None,
+            msg: str = None, chinese_msg: str = None, **kwargs):
         self.data = data if data is not None else {}
         self.success = success if success is not None else self.success
         self.code = code if code is not None else self.code

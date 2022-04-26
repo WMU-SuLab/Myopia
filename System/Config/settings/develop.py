@@ -72,7 +72,7 @@ DATABASES = {
     #     # 'PORT': os.environ.get('DATABASE_DEFAULT_PORT_DEV','33060'),
     #     'NAME': os.environ.get('DATABASE_DEFAULT_NAME_DEV', 'Myopia'),
     #     'USER': os.environ.get('DATABASE_DEFAULT_USER_DEV', 'root'),
-    #     'PASSWORD': DATABASE_DEFAULT_NAME_TEST_DEV
+    #     'PASSWORD': os.environ.get('DATABASE_DEFAULT_PASSWORD_DEV', '123456'),
     #     'OPTIONS': {
     #         # 'init_command': 'SET default_storage_engine=INNODB;',
     #         'charset': 'utf8mb4',

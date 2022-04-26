@@ -18,7 +18,12 @@ from django.core import validators
 from Common.utils.text_handler.validator import validate_phone
 
 
-def validate_verification_code(verification_code: str = None, username: str = None, email:str=None, phone:str=None):
+# todo:使用redis存储验证码，并写一套键值对处理方法
+def validate_verification_code(
+        verification_code: str = None,
+        username: str = None,
+        email: str = None,
+        phone: str = None):
     if not 4 <= len(verification_code) <= 6:
         return False
     if username and validators.validate_email(username):

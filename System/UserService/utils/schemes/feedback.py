@@ -17,19 +17,26 @@ from typing import Union
 
 from pydantic import BaseModel, validator
 
+from Common.utils.http.exceptions import ParameterError
 from UserService.utils.schemes.role import StudentRole, TeacherRole
 
 
 class UserFeedback(BaseModel):
-    name: str
-    identification_card_number: str
-    user_role: Union[StudentRole, TeacherRole]
     phone: str
     email: str
+    name: str = None
+    identification_card_number: str
+    user_role: Union[StudentRole, TeacherRole]
     feedback_content: str = '无'
+
+    @validator('identification_card_number')
+    def validate_identification_card_number(cls, v):
+        if v and len(v) != 18 and len(v) != 4:
+            raise ParameterError(msg='identification card number length error', chinese_msg='身份证号码长度不正确')
+        return v
 
     @validator('feedback_content')
     def validate_feedback_content(cls, v):
         if len(v) > 300:
-            raise ValueError('长度不能超过300')
+            raise ParameterError(msg='', chinese_msg='长度不能超过300')
         return v

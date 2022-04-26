@@ -30,3 +30,4 @@ def handle_user_feedback(data: dict):
             'user_role': str(user_feedback.user_role)
         })
     mail_managers_feedback(user_feedback)
+

@@ -49,14 +49,14 @@ class UserBackend(ModelBackend):
             user = UserModel.objects.filter(wechat_role__union_id=union_id)
         else:
             raise ParameterError('username or email or phone or open_id or union_id is required')
-
-        if user.exist():
+        # 验证用户是否存在
+        if user.exists():
             user = user.first()
         else:
             raise ValidationError(msg='User dose not exist.', chinese_msg='用户不存在')
-
+        # 验证用户密码或者验证码
         if password:
-            if user.check_password(password) and self.user_can_authenticate(user):
+            if user.check_password(password):
                 # Run the default password hasher once to reduce the timing
                 # difference between an existing and a nonexistent user (#20760).
                 # 使用密码验证
@@ -73,7 +73,6 @@ class UserBackend(ModelBackend):
                 # 使用验证码验证
                 return user if self.user_can_authenticate(user) else None
             else:
-                # UserModel().set_password(password)
                 raise ValidationError(msg='Verification_code is incorrect.', chinese_msg='验证码错误')
         else:
             raise ParameterError('password or verification_code is required')

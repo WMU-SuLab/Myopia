@@ -16,13 +16,14 @@ __auth__ = 'diklios'
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from Common.utils.http.successes import EmailSendSuccess
 from UserService.viewModels.feedback import handle_user_feedback
 
 
 @api_view(['POST'])
 def user_feedback(request):
     data = request.json
-    return Response(handle_user_feedback(data))
+    return Response(EmailSendSuccess(handle_user_feedback(data)))
 
 
 def register(request):
