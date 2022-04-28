@@ -27,7 +27,7 @@ LOGGING = {
     # 日志记录格式
     'formatters': {
         # levelname等级，asctime记录时间，module表示日志发生的文件名称，lineno行号，message错误信息
-        'verbose': {
+        'default': {
             'format': '%(levelname)s %(asctime)s %(module)s %(lineno)d %(message)s'
         },
         'simple': {
@@ -51,7 +51,7 @@ LOGGING = {
         'console': {
             # 日志等级；debug是最低等级，那么只要比它高等级的信息都会被记录
             'level': 'DEBUG',
-            'filters': ['require_debug_true'],
+            # 'filters': ['require_debug_true'],
             # 使用的python的logging模块中的StreamHandler来进行输出
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
@@ -61,13 +61,13 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             # 日志位置,日志文件名,日志保存目录必须手动创建
             # 注意，你的文件应该有读写权限。
-            'filename': os.path.join(BASE_DIR,"Common","logs","django", "all.log"),
+            'filename': os.path.join(BASE_DIR,"Common","logs","django", "system.log"),
             # 日志文件的最大值,这里我们设置300M
             'maxBytes': 300 * 1024 * 1024,
             # 日志文件的数量,设置最大日志数量为10
             'backupCount': 10,
             # 日志格式:详细格式
-            'formatter': 'verbose',
+            'formatter': 'default',
             # 设置默认编码，否则打印出来汉字乱码
             'encoding': 'utf-8',
         },
@@ -75,11 +75,11 @@ LOGGING = {
     # 日志对象
     'loggers': {
         # 和django结合起来使用，将django中之前的日志输出内容的时候，按照我们的日志配置进行输出，
-        'django': {
-            'handlers': ['console'],
-            'propagate': True,
-            'level': 'DEBUG',
-        },
+        # 'django': {
+        #     'handlers': ['console'],
+        #     'propagate': True,
+        #     'level': 'DEBUG',
+        # },
         # # 只显示数据库查询语句
         # 'django.db.backends': {
         #     'handlers': ['console'],
@@ -112,7 +112,6 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.mysql',
     #     'HOST': os.environ.get('DATABASE_DEFAULT_DOMAIN_DEV', '127.0.0.1'),
     #     'PORT': os.environ.get('DATABASE_DEFAULT_PORT_DEV', '3306'),
-    #     # 'PORT': os.environ.get('DATABASE_DEFAULT_PORT_DEV','33060'),
     #     'NAME': os.environ.get('DATABASE_DEFAULT_NAME_DEV', 'Myopia'),
     #     'USER': os.environ.get('DATABASE_DEFAULT_USER_DEV', 'root'),
     #     'PASSWORD': os.environ.get('DATABASE_DEFAULT_PASSWORD_DEV', '123456'),

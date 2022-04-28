@@ -15,6 +15,8 @@
         - supervisor在不同的服务器的最新版本不同，但是使用Python安装的一定是最新的
     - Redis(4.0+)
     - Memcached(1.5+)
+    - pango(1.40+)
+        - Python的 weasyprint 模块需要根据自己的系统和 pango 版本手动使用 pip 进行安装
 - 环境依赖文件位置
     - pipenv:`ProjectRoot/Pipfile`
     - conda
@@ -136,6 +138,19 @@ MINA_USER_SERVICE_APP_SECRET=''
     - 使用`mkdir -p`创建多级目录
     - `ProjectRoot/System/Common/libs`
         - `ProjectRoot/System/Common/libs/pdf`
+- 创建日志文件夹，使用`mkdir`命令
+    - django
+        - 只需要创建文件夹：`ProjectRoot/System/Common/logs/django`
+    - gunicorn
+        - 创建gunicorn的日志文件夹，路径为：`ProjectRoot/System/Common/logs/gunicorn`
+        - 创建日志文件
+            - `touch ProjectRoot/System/Common/logs/gunicorn/access.log`
+            - `touch ProjectRoot/System/Common/logs/gunicorn/error.log`
+    - supervisor
+        - 创建supervisor的日志文件夹，路径为：`ProjectRoot/System/Common/logs/supervisor`
+        - 创建日志文件
+            - `touch ProjectRoot/System/Common/logs/supervisor/access.log`
+            - `touch ProjectRoot/System/Common/logs/supervisor/error.log`
 - 配置NGINX
     - 先收集静态文件:`python manage.py collectstatic`
     - 修改`nginx.conf`
@@ -169,17 +184,11 @@ MINA_USER_SERVICE_APP_SECRET=''
 - 启动Redis:``
 - 配置gunicorn
     - 可以修改`System/gunicorn.py`文件中的端口等内容，默认不需要进行修改
-        - 如果不准备使用supervisor可以将gunicorn改为后台运行
-    - 创建gunicorn的日志文件夹，路径为：`ProjectRoot/System/Common/logs/gunicorn`
-    - 创建日志文件
-        - `touch ProjectRoot/System/Common/logs/gunicorn/access.log`
-        - `touch ProjectRoot/System/Common/logs/gunicorn/error.log`
     - 启动：`gunicorn Config.wsgi -c gunicorn.py`
+        - 如果不准备使用supervisor可以将gunicorn改为后台运行
 - 配置supervisor
-    - 创建supervisor的日志文件夹，路径为：`ProjectRoot/System/Common/logs/supervisor`
-    - 创建日志文件
-        - `touch ProjectRoot/System/Common/logs/supervisor/access.log`
-        - `touch ProjectRoot/System/Common/logs/supervisor/error.log`
+    - **配置项目文件夹和启动命令**
+        - 根据自己的服务器情况更换文件路径即可
     - 你可以选择使用默认的`/etc/supervisord.conf`和`/etc/supervisord.d`文件夹，或者像下面这样进行配置
         - 创建supervisor配置文件夹
             - `mkdir -p /etc/supervisor`
@@ -190,14 +199,6 @@ MINA_USER_SERVICE_APP_SECRET=''
             -
           链接本项目的supervisor配置文件：`sudo ln -s /.../ProjectRoot/System/supervisor.ini /etc/supervisor/supervisord.d/myopia.ini`
             - 启动服务：`supervisord -c /etc/supervisor/supervisord.conf`
-                - 问题
-                    - BACKOFF Exited too quickly (process log may have details)
-                        - 根目录出错
-                        - 日志文件或者其目录不存在
-                    - 无法使用source等终端命令：使用bash -c "command"
-                    - 不断exit status 0; not expected
-                        - supervisor无法处理不在前台的程序，如nohup、gunicorn设置了守护进程等
-                        - 多次出现是因为没有监测到前台程序不断重启
 
 ## 数据库
 
@@ -225,6 +226,13 @@ MINA_USER_SERVICE_APP_SECRET=''
 
 ### Gunicorn
 
+- 常用命令
+    - 启动：`gunicorn Config.wsgi -c gunicorn.py`
+    - 获取进程：`ps -ef|grep gunicorn`
+    - 获取进程树：`pstree -ap|grep gunicorn`
+    - 关闭：`kill -9 进程号`
+    - 重启：`kill -HUP 进程号`
+
 ### NGINX
 
 - 常用命令
@@ -233,6 +241,8 @@ MINA_USER_SERVICE_APP_SECRET=''
     - 正常停止或关闭：nginx -s quit
     - 重启：service nginx restart
     - 重载：nginx -s reload
+- 查看
+    - 查看NGINX安装位置和配置文件位置：nginx -t
 
 ### Supervisor
 

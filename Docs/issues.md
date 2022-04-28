@@ -12,8 +12,8 @@
     - 需要安装pango
 - 52.5以上的版本需要pango 1.44+以上的版本，而centos8最高1.42，需要注意安装特定版本
     - 查看pango版本：`pango-view --version`
-- 注意poetry安装weasyprint似乎有问题，使用pip安装是正常的
-  - 所以最后决定将weasyprint从poetry环境文件中删除
+    - 注意poetry安装weasyprint 的52.5版本似乎又有问题，依赖一堆报错，但是使用pip安装虽然报错但是最后能用
+        - 所以最后决定将weasyprint从poetry环境文件中删除
 - 中文乱码问题
     - 原因：linux不存在对应的中文字体
     - 解决方法
@@ -30,3 +30,13 @@
         - 修改Linux字体配置文件：这一步不是必须的，当上面步骤走完但是没有用效果的时候可以尝试
             - 编辑字体配置文件：`vim /etc/fonts/fonts.conf`
             - 增加中文字体目录，就是刚刚创建的目录：`<dir>/usr/share/fonts/chinese</dir>`
+
+### Supervisor
+
+- BACKOFF Exited too quickly (process log may have details)
+    - 根目录出错
+    - 日志文件或者其目录不存在
+- 无法使用source等终端命令：使用bash -c "command"
+- 不断exit status 0; not expected
+    - supervisor无法处理不在前台的程序，如nohup、gunicorn设置了守护进程等
+    - 多次出现是因为没有监测到前台程序不断重启

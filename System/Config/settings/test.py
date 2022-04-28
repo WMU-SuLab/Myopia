@@ -32,11 +32,11 @@ LOGGING = {
         },
     },
     'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'propagate': True,
-            'level': 'DEBUG',
-        },
+        # 'django': {
+        #     'handlers': ['console'],
+        #     'propagate': True,
+        #     'level': 'DEBUG',
+        # },
         # 只显示数据库查询语句
         # 'django.db.backends': {
         #     'handlers': ['console'],
