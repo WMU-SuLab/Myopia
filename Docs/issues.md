@@ -12,7 +12,8 @@
     - 需要安装pango
 - 52.5以上的版本需要pango 1.44+以上的版本，而centos8最高1.42，需要注意安装特定版本
     - 查看pango版本：`pango-view --version`
-    - 注意poetry安装weasyprint似乎有问题，使用pip安装是正常的
+- 注意poetry安装weasyprint似乎有问题，使用pip安装是正常的
+  - 所以最后决定将weasyprint从poetry环境文件中删除
 - 中文乱码问题
     - 原因：linux不存在对应的中文字体
     - 解决方法
