@@ -141,6 +141,7 @@ MINA_USER_SERVICE_APP_SECRET=''
 - 创建日志文件夹，使用`mkdir`命令
     - django
         - 只需要创建文件夹：`ProjectRoot/System/Common/logs/django`
+        - 不需要自己创建文件
     - gunicorn
         - 创建gunicorn的日志文件夹，路径为：`ProjectRoot/System/Common/logs/gunicorn`
         - 创建日志文件
@@ -151,6 +152,9 @@ MINA_USER_SERVICE_APP_SECRET=''
         - 创建日志文件
             - `touch ProjectRoot/System/Common/logs/supervisor/access.log`
             - `touch ProjectRoot/System/Common/logs/supervisor/error.log`
+    - NGINX一般放在`/var/log/nginx`文件夹下，剩下具体根据自己的配置文件决定
+        - 创建文件夹：`mkdir -p /var/log/nginx`
+        - 不需要创建文件，配置文件里写好后NGINX自动创建文件
 - 配置NGINX
     - 先收集静态文件:`python manage.py collectstatic`
     - 修改`nginx.conf`
@@ -241,7 +245,9 @@ MINA_USER_SERVICE_APP_SECRET=''
     - 正常停止或关闭：nginx -s quit
     - 重启：service nginx restart
     - 重载：nginx -s reload
-    - 查看NGINX安装位置和配置文件位置：nginx -t
+- 当不知道NGINX配置文件位置的时候
+    - 通过测试配置文件查看NGINX配置文件位置：nginx -t
+    - 其余配置文件需要查看主配置文件最后有`include`语句的那一行
 
 ### Supervisor
 
@@ -259,3 +265,8 @@ MINA_USER_SERVICE_APP_SECRET=''
     - 服务名可以使用all代替所有服务
     - 启动supervisor并加载默认配置文件：systemctl start supervisord.service
     - 将supervisor加入开机启动项：systemctl enable supervisord.service
+- 更新配置文件
+    - 当更新ini配置文件后，**即使重启，也不会自动加载新配置文件**
+    - 查看配置文件是否更新：sudo supervisorctl reread
+    - 重载配置文件：sudo supervisorctl update
+    - 重新启动服务

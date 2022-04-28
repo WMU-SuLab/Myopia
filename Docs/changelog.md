@@ -85,6 +85,7 @@
     - 添加了创建用户的快捷命令
     - 完善了日志管理部分
     - 添加测试服务器的nginx配置文件
+    - 完善关于supervisor和NGINX的运维文档
 
 ## Screening
 
