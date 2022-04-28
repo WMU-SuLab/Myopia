@@ -241,7 +241,6 @@ MINA_USER_SERVICE_APP_SECRET=''
     - 正常停止或关闭：nginx -s quit
     - 重启：service nginx restart
     - 重载：nginx -s reload
-- 查看
     - 查看NGINX安装位置和配置文件位置：nginx -t
 
 ### Supervisor
