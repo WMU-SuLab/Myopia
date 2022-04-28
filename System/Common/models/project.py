@@ -29,5 +29,21 @@ class Project(Base):
     class Meta:
         verbose_name = verbose_name_plural = '项目'
 
+    @property
+    def project_name_school_rule(self):
+        year, school, school_region, user_role = self.name.split('-')
+        return year, school, school_region, user_role
+
+    def set_project_name_school_rule(self, year, school, school_region, user_role):
+        self.name = f'{year}-{school}-{school_region}-{user_role}'
+
+    @property
+    def project_name_city_rule(self):
+        year, city, city_region, user_role = self.name.split('-')
+        return year, city, city_region, user_role
+
+    def set_project_name_city_rule(self, year, city, city_region, user_role):
+        self.name = f'{year}-{city}-{city_region}-{user_role}'
+
     def __str__(self):
         return f'<Project : {self.id}-user:{self.user_id}>'

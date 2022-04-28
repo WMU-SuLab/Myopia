@@ -29,7 +29,6 @@ class UserManager(BaseUserManager):
         user = self.model(username=username, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
-
         return user
 
     def create_user(self, username, password=None, **extra_fields):
@@ -37,6 +36,17 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
+
+        return self._create_user(username, password, **extra_fields)
+
+    def create_admin_user(self, username, password=None, **extra_fields):
+        extra_fields.setdefault('is_authenticated', True)
+        extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', False)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Admin user must have is_staff=True.')
 
         return self._create_user(username, password, **extra_fields)
 
@@ -54,6 +64,7 @@ class UserManager(BaseUserManager):
             raise ValueError('Superuser must have is_staff=True.')
         if extra_fields.get('is_superuser') is not True:
             raise ValueError('Superuser must have is_superuser=True.')
+
         return self._create_user(username, password, **extra_fields)
 
 
@@ -107,24 +118,34 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
     province = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name='省份')
     country = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name='国家')
 
-    is_authenticated = models.BooleanField(blank=False, null=True, default=True, verbose_name='是否验证')
+    is_authenticated = models.BooleanField(blank=False, null=True, default=False, verbose_name='是否验证')
     is_active = models.BooleanField(blank=True, null=True, default=True, verbose_name='是否活跃')
     is_staff = models.BooleanField(default=False, verbose_name='是否可以访问管理站点')
 
     @property
-    def is_manager(self):
+    def is_admin(self):
         if self.is_superuser:
             return True
-        if self.is_active and self.is_authenticated and not self.manager_role.DoesNotExist:
+        if self.is_staff:
             return True
         return False
 
     @property
+    def is_manager(self):
+        if self.is_admin:
+            return True
+        if self.is_active and self.is_authenticated and not self.manager_role.DoesNotExist():
+            if self.manager_role.is_active:
+                return True
+        return False
+
+    @property
     def is_employee(self):
-        if self.is_superuser:
+        if self.is_admin:
             return True
-        if self.is_active and self.is_authenticated and not self.employee_role.DoesNotExist:
-            return True
+        if self.is_active and self.is_authenticated and not self.employee_role.DoesNotExist():
+            if self.employee_role.is_active:
+                return True
         return False
 
     # 用户管理器

@@ -73,7 +73,7 @@ def import_student_sampling_data(file_path: str):
         project, project_created = Project.objects.update_or_create(
             user=user,
             defaults={
-                'name': '22年温医大茶山校区大学生眼健康筛查项目',
+                'name': '2022-温医大-茶山校区-大学生',
                 'is_finished': True,
                 # 没法用isnull()或者isna()方法来判断
                 'finished_time': datetime.strptime(str(row['创建时间']), '%Y-%m-%d %H:%M:%S').astimezone(
@@ -96,6 +96,7 @@ def import_teacher_sampling_data(file_path: str):
     df = pd.read_excel(file_path, sheet_name='Teachers', engine='openpyxl', dtype={"教工号": str})
     df = df.astype(object).where(pd.notnull(df), None)
     for index, row in df.iterrows():
+        print(index)
         try:
             user = User.objects.get(username=row['教工号'])
         except User.DoesNotExist:
@@ -112,7 +113,7 @@ def import_teacher_sampling_data(file_path: str):
         project, project_created = Project.objects.update_or_create(
             user=user,
             defaults={
-                'name': '22年温医大茶山校区大学生眼健康筛查项目-教师',
+                'name': '2022-温医大-茶山校区-教职工',
                 'is_finished': True,
                 'finished_time': datetime.strptime(str(row['创建时间']), '%Y-%m-%d %H:%M:%S').astimezone(
                     settings.TZ_INFO) if row['创建时间'] is not pd.NaT and row['创建时间'] is not None else None,

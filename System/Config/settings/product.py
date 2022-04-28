@@ -30,6 +30,16 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'default',
         },
+        'time_handler': {
+            'level': 'INFO',
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': os.path.join(BASE_DIR,'Common','logs','django', "time.log"),
+            'when': 'S',
+            'interval': 10,
+            'backupCount': 5,
+            'formatter': 'standard',
+            'encoding': 'utf-8',
+        }
         # 如果使用supervisor可以不用配置file，supervisor的会将控制台的内容输出到日志
         # 'file':{
         #     'level':'INFO',
@@ -69,7 +79,7 @@ DATABASES = {
         # gevent和多线程的时候不要用
         # 'CONN_MAX_AGE': 36000,
         'TEST': {
-            'NAME': os.environ.get('DATABASE_DEFAULT_NAME_TEST', 'MyopiaTest'),
+            'NAME': os.environ.get('TEST_DATABASE_DEFAULT_NAME_TEST', 'MyopiaTest'),
         }
     },
 }

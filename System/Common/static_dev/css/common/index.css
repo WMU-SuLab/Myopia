@@ -14,18 +14,9 @@ body {
         /*Emoji fonts*/ "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-html body #root, .app {
+html body #root .app {
     min-width: 100vw;
     min-height: 100vh;
     margin: 0;
     background-color: #FAFAFA;
-}
-
-/*.title {*/
-/*    background: rgb(121, 242, 157);*/
-/*}*/
-
-.echarts{
-    min-height: 450px;
-    min-width: 600px;
 }

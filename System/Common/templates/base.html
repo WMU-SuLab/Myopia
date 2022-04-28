@@ -18,19 +18,21 @@
         {% block title %}
             <title>Base</title>
         {% endblock title %}
+        {% block meta %}
+        {% endblock %}
         {% block styles %}
             <link href="{% static 'css/common/index.css' %}" rel="stylesheet"/>
         {% endblock styles %}
     {% endblock head %}
 </head>
-<body>
 {% block body %}
-    {% block content %}
-    {% endblock content %}
-    {% block footer %}
-    {% endblock footer %}
+    <body>
+    {% block root %}
+        <div id="root">
+        </div>
+    {% endblock %}
     {% block scripts %}
     {% endblock scripts %}
+    </body>
 {% endblock body %}
-</body>
 </html>

@@ -21,7 +21,9 @@ CRYPTOGRAPHY_SECRET_KEY = os.environ.get('CRYPTOGRAPHY_SECRET_KEY','diklios')
 
 # Project settings
 SERVER_DOMAIN = os.environ.get('SERVER_DOMAIN', 'localhost')
-# Screening-Manage
+SERVER_PORT = os.environ.get('SERVER_PORT', '8000')
+
+# SimpleUI settings
 
 # MINA
 mina = {

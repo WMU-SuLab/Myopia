@@ -86,7 +86,7 @@ def update_or_create_project_data(project: Project, row):
             ACD_left=row['左眼ACD'],
         )
     )
-    Refractometer.objects.update_or_create(
+    Optometry.objects.update_or_create(
         project=project,
         defaults=parameters_to_dict(
             spherical_right=row['右球镜s'],
@@ -249,14 +249,14 @@ def generate_report_data_from_project(project) -> dict:
         'corneal_thickness_right': project.bio_meter.corneal_thickness_right,
         'corneal_thickness_left': project.bio_meter.corneal_thickness_left,
 
-        'spherical_right': project.refractometer.spherical_right,
-        'spherical_left': project.refractometer.spherical_left,
-        'column_right': project.refractometer.column_right,
-        'column_left': project.refractometer.column_left,
-        'axis_right': project.refractometer.axis_right,
-        'axis_left': project.refractometer.axis_left,
-        'spherical_equivalent_right': project.refractometer.spherical_right,
-        'spherical_equivalent_left': project.refractometer.spherical_left,
+        'spherical_right': project.optometry.spherical_right,
+        'spherical_left': project.optometry.spherical_left,
+        'column_right': project.optometry.column_right,
+        'column_left': project.optometry.column_left,
+        'axis_right': project.optometry.axis_right,
+        'axis_left': project.optometry.axis_left,
+        'spherical_equivalent_right': project.optometry.spherical_right,
+        'spherical_equivalent_left': project.optometry.spherical_left,
     }
     suggestions = generate_report_suggestions(eye_data)
     report_data = {

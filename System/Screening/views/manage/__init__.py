@@ -15,10 +15,25 @@ __auth__ = 'diklios'
 
 from django.urls import path
 
-from .index import index
+from .equipments import *
+from .index import index, home, statistics
+from .project import project_wmu
+from .tools import myopia_risk_prediction
 from .user import login
 
 urlpatterns = [
     path('', index, name='index'),
     path('login/', login, name='login'),
+    path('home/', home, name='home'),
+    path('statistics/', statistics, name='statistics'),
+    path('project/wmu', project_wmu, name='project_wmu'),
+    path('equipments/visual_chart', visual_chart, name='equipments_visual_chart'),
+    path('equipments/bio_meter', bio_meter, name='equipments_bio_meter'),
+    path('equipments/optometry', optometry, name='equipments_optometry'),
+    path('equipments/tono_meter', tono_meter, name='equipments_tono_meter'),
+    path('equipments/eye_ground', eye_ground, name='equipments_eye_ground'),
+    path('equipments/sequence', sequence, name='equipments_sequence'),
+    path('equipments/informed_consent', informed_consent, name='equipments_informed_consent'),
+    path('equipments/questionnaire', questionnaire, name='equipments_questionnaire'),
+    path('tools/myopia_risk_prediction', myopia_risk_prediction, name='tools_myopia_risk_prediction'),
 ]

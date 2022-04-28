@@ -26,6 +26,7 @@ class Manager(Base):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='manager_role', verbose_name='用户')
     entry_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='入职时间')
     departure_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='离职时间')
+    is_active = models.BooleanField(blank=True, null=True,default=True, verbose_name='是否在职')
 
     class Meta:
         verbose_name = verbose_name_plural = '管理员'
@@ -41,6 +42,7 @@ class Employee(Base):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employee_role', verbose_name='用户')
     entry_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='入职时间')
     departure_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='离职时间')
+    is_active = models.BooleanField(blank=True, null=True,default=True, verbose_name='是否在职')
 
     class Meta:
         verbose_name = verbose_name_plural = '员工'

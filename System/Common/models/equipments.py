@@ -100,11 +100,11 @@ class BioMeter(Base):
         return f'Belong to project {self.project_id}'
 
 
-class Refractometer(Base):
+class Optometry(Base):
     """
     电脑验光仪
     """
-    project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='refractometer', verbose_name='项目')
+    project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='optometry', verbose_name='项目')
 
     spherical_right = models.FloatField(null=True, blank=True, default=None, verbose_name='右球镜s')
     spherical_left = models.FloatField(null=True, blank=True, default=None, verbose_name='左球镜s')

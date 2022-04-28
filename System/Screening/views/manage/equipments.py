@@ -13,3 +13,46 @@
 """
 __auth__ = 'diklios'
 
+from django.shortcuts import render
+
+from .index import screening_manage_login_required
+
+
+@screening_manage_login_required
+def visual_chart(request):
+    return render(request, 'Screening/manage/equipments/visual_chart.html')
+
+
+@screening_manage_login_required
+def bio_meter(request):
+    return render(request, 'Screening/manage/equipments/bio_meter.html')
+
+
+@screening_manage_login_required
+def optometry(request):
+    return render(request, 'Screening/manage/equipments/optometry.html')
+
+
+@screening_manage_login_required
+def tono_meter(request):
+    return render(request, 'Screening/manage/equipments/tono_meter.html')
+
+
+@screening_manage_login_required
+def eye_ground(request):
+    return render(request, 'Screening/manage/equipments/eye_ground.html')
+
+
+@screening_manage_login_required
+def sequence(request):
+    return render(request, 'Screening/manage/equipments/sequence.html')
+
+
+@screening_manage_login_required
+def informed_consent(request):
+    return render(request, 'Screening/manage/equipments/informed_consent.html')
+
+
+@screening_manage_login_required
+def questionnaire(request):
+    return render(request, 'Screening/manage/equipments/questionnaire.html')

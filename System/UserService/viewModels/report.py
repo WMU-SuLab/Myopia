@@ -30,7 +30,7 @@ def search_project(
         finished_time=None):
     project = Project.objects.filter(
         user__identification_card_number__endswith=identification_card_number,
-    ).select_related('user', 'visual_chart', 'tono_meter', 'bio_meter', 'refractometer')
+    ).select_related('user', 'visual_chart', 'tono_meter', 'bio_meter', 'optometry')
     if not project.exists():
         raise NotFound(msg='no this person', chinese_msg='没有找到该用户，身份证号错误')
     if user_role:

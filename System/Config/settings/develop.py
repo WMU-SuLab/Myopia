@@ -82,7 +82,7 @@ DATABASES = {
     #     # gevent和多线程的时候不要用
     #     # 'CONN_MAX_AGE': 36000,
     #     'TEST': {
-    #         'NAME': os.environ.get('DATABASE_DEFAULT_NAME_TEST_DEV', 'MyopiaTest'),
+    #         'NAME': os.environ.get('TEST_DATABASE_DEFAULT_NAME_DEV', 'MyopiaTest'),
     #     }
     # },
 }

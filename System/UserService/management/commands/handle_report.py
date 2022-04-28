@@ -29,7 +29,7 @@ def generate_student_reports(file_path):
         generate_report_data_from_project(project)
         for student in Student.objects.all() for project in
         student.user.projects.prefetch_related(
-            'user', 'user__student_role', 'visual_chart', 'tono_meter', 'bio_meter', 'refractometer').all()
+            'user', 'user__student_role', 'visual_chart', 'tono_meter', 'bio_meter', 'optometry').all()
     ]
     report_str = render_to_string(template_name='UserService/report/multiple.html', context=students_report_data)
     HTML(string=report_str).write_pdf(file_path)
@@ -40,7 +40,7 @@ def generate_teacher_reports(file_path):
         generate_report_data_from_project(project)
         for teacher in Teacher.objects.all() for project in
         teacher.user.projects.prefetch_related(
-            'user', 'user__teacher_role', 'visual_chart', 'tono_meter', 'bio_meter', 'refractometer').all()
+            'user', 'user__teacher_role', 'visual_chart', 'tono_meter', 'bio_meter', 'optometry').all()
     ]
     report_str = render_to_string(template_name='UserService/report/multiple.html', context=teachers_report_data)
     HTML(string=report_str).write_pdf(file_path)

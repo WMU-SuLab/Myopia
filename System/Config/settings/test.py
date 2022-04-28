@@ -58,7 +58,7 @@ DATABASES = {
             'charset': 'utf8mb4',
         },
         'TEST': {
-            'NAME': os.environ.get('DATABASE_DEFAULT_NAME_TEST', 'MyopiaTest'),
+            'NAME': os.environ.get('TEST_DATABASE_DEFAULT_NAME_TEST', 'MyopiaTest'),
         }
     },
 }
