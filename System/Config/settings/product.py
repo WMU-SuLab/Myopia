@@ -23,12 +23,25 @@ LOGGING = {
         'default': {
             'format': '%(levelname)s  %(asctime)s  %(module)s  %(funcName)s:%(lineno)d %(message)s'
         },
+        'standard': {
+            'format': '[%(asctime)s][%(levelname)s][%(filename)s:%(lineno)d:%(funcName)s]：%(message)s',
+            'datefmt': '%Y-%m-%d %H:%M:%S'
+        },
     },
     'handlers': {
         'console': {
             'level': 'INFO',
             'class': 'logging.StreamHandler',
             'formatter': 'default',
+        },
+        # 如果使用supervisor可以不用配置file，supervisor的会将控制台的内容输出到日志
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, 'Common', 'logs', 'django', 'system.log'),
+            'formatter': 'default',
+            'maxBytes': 1024 * 1024,
+            'backupCount': 5,
         },
         'time_handler': {
             'level': 'INFO',
@@ -37,21 +50,23 @@ LOGGING = {
             'when': 'S',
             'interval': 10,
             'backupCount': 5,
-            'formatter': 'standard',
+            'formatter': 'default',
             'encoding': 'utf-8',
-        }
-        # 如果使用supervisor可以不用配置file，supervisor的会将控制台的内容输出到日志
-        # 'file':{
-        #     'level':'INFO',
-        #     'class':'logging.handlers.RotatingFileHandler',
-        #     'filename':os.path.join(BASE_DIR,'logs','system.log'),
-        #     'formatter': 'default',
-        #     'maxBytes':1024*1024,
-        #     'backupCount':5,
-        # },
+        },
+        'email_handler': {
+            'level': 'ERROR',
+            'class': 'logging.handlers.SMTPHandler',
+            'formatter': 'standard',
+            'mailhost': (EMAIL_HOST, EMAIL_PORT),
+            'fromaddr': EMAIL_HOST_USER,
+            'toaddrs': [manager[1] for manager in MANAGERS],
+            'subject': 'myopia logs',
+            'credentials': (EMAIL_HOST_USER, EMAIL_HOST_PASSWORD),
+        },
     },
     'loggers': {
         '': {
+            # 暂时全部交给supervisor处理
             'handlers': ['console'],
             'level': 'INFO',
             'propagate': True,
