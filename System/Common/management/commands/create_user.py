@@ -16,6 +16,7 @@ __auth__ = 'diklios'
 from abc import ABCMeta
 
 from django.core.management.base import BaseCommand
+from django.contrib.auth.models import Group
 
 from Common.models.role import Manager, Employee
 from Common.models.user import User
@@ -47,10 +48,16 @@ class Command(BaseCommand, metaclass=ABCMeta):
         phone = options.get('phone', None)
         if options.get('admin', False):
             user = User.objects.create_admin_user(username=username, password=password, email=email, phone=phone)
+            admin_group=Group.objects.get(name='admin')
+            user.groups.add(admin_group)
         else:
             user = User.objects.create_user(username=username, password=password, email=email, phone=phone)
         if options.get('manage', False):
             Manager.objects.create(user=user)
+            manage_group=Group.objects.get(name='manage')
+            user.groups.add(manage_group)
         if options.get('employee', False):
             Employee.objects.create(user=user)
+            employee_group=Group.objects.get(name='employee')
+            user.groups.add(employee_group)
         print('create user success')

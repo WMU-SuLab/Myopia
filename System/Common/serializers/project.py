@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   __init__.py.py    
-@Create Time    :   2022/4/4 15:24
+@File Name      :   project.py    
+@Create Time    :   2022/5/5 15:25
 @Description    :   
 @Version        :   
 @License        :   MIT
@@ -13,7 +13,11 @@
 """
 __auth__ = 'diklios'
 
-from .user import User
-from .role import *
-from .project import Project
-from .equipments import *
+from rest_framework import serializers
+from Common.models.project import Project
+
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Project
+        fields = '__all__'

@@ -23,8 +23,15 @@ from Common.utils.file_handler.table_handler.xlsx import generate_xlsx_file
 
 
 class BaseAdmin(admin.ModelAdmin):
-    # 添加到动作栏
+    # 具体详细参考：https://docs.djangoproject.com/zh-hans/4.0/ref/contrib/admin/#modeladmin-objects
+    using = 'default'
+    # 要在变更列表页上提供的动作列表
     actions = ['export_data_to_txt', 'export_data_to_excel']
+    # 控制动作栏在页面的哪个位置出现。默认情况下，管理员更改列表在页面顶部显示动作（actions_on_top = True; actions_on_bottom = False）
+    # actions_on_top = False
+    # actions_on_bottom = True
+    # 控制是否在动作下拉菜单旁边显示选择计数器。默认情况下，管理员变更列表会显示它（actions_selection_counter = True）。
+    # actions_selection_counter = True
 
     # 导出数据到txt
     def export_data_to_txt(self, request, queryset):
@@ -60,6 +67,23 @@ class BaseAdmin(admin.ModelAdmin):
             self.message_user(request, '数据导出失败，没有权限！', level=messages.WARNING)
 
     export_data_to_excel.short_description = '导出所选数据到excel'
+
+    # 将 date_hierarchy 设置为你的模型中 DateField 或 DateTimeField 的名称，变化列表页将包括一个基于日期的向下扩展。
+    date_hierarchy = 'created_time'
+    # 该属性覆盖记录字段为空（None、空字符串等）的默认显示值。默认值是 - （破折号）。
+    empty_value_display = '-'
+    # exclude 是一个要从表单中排除的字段名列表
+    # fields 选项在 “添加” 和 “更改” 页面的表单中进行简单的布局修改，比如只显示可用字段的子集，修改它们的顺序，或者将它们分成几行
+    # fieldsets 控制管理员 “添加” 和 “更改” 页面的布局。可以完成更复杂的布局需求
+    # filter_horizontal 未选择和选择的选项并排出现在两个框中
+    # filter_vertical 与 filter_horizontal 相同，但使用垂直显示过滤界面，未选择的选项框出现在选择选项框的上方
+    # 设置 list_per_page 来控制每个分页的管理变更列表页面上出现多少个项目。默认情况下，设置为 100。
+    list_per_page = 50
+    # 设置 list_max_show_all 来控制 “全部显示” 的管理员更改列表页面上可以出现多少个项目
+    # 只有当总结果数小于或等于此配置时，管理才会在更改列表中显示 “全部显示” 链接默认情况下，这个配置为 200。
+    list_select_related=True
+    ordering = ['id']
+
 
 
 class BaseUserAdminModel(BaseAdmin, UserAdmin):

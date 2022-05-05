@@ -168,11 +168,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # django-rest-framework插件配置
 REST_FRAMEWORK = {
     # 权限
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    # 'rest_framework.permissions.DjangoModelPermissions',
-    # 'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
-    # 'rest_framework.permissions.IsAuthenticated',
-    # ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.AllowAny',
+    ),
     # jwt
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.SessionAuthentication',

@@ -64,6 +64,12 @@ def generate_user_report_data(
         project_name: str = None,
         finished_time=None):
     project = search_project(identification_card_number, name, user_role, project_name, finished_time)
+    if project.report_file_url:
+        return {
+            **generate_report_data_from_project(project),
+            'report_pdf_file_url': project.report_file_url,
+            'report_file_full': project.remarks_json.get('report_file_full', False),
+        }
     relative_file_url = reverse(
         'UserService:api:mina:get_user_report_pdf_file') + '?' + params_dict_to_url_query_string({
         'user_info_json': encrypt_dict_to_text({
@@ -71,10 +77,13 @@ def generate_user_report_data(
             'identification_card_number': identification_card_number,
             'user_role': user_role,
         }),
+        'project_id': project.id,
     })
     project.report_file_url = relative_file_url
+    project.remarks_json['report_file_full'] = False
     project.save()
     return {
         **generate_report_data_from_project(project),
-        'relative_file_url': relative_file_url
+        'report_pdf_file_url': relative_file_url,
+        'report_file_full': False,
     }

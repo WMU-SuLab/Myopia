@@ -13,6 +13,10 @@
 """
 __auth__ = 'diklios'
 
+import json
+from typing import Dict, Any
+
+from django.db.models import JSONField
 from pydantic import BaseModel
 
 from Common.models.equipments import *
@@ -225,8 +229,8 @@ def generate_report_suggestions(eye_data: dict) -> list:
     return suggestions
 
 
-def generate_report_data_from_project(project) -> dict:
-    report_data = project.remarks_json.get('report_data', None)
+def generate_report_data_from_project(project:Project) -> JSONField | dict[str, str | list | Any]:
+    report_data = project.report_data
     if report_data:
         return report_data
     uncorrected_visual_acuity_right = project.visual_chart.uncorrected_visual_acuity_right
@@ -270,6 +274,6 @@ def generate_report_data_from_project(project) -> dict:
         **eye_data,
         'suggestions': suggestions
     }
-    project.remarks_json['report_data'] = report_data
+    project.report_data = report_data
     project.save()
     return report_data

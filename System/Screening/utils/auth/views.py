@@ -15,9 +15,28 @@ __auth__ = 'diklios'
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from Common.utils.auth.permissions import IsMangerUser, IsEmployeeUser
 
 
 class LoginRequiredView(LoginRequiredMixin, View):
+    """
+    比较原始，没有办法做更加复杂的用户身份验证，所以用来传页面就可以了，不能用与API
+    """
     login_url = 'Screening:manage:index'
     # 因为next是python的关键字，使用next会导致字典获取不到值，所以使用next_url
     redirect_field_name = 'next_url'
+
+
+class ManagerLoginRequiredAPIView(APIView):
+    authentication_classes = [SessionAuthentication, JWTAuthentication]
+    permission_classes = [IsAuthenticated, IsMangerUser]
+
+
+class EmployeeLoginRequiredAPIView(APIView):
+    authentication_classes = [SessionAuthentication, JWTAuthentication]
+    permission_classes = [IsAuthenticated, IsEmployeeUser]

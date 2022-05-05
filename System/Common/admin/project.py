@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   __init__.py.py    
-@Create Time    :   2022/4/4 15:24
+@File Name      :   project.py    
+@Create Time    :   2022/4/29 16:56
 @Description    :   
 @Version        :   
 @License        :   MIT
@@ -13,7 +13,12 @@
 """
 __auth__ = 'diklios'
 
-from .user import User
-from .role import *
-from .project import Project
-from .equipments import *
+from django.contrib import admin
+
+from Common.models.project import Project
+from .base import BaseAdmin
+
+
+@admin.register(Project)
+class ProjectAdmin(BaseAdmin):
+    pass

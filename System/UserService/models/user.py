@@ -35,7 +35,7 @@ class Feedback(Base):
 
     @property
     def handle_all_time(self):
-        if self.end_time and self.start_time:
+        if self.end_time and self.start_time and self.progress>=2:
             return self.end_time - self.start_time
         return '未开始处理'
 

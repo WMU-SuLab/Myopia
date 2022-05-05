@@ -40,19 +40,31 @@ init_json = {
                     "target": "_self",
                 },
                 {
-                    "title": "项目管理",
-                    "href": "",
-                    "icon": "fas fa-tasks",
+                    "title": "用户管理",
+                    "href": screening_manage_url + "/user",
+                    "icon": "fas fa-user",
                     "target": "_self",
-                    "child": [
-                        {
-                            "title": "温州医科大学近视防控项目",
-                            "href": screening_manage_url + "/project/wmu",
-                            "icon": "fa fa-school",
-                            "target": "_self",
-                        },
-                    ]
                 },
+                {
+                        "title": "项目管理",
+                        "href": screening_manage_url + "/project",
+                        "icon": "fas fa-tasks",
+                        "target": "_self",
+                },
+                # {
+                #     "title": "项目管理",
+                #     "href": "",
+                #     "icon": "fas fa-tasks",
+                #     "target": "_self",
+                #     "child": [
+                #         {
+                #             "title": "温州医科大学近视防控项目",
+                #             "href": screening_manage_url + "/project/wmu",
+                #             "icon": "fa fa-school",
+                #             "target": "_self",
+                #         },
+                #     ]
+                # },
                 {
                     "title": "生物仪器数据管理",
                     "href": "",

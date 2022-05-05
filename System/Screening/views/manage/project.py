@@ -19,5 +19,10 @@ from .index import screening_manage_login_required
 
 
 @screening_manage_login_required
+def project(request):
+    return render(request, 'Screening/manage/project.html')
+
+
+@screening_manage_login_required
 def project_wmu(request):
     return render(request, 'Screening/manage/project/wmu.html')

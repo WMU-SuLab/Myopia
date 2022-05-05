@@ -15,7 +15,7 @@ __auth__ = 'diklios'
 
 from django.urls import path
 
-from Common.utils.auth.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView, TokenBlacklistView
+from Common.utils.auth.views.token import TokenObtainPairView, TokenRefreshView, TokenVerifyView, TokenBlacklistView
 from .session import session_login, session_logout
 
 urlpatterns = [

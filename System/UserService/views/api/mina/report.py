@@ -22,7 +22,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from weasyprint import HTML
 
+from Common.models.project import Project
 from Common.utils.http.successes import Success
+from Common.utils.http.exceptions import NotFound
 from UserService.utils.schemes.report import UserReportSearchForm
 from UserService.utils.text_handler.hash import decrypt_text_to_dict
 from UserService.viewModels.report import generate_user_report_data
@@ -35,21 +37,28 @@ def get_user_report_data(request):
     return Response(Success(data=generate_user_report_data(**user_info.dict())))
 
 
-# todo：目前先动态生成，后续改为对象存储的静态文件
 @api_view(['GET'])
 def get_user_report_pdf_file(request):
     data = request.GET.dict()
-    user_info_json = decrypt_text_to_dict(data['user_info_json'])
-    user_info = UserReportSearchForm(**user_info_json)
-
-    dir_path = os.path.join(settings.BASE_DIR, 'Common', 'libs', 'pdf')
-    file_name = str(user_info.user_role) + '-report.pdf'
-    file_path = os.path.join(dir_path, file_name)
-    if os.path.exists(file_path):
+    project_id=data.get('project_id',None)
+    if not Project.objects.filter(id=project_id).exists():
+        return Response(NotFound(msg='project not exist',chinese_msg='项目不存在'))
+    project=Project.objects.get(id=project_id)
+    if not project.report_pdf_file:
+        user_info_json = decrypt_text_to_dict(data['user_info_json'])
+        user_info = UserReportSearchForm(**user_info_json)
+        # 创建文件
+        dir_path = os.path.join(settings.BASE_DIR, 'Common', 'libs', 'pdf')
+        file_name = str(user_info.user_role) + '-report.pdf'
+        file_path = os.path.join(dir_path, file_name)
+        project.report_file_path = file_path
+        if os.path.exists(file_path):
+            return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
+        report_str = render_to_string(
+            template_name='UserService/report/single.html',
+            context={'user': generate_user_report_data(**user_info.dict())}
+        )
+        HTML(string=report_str).write_pdf(file_path)
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
-    report_str = render_to_string(
-        template_name='UserService/report/single.html',
-        context={'user': generate_user_report_data(**user_info.dict())}
-    )
-    HTML(string=report_str).write_pdf(file_path)
-    return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
+    else:
+        return FileResponse(open(project.report_pdf_file, 'rb'), as_attachment=True, filename=project.report_pdf_file.split('/')[-1])

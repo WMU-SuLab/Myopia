@@ -17,15 +17,17 @@ from django.urls import path
 
 from .equipments import *
 from .index import index, home, statistics
-from .project import project_wmu
+from .project import project, project_wmu
 from .tools import myopia_risk_prediction
-from .user import login
+from .user import login, user
 
 urlpatterns = [
     path('', index, name='index'),
     path('login/', login, name='login'),
     path('home/', home, name='home'),
     path('statistics/', statistics, name='statistics'),
+    path('user/', user, name='user'),
+    path('project/', project, name='project'),
     path('project/wmu', project_wmu, name='project_wmu'),
     path('equipments/visual_chart', visual_chart, name='equipments_visual_chart'),
     path('equipments/bio_meter', bio_meter, name='equipments_bio_meter'),

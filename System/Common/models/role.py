@@ -26,7 +26,7 @@ class Manager(Base):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='manager_role', verbose_name='用户')
     entry_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='入职时间')
     departure_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='离职时间')
-    is_active = models.BooleanField(blank=True, null=True,default=True, verbose_name='是否在职')
+    is_active = models.BooleanField(blank=True, null=True, default=True, verbose_name='是否在职')
 
     class Meta:
         verbose_name = verbose_name_plural = '管理员'
@@ -42,7 +42,7 @@ class Employee(Base):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employee_role', verbose_name='用户')
     entry_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='入职时间')
     departure_time = models.DateTimeField(blank=True, null=True, default=None, verbose_name='离职时间')
-    is_active = models.BooleanField(blank=True, null=True,default=True, verbose_name='是否在职')
+    is_active = models.BooleanField(blank=True, null=True, default=True, verbose_name='是否在职')
 
     class Meta:
         verbose_name = verbose_name_plural = '员工'
@@ -95,8 +95,32 @@ class WeChat(Base):
     nickname = models.CharField(blank=True, null=True, default=None, max_length=32, verbose_name='微信昵称')
     avatar_url = models.URLField(blank=True, null=True, default=None, verbose_name='微信头像地址')
 
+    class Meta:
+        verbose_name = verbose_name_plural = '微信'
+
+    def __str__(self):
+        return f'<WeChat : {self.nickname}>'
+
 
 class QQ(Base):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='QQ_role', verbose_name='用户')
     nickname = models.CharField(max_length=32, blank=True, null=True, default=None, verbose_name='QQ昵称')
     avatar_url = models.URLField(blank=True, null=True, default=None, verbose_name='QQ头像地址')
+
+    class Meta:
+        verbose_name = verbose_name_plural = 'QQ'
+
+    def __str__(self):
+        return f'<QQ : {self.nickname}>'
+
+
+class Weibo(Base):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='weibo_role', verbose_name='用户')
+    nickname = models.CharField(max_length=32, blank=True, null=True, default=None, verbose_name='微博昵称')
+    avatar_url = models.URLField(blank=True, null=True, default=None, verbose_name='微博头像地址')
+
+    class Meta:
+        verbose_name = verbose_name_plural = '微博'
+
+    def __str__(self):
+        return f'<Weibo : {self.nickname}>'

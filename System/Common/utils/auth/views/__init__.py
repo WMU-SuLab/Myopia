@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
 @File Name      :   __init__.py.py    
-@Create Time    :   2022/4/4 15:24
+@Create Time    :   2022/4/29 10:48
 @Description    :   
 @Version        :   
 @License        :   MIT
@@ -12,8 +12,3 @@
 @Motto          :   All our science, measured against reality, is primitive and childlike - and yet it is the most precious thing we have.
 """
 __auth__ = 'diklios'
-
-from .user import User
-from .role import *
-from .project import Project
-from .equipments import *

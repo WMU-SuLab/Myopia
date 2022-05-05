@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   views.py    
-@Create Time    :   2022/4/7 17:16
+@File Name      :   token.py    
+@Create Time    :   2022/4/29 10:48
 @Description    :   
 @Version        :   
 @License        :   MIT
@@ -13,24 +13,18 @@
 """
 __auth__ = 'diklios'
 
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.views import APIView
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework_simplejwt.views import TokenObtainPairView as _TokenObtainPairView, \
     TokenRefreshView as _TokenRefreshView, \
     TokenVerifyView as _TokenVerifyView, TokenBlacklistView as _TokenBlacklistView, \
     TokenObtainSlidingView as _TokenObtainSlidingView, TokenRefreshSlidingView as _TokenRefreshSlidingView
 
-from .serializers import TokenObtainPairSerializer, TokenRefreshSerializer, TokenVerifySerializer, \
+from Common.serializers.token import TokenObtainPairSerializer, TokenRefreshSerializer, TokenVerifySerializer, \
     TokenBlacklistSerializer, TokenObtainSlidingSerializer, TokenRefreshSlidingSerializer
-
-
-class LoginRequiredAPIView(APIView):
-    authentication_classes = (SessionAuthentication, JWTAuthentication)
 
 
 class TokenObtainPairView(_TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
+
 
 
 class TokenRefreshView(_TokenRefreshView):

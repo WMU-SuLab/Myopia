@@ -15,7 +15,7 @@ __auth__ = 'diklios'
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
-
+from django.core.exceptions import ObjectDoesNotExist
 from .base import Base
 
 
@@ -28,11 +28,12 @@ class UserManager(BaseUserManager):
         username = self.model.normalize_username(username)
         user = self.model(username=username, **extra_fields)
         user.set_password(password)
+        # todo:创建唯一的openid
         user.save(using=self._db)
         return user
 
     def create_user(self, username, password=None, **extra_fields):
-        extra_fields.setdefault('is_authenticated', True)
+        extra_fields.setdefault('is_confirmed', True)
         extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_staff', False)
         extra_fields.setdefault('is_superuser', False)
@@ -40,7 +41,7 @@ class UserManager(BaseUserManager):
         return self._create_user(username, password, **extra_fields)
 
     def create_admin_user(self, username, password=None, **extra_fields):
-        extra_fields.setdefault('is_authenticated', True)
+        extra_fields.setdefault('is_confirmed', True)
         extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', False)
@@ -51,13 +52,13 @@ class UserManager(BaseUserManager):
         return self._create_user(username, password, **extra_fields)
 
     def create_superuser(self, username, password=None, **extra_fields):
-        extra_fields.setdefault('is_authenticated', True)
+        extra_fields.setdefault('is_confirmed', True)
         extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
 
-        if extra_fields.get('is_authenticated') is not True:
-            raise ValueError('Superuser must have is_authenticated=True.')
+        if extra_fields.get('is_confirmed') is not True:
+            raise ValueError('Superuser must have is_confirmed=True.')
         if extra_fields.get('is_active') is not True:
             raise ValueError('Superuser must have is_active=True.')
         if extra_fields.get('is_staff') is not True:
@@ -93,8 +94,8 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
 
     phone = models.CharField(max_length=32, blank=True, null=True, default=None, unique=True, verbose_name='手机号')
     name = models.CharField(max_length=64, blank=True, null=True, default=None, db_index=True, verbose_name='姓名')
-    identification_card_type = models.IntegerField(choices=identification_card_type_choices,
-                                                   blank=True, null=True, default=1, verbose_name='证件类型')
+    identification_card_type = models.IntegerField(
+        choices=identification_card_type_choices, blank=True, null=True, default=1, verbose_name='证件类型')
     identification_card_number = models.CharField(
         max_length=32, null=True,
         blank=True, default=None, db_index=True, unique=True, verbose_name='身份证号')
@@ -109,7 +110,7 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
         self.gender = sex
 
     age = models.SmallIntegerField(blank=True, null=True, default=None, verbose_name='年龄')
-    birthday = models.DateField(blank=True, null=True, auto_now_add=True, verbose_name='出生日期')
+    birthday = models.DateField(blank=True, null=True, default=None, verbose_name='出生日期')
     native_place = models.CharField(max_length=32, blank=True, null=True, default=None, verbose_name='籍贯')
     home_address = models.CharField(max_length=255, blank=True, null=True, default=None, verbose_name='家庭住址')
     language = models.CharField(max_length=32, blank=True, null=True, default='zh_CN', verbose_name='使用语言')
@@ -118,9 +119,14 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
     province = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name='省份')
     country = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name='国家')
 
-    is_authenticated = models.BooleanField(blank=False, null=True, default=False, verbose_name='是否验证')
-    is_active = models.BooleanField(blank=True, null=True, default=True, verbose_name='是否活跃')
+    is_confirmed = models.BooleanField(blank=False, null=True, default=False, verbose_name='账户是否激活')
+    # 用于查看区分用户是否长时间不使用
+    is_active = models.BooleanField(blank=True, null=True, default=True, verbose_name='账户是否活跃')
+    # 用于区分管理员用户
     is_staff = models.BooleanField(default=False, verbose_name='是否可以访问管理站点')
+
+    # is_authenticated用于区分是否是匿名用户，不需要设置这个字段
+    # is_superuser 指定该用户拥有所有权限，而不用一个个开启权限
 
     @property
     def is_admin(self):
@@ -132,21 +138,25 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
 
     @property
     def is_manager(self):
-        if self.is_admin:
-            return True
-        if self.is_active and self.is_authenticated and not self.manager_role.DoesNotExist():
-            if self.manager_role.is_active:
+        try:
+            if self.is_admin:
                 return True
-        return False
+            if self.is_active and self.is_authenticated and self.manager_role.is_active:
+                return True
+            return False
+        except ObjectDoesNotExist as e:
+            return False
 
     @property
     def is_employee(self):
-        if self.is_admin:
-            return True
-        if self.is_active and self.is_authenticated and not self.employee_role.DoesNotExist():
-            if self.employee_role.is_active:
+        try:
+            if self.is_admin:
                 return True
-        return False
+            if self.is_active and self.is_authenticated and self.employee_role.is_active:
+                return True
+            return False
+        except ObjectDoesNotExist as e:
+            return False
 
     # 用户管理器
     objects = UserManager()

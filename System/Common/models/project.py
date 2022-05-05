@@ -25,6 +25,8 @@ class Project(Base):
     is_finished = models.BooleanField(default=False, verbose_name='是否完成')
     finished_time = models.DateTimeField(null=True, blank=True, auto_now_add=True, verbose_name='完成时间')
     report_file_url = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='报告文件url')
+    report_file_path = models.FilePathField(max_length=512, null=True, blank=True, default=None, verbose_name='报告文件路径')
+    report_data = models.JSONField(null=True, blank=True, default=dict, verbose_name='报告数据')
 
     class Meta:
         verbose_name = verbose_name_plural = '项目'

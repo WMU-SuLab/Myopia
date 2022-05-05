@@ -18,29 +18,116 @@ from datetime import datetime
 
 import pandas as pd
 from django.conf import settings
+from django.contrib.auth.models import Group, Permission, ContentType
 from django.core.management.base import BaseCommand
+from django.db.models import Q
 
 from Common.models.equipments import *
-from Common.models.role import Student, Teacher
+from Common.models.role import *
 from Common.models.user import User
 from Common.utils.file_handler import validate_file_path
 from Common.utils.time import print_accurate_execute_time
 from Common.viewModels.project import update_or_create_project_data
-
-
-@print_accurate_execute_time
-def init_user():
-    pass
-
-
-@print_accurate_execute_time
-def init_group():
-    pass
+from UserService.models.user import Feedback
 
 
 @print_accurate_execute_time
 def init_permission():
-    pass
+    print('初始化权限完毕')
+
+
+@print_accurate_execute_time
+def init_group():
+    admin_group, admin_group_created = Group.objects.get_or_create(name='admin')
+    if admin_group_created:
+        content_types = ContentType.objects.filter(app_label__in=['Common', 'Screening', 'UserService'])
+        permissions = Permission.objects.filter(content_type__in=content_types)
+        admin_group.permissions.add(*permissions)
+    manager_group, manager_group_created = Group.objects.get_or_create(name='manager')
+    if manager_group_created:
+        content_types = ContentType.objects.get_for_models(
+            User, Employee, Student, Teacher, WeChat, QQ, Weibo,
+            Project, VisualChart, Optometry, TonoMeter, EyeGround, Sequence, InformedConsent, Questionnaire,
+            Feedback
+        ).values()
+        permissions = Permission.objects.filter(content_type__in=content_types).exclude(codename__icontains='delete')
+        manager_group.permissions.add(*permissions)
+
+    employee_group, employee_group_created = Group.objects.get_or_create(name='employee')
+    if employee_group_created:
+        project_content_types = ContentType.objects.get_for_models(
+            Project, VisualChart, BioMeter, Optometry, TonoMeter, EyeGround, Sequence, InformedConsent, Questionnaire
+        ).values()
+        project_permissions = Permission.objects.filter(content_type__in=project_content_types).exclude(
+            Q(codename__icontains='delete') | Q(codename__icontains='change')
+        )
+        employee_group.permissions.add(*project_permissions)
+        user_role_content_types = ContentType.objects.get_for_models(User, Student, Teacher, WeChat, QQ, Weibo).values()
+        user_role_permissions = Permission.objects.filter(content_type__in=user_role_content_types).filter(
+            codename__icontains='view')
+        employee_group.permissions.add(*user_role_permissions)
+    normal_user_group, normal_user_group_created = Group.objects.get_or_create(name='user')
+    if normal_user_group_created:
+        project_content_types = ContentType.objects.get_for_models(
+            Project, VisualChart, BioMeter, Optometry, TonoMeter, EyeGround, Sequence, InformedConsent, Questionnaire
+        ).values()
+        project_permissions = Permission.objects.filter(content_type__in=project_content_types).filter(
+            codename__icontains='view')
+        normal_user_group.permissions.add(*project_permissions)
+        user_role_content_types = ContentType.objects.get_for_models(User, Student, Teacher, WeChat, QQ, Weibo).values()
+        user_role_permissions = Permission.objects.filter(content_type__in=user_role_content_types)
+        normal_user_group.permissions.add(*user_role_permissions)
+    print('初始化用户组完毕')
+
+
+@print_accurate_execute_time
+def init_user():
+    # 超级用户账号
+    if not User.objects.filter(username='diklios').exists():
+        superuser = User.objects.create_superuser(username='diklios', password='laobatai981218')
+    # 拥有者账号
+    if not User.objects.filter(username='admin').exists():
+        admin_user = User.objects.create_admin_user(username='admin', password='wmu-admin')
+    else:
+        admin_user = User.objects.get(username='admin')
+    if not admin_user.groups.filter(name='admin').exists():
+        admin_group = Group.objects.get(name='admin')
+        admin_user.groups.add(admin_group)
+    # 管理员账号
+    if not User.objects.filter(username='manager').exists():
+        manager_user = User.objects.create_user(username='manager', password='wmu-manager')
+    else:
+        manager_user = User.objects.get(username='manager')
+        Manager.objects.get_or_create(user=manager_user)
+    if not manager_user.groups.filter(name='manager').exists():
+        manager_group = Group.objects.get(name='manager')
+        manager_user.groups.add(manager_group)
+    # 员工账号
+    if not User.objects.filter(username='employee-test').exists():
+        employee_user = User.objects.create_user(username='employee-test', password='wmu-employee-test')
+    else:
+        employee_user = User.objects.get(username='employee-test')
+        Employee.objects.get_or_create(user=employee_user)
+    if not employee_user.groups.filter(name='employee').exists():
+        employee_group = Group.objects.get(name='employee')
+        employee_user.groups.add(employee_group)
+    # 普通用户账号
+    if not User.objects.filter(username='test').exists():
+        test_normal_user = User.objects.create_user(username='test', password='wmu-test')
+    else:
+        test_normal_user = User.objects.get(username='test')
+    if not test_normal_user.groups.filter(name='user').exists():
+        normal_user_group = Group.objects.get(name='user')
+        test_normal_user.groups.add(normal_user_group)
+    print('初始化用户完毕')
+
+
+@print_accurate_execute_time
+def init():
+    init_permission()
+    init_group()
+    init_user()
+    print('初始化完毕')
 
 
 # 暂时不想写批量导入数据的方法，因为数据量不是很大
@@ -50,7 +137,7 @@ def import_student_sampling_data(file_path: str):
         return False
     df = pd.read_excel(file_path, sheet_name='Students', engine='openpyxl', dtype={"学籍号": str})
     # 解决MySQL数据库nan提交不了的问题
-    df= df.astype(object).where(pd.notnull(df), None)
+    df = df.astype(object).where(pd.notnull(df), None)
     for index, row in df.iterrows():
         print(index)
         try:
@@ -129,9 +216,10 @@ def supply_teacher_info(file_path: str):
 
 class Command(BaseCommand, metaclass=ABCMeta):
     def add_arguments(self, parser):
-        parser.add_argument('-u', '--user', action='store_true', help='init user data')
-        parser.add_argument('-g', '--group', action='store_true', help='init group data')
+        parser.add_argument('-i', '--init', action='store_true', help='init data')
         parser.add_argument('-p', '--permission', action='store_true', help='init permission data')
+        parser.add_argument('-g', '--group', action='store_true', help='init group data')
+        parser.add_argument('-u', '--user', action='store_true', help='init user data')
         parser.add_argument('-S', '--student_sampling', action='store_true', help='import students\' sampling data')
         parser.add_argument('-T', '--teacher_sampling', action='store_true', help='import teachers\' sampling data')
         parser.add_argument('-SS', '--student_supplement', action='store_true', help='supply students\' data')
@@ -140,12 +228,14 @@ class Command(BaseCommand, metaclass=ABCMeta):
 
     def handle(self, *args, **options):
         file_path = options.get('file_path', None)
-        if options.get('user', None):
-            init_user()
-        elif options.get('group', None):
-            init_group()
+        if options.get('init', None):
+            init()
         elif options.get('permission', None):
             init_permission()
+        elif options.get('group', None):
+            init_group()
+        elif options.get('user', None):
+            init_user()
         elif options.get('student_sampling', None):
             import_student_sampling_data(file_path)
         elif options.get('teacher_sampling', None):
