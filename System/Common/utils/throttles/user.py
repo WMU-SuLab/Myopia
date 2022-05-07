@@ -13,3 +13,46 @@
 """
 __auth__ = 'diklios'
 
+from rest_framework.throttling import UserRateThrottle
+
+
+class AdminRateThrottle(UserRateThrottle):
+    def get_cache_key(self, request, view):
+        if request.user.is_authenticated and request.user.is_admin:
+            ident = request.user.pk
+            self.scope = 'admin'
+        else:
+            ident = self.get_ident(request)
+
+        return self.cache_format % {
+            'scope': self.scope,
+            'ident': ident
+        }
+
+
+class ManagerRateThrottle(UserRateThrottle):
+    def get_cache_key(self, request, view):
+        if request.user.is_authenticated and request.user.is_manager:
+            ident = request.user.pk
+            self.scope = 'manager'
+        else:
+            ident = self.get_ident(request)
+
+        return self.cache_format % {
+            'scope': self.scope,
+            'ident': ident
+        }
+
+
+class EmployeeRateThrottle(UserRateThrottle):
+    def get_cache_key(self, request, view):
+        if request.user.is_authenticated and request.user.is_employee:
+            ident = request.user.pk
+            self.scope = 'employee'
+        else:
+            ident = self.get_ident(request)
+
+        return self.cache_format % {
+            'scope': self.scope,
+            'ident': ident
+        }

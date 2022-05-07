@@ -14,52 +14,100 @@
 __auth__ = 'diklios'
 
 from rest_framework import serializers
+
 from Common.models.equipments import *
+from .base import base_exclude
+
+equipments_exclude = base_exclude
 
 
-class VisualChartSerializer(serializers.ModelSerializer):
+class EquipmentsBaseSerializer(serializers.ModelSerializer):
     class Meta:
+        # fields = '__all__'
+        exclude = equipments_exclude
+
+
+class EquipmentsSerializerMeta(EquipmentsBaseSerializer.Meta):
+    depth = 2
+
+
+class VisualChartBaseSerializer(EquipmentsBaseSerializer):
+    glasses_type = serializers.CharField(source='get_glasses_type_display')
+
+    class Meta(EquipmentsBaseSerializer.Meta):
         model = VisualChart
-        fields = '__all__'
 
 
-class BioMeterSerializer(serializers.ModelSerializer):
-    class Meta:
+class VisualChartSerializer(VisualChartBaseSerializer):
+    class Meta(EquipmentsSerializerMeta):
+        model = VisualChart
+
+
+class BioMeterBaseSerializer(EquipmentsBaseSerializer):
+    class Meta(EquipmentsBaseSerializer.Meta):
         model = BioMeter
-        fields = '__all__'
 
 
-class OptometrySerializer(serializers.ModelSerializer):
-    class Meta:
+class BioMeterSerializer(BioMeterBaseSerializer):
+    class Meta(EquipmentsSerializerMeta):
+        model = BioMeter
+
+
+class OptometryBaseSerializer(EquipmentsBaseSerializer):
+    class Meta(EquipmentsBaseSerializer.Meta):
         model = Optometry
-        fields = '__all__'
 
 
-class TonoMeterSerializer(serializers.ModelSerializer):
-    class Meta:
+class OptometrySerializer(OptometryBaseSerializer):
+    class Meta(EquipmentsSerializerMeta):
+        model = Optometry
+
+
+class TonoMeterBaseSerializer(EquipmentsBaseSerializer):
+    class Meta(EquipmentsBaseSerializer.Meta):
         model = TonoMeter
-        fields = '__all__'
 
 
-class EyeGroundSerializer(serializers.ModelSerializer):
-    class Meta:
+class TonoMeterSerializer(TonoMeterBaseSerializer):
+    class Meta(EquipmentsSerializerMeta):
+        model = TonoMeter
+
+
+class EyeGroundBaseSerializer(EquipmentsBaseSerializer):
+    class Meta(EquipmentsBaseSerializer.Meta):
         model = EyeGround
-        fields = '__all__'
 
 
-class SequenceSerializer(serializers.ModelSerializer):
-    class Meta:
+class EyeGroundSerializer(EyeGroundBaseSerializer):
+    class Meta(EquipmentsSerializerMeta):
+        model = EyeGround
+
+
+class SequenceBaseSerializer(EquipmentsBaseSerializer):
+    class Meta(EquipmentsBaseSerializer.Meta):
         model = Sequence
-        fields = '__all__'
 
 
-class InformedConsentSerializer(serializers.ModelSerializer):
-    class Meta:
+class SequenceSerializer(SequenceBaseSerializer):
+    class Meta(EquipmentsSerializerMeta):
+        model = Sequence
+
+
+class InformedConsentBaseSerializer(EquipmentsBaseSerializer):
+    class Meta(EquipmentsBaseSerializer.Meta):
         model = InformedConsent
-        fields = '__all__'
 
 
-class QuestionnaireSerializer(serializers.ModelSerializer):
-    class Meta:
+class InformedConsentSerializer(InformedConsentBaseSerializer):
+    class Meta(EquipmentsSerializerMeta):
+        model = InformedConsent
+
+
+class QuestionnaireBaseSerializer(EquipmentsBaseSerializer):
+    class Meta(EquipmentsBaseSerializer.Meta):
         model = Questionnaire
-        fields = '__all__'
+
+
+class QuestionnaireSerializer(QuestionnaireBaseSerializer):
+    class Meta(EquipmentsSerializerMeta):
+        model = Questionnaire

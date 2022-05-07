@@ -56,7 +56,7 @@ class UserAdmin(BaseAdmin):
         if not request.user.is_superuser:
             qs = qs.filter(is_staff=False)
         if not request.user.is_admin:
-            qs = qs.filter(manager_role=None)
+            qs = qs.filter(manager_role__isnull=True)
         if not request.user.is_manager:
-            qs = qs.filter(employee_role=None)
+            qs = qs.filter(employee_role__isnull=True)
         return qs

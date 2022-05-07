@@ -17,6 +17,16 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
+def handle_object_does_not_exist(func):
+    def wrapper(*args, **kargs):
+        try:
+            return func(*args, **kargs)
+        except models.ObjectDoesNotExist:
+            return False
+
+    return wrapper
+
+
 class StatusChoices(models.IntegerChoices):
     # 如果没有提供元组，或者最后一项不是（惰性）字符串，label是从成员名自动生成。
     STATUS_NORMAL = 1, _('正常')

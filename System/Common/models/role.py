@@ -52,8 +52,21 @@ class Employee(Base):
 
 
 class Student(Base):
+    student_type_choices = (
+        (0, '未知'),
+        (1, '幼儿园'),
+        (2, '小学'),
+        (3, '初中'),
+        (4, '高中'),
+        (5, '大学'),
+        (6, '研究生'),
+        (7, '博士'),
+        (8, '博士后'),
+    )
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_role', verbose_name='用户')
     student_number = models.CharField(max_length=20, unique=True, db_index=True, verbose_name='学号')
+    student_type = models.FloatField(
+        choices=student_type_choices, blank=True, null=True, default=0, verbose_name='学生类型')
     PE_classname = models.CharField(max_length=32, blank=True, null=True, default=None, verbose_name='体育课班级')
 
     grade = models.CharField(max_length=10, verbose_name='年级')

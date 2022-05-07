@@ -182,7 +182,9 @@ MINA_USER_SERVICE_APP_SECRET=''
         - `python manage.py makemigrations`
         - 创建表：`python manage.py migrate`
         - 创建数据库表：`python manage.py migrate`
-    - 创建django-admin的超级用户：`python manage.py createsuperuser`
+    - 数据库初始化
+        - 初始化权限、组、用户:`python manage.py init_data -i`
+        - 初始化学生数据:`python manage.py init_data -S -f 文件路径`
 - 启动Memcached:`service memcached start`
     - `memcached -d -u root -l 127.0.0.1 -p 11211 -m 128`
 - 启动Redis:``
@@ -205,6 +207,10 @@ MINA_USER_SERVICE_APP_SECRET=''
             - 启动服务：`supervisord -c /etc/supervisor/supervisord.conf`
 
 ## 数据库
+
+### SQL
+
+- 创建django-admin的超级用户：`python manage.py createsuperuser`
 
 ### MySQL
 

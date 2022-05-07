@@ -13,16 +13,22 @@
 """
 __auth__ = 'diklios'
 
-import json
-from typing import Dict, Any
+from typing import Any
 
 from django.db.models import JSONField
 from pydantic import BaseModel
 
 from Common.models.equipments import *
+from Common.models.user import User
+from Common.serializers.equipments import VisualChartBaseSerializer, BioMeterBaseSerializer, OptometryBaseSerializer, \
+    TonoMeterBaseSerializer, SequenceBaseSerializer
 from Common.utils.text_handler.dicts import parameters_to_dict
 from Common.utils.text_handler.identity_card import get_age
 from Common.viewModels.equipments import count_spherical_equivalent
+
+
+def generate_project_report_filename(project: Project):
+    return f'{project.user.username}-{project.id}-report.pdf'
 
 
 # 不使用序列化快速书写的原因是导出需要中文
@@ -123,9 +129,38 @@ def update_or_create_project_data(project: Project, row):
     )
 
 
-def export_project_data(project: Project.objects.filter()):
-    # todo
-    pass
+def export_project_data(project: Project):
+    user: User = project.user
+    # 基本信息
+    project_data = {
+        '用户名': user.username,
+        '姓名': user.name,
+        '性别': user.gender,
+        '身份证类型': user.get_identification_card_type_display(),
+        '身份证': user.identification_card_number,
+    }
+    if user.is_student:
+        project_data = {
+            **project_data,
+            '学号': user.student_role.student_number
+        }
+    elif user.is_teacher:
+        project_data = {
+            **project_data,
+            '教工号': user.teacher_role.teacher_number
+        }
+    # 项目信息
+    project_data = {
+        **project_data,
+        '项目名称': project.name,
+        '项目完成时间': project.finished_time,
+        **VisualChartBaseSerializer(project.visual_chart).data,
+        **BioMeterBaseSerializer(project.bio_meter).data,
+        **OptometryBaseSerializer(project.optometry).data,
+        **TonoMeterBaseSerializer(project.tono_meter).data,
+        **SequenceBaseSerializer(project.sequence).data,
+    }
+    return project_data
 
 
 class Suggestion(BaseModel):
@@ -229,7 +264,7 @@ def generate_report_suggestions(eye_data: dict) -> list:
     return suggestions
 
 
-def generate_report_data_from_project(project:Project) -> JSONField | dict[str, str | list | Any]:
+def generate_report_data_from_project(project: Project) -> JSONField | dict[str, str | list | Any]:
     report_data = project.report_data
     if report_data:
         return report_data

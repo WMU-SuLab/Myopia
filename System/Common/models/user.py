@@ -15,8 +15,21 @@ __auth__ = 'diklios'
 
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
-from django.core.exceptions import ObjectDoesNotExist
-from .base import Base
+
+from Common.utils.text_handler.random import random_content
+from .base import Base, handle_object_does_not_exist
+
+
+def random_username():
+    return random_content(length=24, random_type='str_case')
+
+
+def random_openid():
+    return random_content(length=32, random_type='str_case')
+
+
+def random_password():
+    return random_content(length=16, random_type='password')
 
 
 class UserManager(BaseUserManager):
@@ -24,11 +37,12 @@ class UserManager(BaseUserManager):
 
     def _create_user(self, username, password, **extra_fields):
         if not username:
-            raise ValueError('The given username must be set')
+            username = random_username()
+            # raise ValueError('The given username must be set')
         username = self.model.normalize_username(username)
         user = self.model(username=username, **extra_fields)
-        user.set_password(password)
-        # todo:创建唯一的openid
+        user.set_password(password or random_password())
+        user.openid = random_openid()
         user.save(using=self._db)
         return user
 
@@ -137,26 +151,36 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
         return False
 
     @property
+    @handle_object_does_not_exist
     def is_manager(self):
-        try:
-            if self.is_admin:
-                return True
-            if self.is_active and self.is_authenticated and self.manager_role.is_active:
-                return True
-            return False
-        except ObjectDoesNotExist as e:
-            return False
+        if self.is_admin:
+            return True
+        if self.is_active and self.is_authenticated and self.manager_role.is_active:
+            return True
+        return False
 
     @property
+    @handle_object_does_not_exist
     def is_employee(self):
-        try:
-            if self.is_admin:
-                return True
-            if self.is_active and self.is_authenticated and self.employee_role.is_active:
-                return True
-            return False
-        except ObjectDoesNotExist as e:
-            return False
+        if self.is_admin:
+            return True
+        if self.is_active and self.is_authenticated and self.employee_role.is_active:
+            return True
+        return False
+
+    @property
+    @handle_object_does_not_exist
+    def is_student(self):
+        if self.is_active and self.is_authenticated and self.student_role:
+            return True
+        return False
+
+    @property
+    @handle_object_does_not_exist
+    def is_teacher(self):
+        if self.is_active and self.is_authenticated and self.teacher_role:
+            return True
+        return False
 
     # 用户管理器
     objects = UserManager()

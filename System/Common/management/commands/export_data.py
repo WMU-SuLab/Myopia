@@ -15,6 +15,7 @@ __auth__ = 'diklios'
 
 from abc import ABCMeta
 
+import pandas as pd
 from django.core.management.base import BaseCommand
 
 from Common.models.user import User
@@ -22,11 +23,17 @@ from Common.viewModels.user import export_users_projects_data
 
 
 def export_all_user_data(file_name):
-    student_rows = export_users_projects_data(
-        User.objects.filter(student_role__isnull=False).select_related('student_role', 'projects'))
-    teacher_rows = export_users_projects_data(
-        User.objects.filter(teacher_role__isnull=False).select_related('teacher_role', 'projects'))
-    # todo
+    if not file_name:
+        file_name = 'user_projects_data.xlsx'
+    writer = pd.ExcelWriter(file_name, mode="a", engine="openpyxl")
+    student_rows = pd.DataFrame(export_users_projects_data(
+        User.objects.filter(student_role__isnull=False).select_related('student_role', 'projects')))
+    student_rows.to_excel(writer, sheet_name="Student", index=False)
+    teacher_rows = pd.DataFrame(export_users_projects_data(
+        User.objects.filter(teacher_role__isnull=False).select_related('teacher_role', 'projects')))
+    teacher_rows.to_excel(writer, sheet_name="Teacher", index=False)
+    writer.save()
+
 
 class Command(BaseCommand, metaclass=ABCMeta):
     def add_arguments(self, parser):

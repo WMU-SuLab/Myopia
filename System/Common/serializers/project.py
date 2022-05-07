@@ -14,10 +14,18 @@
 __auth__ = 'diklios'
 
 from rest_framework import serializers
+
 from Common.models.project import Project
+from .base import base_exclude
 
 
-class ProjectSerializer(serializers.ModelSerializer):
+class ProjectBaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = base_exclude
+
+
+class ProjectSerializer(ProjectBaseSerializer):
+    class Meta(ProjectBaseSerializer.Meta):
+        depth = 1

@@ -20,5 +20,6 @@ from .project import export_project_data
 
 def export_users_projects_data(users: list[User]):
     return [export_project_data(project) for user in users for project in user.projects.select_related(
-        'visual_chart','bio_meter','tono_meter','optometry','eye_ground','informed_consent','questionnaire','sequence',
+        'visual_chart', 'bio_meter', 'tono_meter', 'optometry', 'eye_ground', 'informed_consent', 'questionnaire',
+        'sequence',
     ) if project.is_finished]

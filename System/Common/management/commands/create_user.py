@@ -20,6 +20,7 @@ from django.contrib.auth.models import Group
 
 from Common.models.role import Manager, Employee
 from Common.models.user import User
+from secrets import compare_digest
 
 
 class Command(BaseCommand, metaclass=ABCMeta):
@@ -41,7 +42,7 @@ class Command(BaseCommand, metaclass=ABCMeta):
             if not confirm_password:
                 print('please input password again')
                 return
-            if password != confirm_password:
+            if compare_digest(password, confirm_password):
                 print('password not equal')
                 return
         email = options.get('email', None)

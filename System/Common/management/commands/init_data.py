@@ -98,7 +98,7 @@ def init_user():
         manager_user = User.objects.create_user(username='manager', password='wmu-manager')
     else:
         manager_user = User.objects.get(username='manager')
-        Manager.objects.get_or_create(user=manager_user)
+    Manager.objects.get_or_create(user=manager_user)
     if not manager_user.groups.filter(name='manager').exists():
         manager_group = Group.objects.get(name='manager')
         manager_user.groups.add(manager_group)
@@ -107,7 +107,7 @@ def init_user():
         employee_user = User.objects.create_user(username='employee-test', password='wmu-employee-test')
     else:
         employee_user = User.objects.get(username='employee-test')
-        Employee.objects.get_or_create(user=employee_user)
+    Employee.objects.get_or_create(user=employee_user)
     if not employee_user.groups.filter(name='employee').exists():
         employee_group = Group.objects.get(name='employee')
         employee_user.groups.add(employee_group)
@@ -154,6 +154,7 @@ def import_student_sampling_data(file_path: str):
             user=user,
             defaults={
                 'student_number': row['学籍号'],
+                'student_type': row.get('学生类型',5),
                 'grade': str(row['学籍号'])[:2] + '级',
                 'PE_classname': row['班级名称']
             })

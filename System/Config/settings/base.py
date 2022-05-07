@@ -193,11 +193,17 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
         'rest_framework.throttling.UserRateThrottle',
+        'Common.utils.throttles.user.EmployeeRateThrottle',
+        'Common.utils.throttles.user.ManagerRateThrottle',
+        'Common.utils.throttles.user.AdminRateThrottle',
         'rest_framework.throttling.ScopedRateThrottle',
     ],
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/day',
-        'user': '1000/day',
+        'user': '500/day',
+        'employee': '300/hour',
+        'manager': '10000/day',
+        'admin': '100000/day',
     }
 }
 

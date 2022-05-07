@@ -152,8 +152,8 @@ class EyeGround(Base):
     眼底照
     """
     project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='eye_ground', verbose_name='项目')
-    image_path_right = models.FilePathField(max_length=255, null=True, blank=True, default=None, verbose_name='右眼眼底图路径')
-    image_path_left = models.FilePathField(max_length=255, null=True, blank=True, default=None, verbose_name='左眼眼底图路径')
+    image_path_right = models.CharField(max_length=512, null=True, blank=True, default=None, verbose_name='右眼眼底图路径')
+    image_path_left = models.CharField(max_length=512, null=True, blank=True, default=None, verbose_name='左眼眼底图路径')
     image_url_right = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='右眼眼底图远程URL')
     image_url_left = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='左眼眼底图远程URL')
 
@@ -179,7 +179,7 @@ class Sequence(Base):
     """
     project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='sequence', verbose_name='项目')
     serial_number = models.CharField(max_length=32, null=True, blank=True, default=None, verbose_name='测序编号')
-    file_path = models.FilePathField(null=True, blank=True, default=None, verbose_name='测序文件路径')
+    file_path = models.CharField(max_length=512,null=True, blank=True, default=None, verbose_name='测序文件路径')
     file_url = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='测序文件远程URL')
 
     @property
@@ -199,7 +199,7 @@ class InformedConsent(Base):
     """
     project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='informed_consent',
                                    verbose_name='项目')
-    file_path = models.FilePathField(null=True, blank=True, default=None, verbose_name='知情同意书文件路径')
+    file_path = models.CharField(max_length=512,null=True, blank=True, default=None, verbose_name='知情同意书文件路径')
     file_url = models.CharField(max_length=512, null=True, blank=True, default=None, verbose_name='知情同意书文件远程URL')
 
     @property

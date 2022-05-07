@@ -14,46 +14,91 @@
 __auth__ = 'diklios'
 
 from rest_framework import serializers
+
 from Common.models.role import *
+from .base import base_exclude
+
+role_exclude = base_exclude
 
 
-class ManagerSerializer(serializers.ModelSerializer):
+class RoleBaseSerializer(serializers.ModelSerializer):
     class Meta:
+        abstract = True
+        # fields = '__all__'
+        exclude = role_exclude
+
+
+class RoleSerializerMeta(RoleBaseSerializer.Meta):
+    depth = 1
+
+
+class ManagerBaseSerializer(RoleBaseSerializer):
+    class Meta(RoleBaseSerializer.Meta):
         model = Manager
-        fields = '__all__'
 
 
-class EmployeeSerializer(serializers.ModelSerializer):
-    class Meta:
+class ManagerSerializer(ManagerBaseSerializer):
+    class Meta(RoleSerializerMeta):
+        model = Manager
+
+
+class EmployeeBaseSerializer(RoleBaseSerializer):
+    class Meta(RoleBaseSerializer.Meta):
         model = Employee
-        fields = '__all__'
 
 
-class StudentSerializer(serializers.ModelSerializer):
-    class Meta:
+class EmployeeSerializer(EmployeeBaseSerializer):
+    class Meta(RoleSerializerMeta):
+        model = Employee
+
+
+class StudentBaseSerializer(RoleBaseSerializer):
+    student_type = serializers.CharField(source='get_student_type_display')
+
+    class Meta(RoleBaseSerializer.Meta):
         model = Student
-        fields = '__all__'
 
 
-class TeacherSerializer(serializers.ModelSerializer):
-    class Meta:
+class StudentSerializer(StudentBaseSerializer):
+    class Meta(RoleSerializerMeta):
+        model = Student
+
+
+class TeacherBaseSerializer(RoleBaseSerializer):
+    class Meta(RoleBaseSerializer.Meta):
         model = Teacher
-        fields = '__all__'
 
 
-class WeChatSerializer(serializers.ModelSerializer):
-    class Meta:
+class TeacherSerializer(TeacherBaseSerializer):
+    class Meta(RoleSerializerMeta):
+        model = Teacher
+
+
+class WeChatBaseSerializer(RoleBaseSerializer):
+    class Meta(RoleBaseSerializer.Meta):
         model = WeChat
-        fields = '__all__'
 
 
-class QQSerializer(serializers.ModelSerializer):
-    class Meta:
+class WeChatSerializer(WeChatBaseSerializer):
+    class Meta(RoleSerializerMeta):
+        model = WeChat
+
+
+class QQBaseSerializer(RoleBaseSerializer):
+    class Meta(RoleBaseSerializer.Meta):
         model = QQ
-        fields = '__all__'
 
 
-class WeiboSerializer(serializers.ModelSerializer):
-    class Meta:
+class QQSerializer(QQBaseSerializer):
+    class Meta(RoleSerializerMeta):
+        model = QQ
+
+
+class WeiboBaseSerializer(RoleBaseSerializer):
+    class Meta(RoleBaseSerializer.Meta):
         model = Weibo
-        fields = '__all__'
+
+
+class WeiboSerializer(WeiboBaseSerializer):
+    class Meta(RoleSerializerMeta):
+        model = Weibo

@@ -14,10 +14,29 @@
 __auth__ = 'diklios'
 
 from rest_framework import serializers
+
 from Common.models.user import User
+from .base import base_exclude
+from .project import ProjectSerializer
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserBaseSerializer(serializers.ModelSerializer):
+    gender = serializers.CharField(source='get_gender_display')
+    identification_card_type = serializers.CharField(source='get_identification_card_type_display')
+
     class Meta:
         model = User
-        fields = '__all__'
+        # fields = '__all__'
+        exclude = base_exclude
+
+
+class UserSerializer(UserBaseSerializer):
+    # 法1一对多关联对象序列化：此字段将被序列化为关联对象的主键
+    # projects = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
+    # 法2一对多关联对象序列化：此字段将被序列化为关联对象的字符串表示方式（即__str__方法的返回值）
+    # projects = serializers.StringRelatedField(read_only=True,many=True)
+    # 法3一对多关联对象序列化：使用关联对象的序列化器
+    projects = ProjectSerializer(many=True)
+
+    class Meta(UserBaseSerializer.Meta):
+        depth = 1
