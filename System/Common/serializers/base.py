@@ -17,7 +17,7 @@ from rest_framework import serializers
 
 from Common.models.base import Base
 
-base_exclude = ['id', 'created_time', 'modified_time', 'status', 'remarks', 'remarks_json']
+base_exclude = []
 
 
 class BaseSerializer(serializers.ModelSerializer):
