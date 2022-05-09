@@ -90,3 +90,13 @@ def get_tree_ids(tree: list) -> dict:
         else:
             ids[node['id']] = node['value']
     return ids
+
+
+def extract_obj(obj: dict, keys: list) -> dict:
+    """
+    提取对象中的指定字段到上一层
+    """
+    values = [obj.pop(key, None) for key in keys]
+    for value in values:
+        obj = {**value, **obj}
+    return obj

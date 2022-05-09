@@ -44,3 +44,7 @@ def list_to_n_group_yield(list_to_group: list, n: int = 3) -> list:
         step = length // n + 1
     for i in range(0, len(list_to_group), step):
         yield list_to_group[i:i + step]
+
+
+def add_index(list_obj: list[dict]) -> list:
+    return [{'index': i, **obj} for i, obj in enumerate(list_obj)]
