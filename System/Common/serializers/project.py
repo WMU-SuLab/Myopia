@@ -13,7 +13,8 @@
 """
 __auth__ = 'diklios'
 
-from .base import UserBaseSerializer, ProjectBaseSerializer
+from .base.project import ProjectBaseSerializer
+from .base.user import UserBaseSerializer
 
 
 class ProjectSerializer(ProjectBaseSerializer):

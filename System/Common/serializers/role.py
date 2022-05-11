@@ -13,83 +13,43 @@
 """
 __auth__ = 'diklios'
 
-from rest_framework import serializers
-
-from Common.models.role import *
-from .base import RoleBaseSerializer
+from .base.role import *
 
 
 class RoleSerializerMeta(RoleBaseSerializer.Meta):
     depth = 1
 
 
-class ManagerBaseSerializer(RoleBaseSerializer):
-    class Meta(RoleBaseSerializer.Meta):
-        model = Manager
-
-
 class ManagerSerializer(ManagerBaseSerializer):
-    class Meta(RoleSerializerMeta):
-        model = Manager
-
-
-class EmployeeBaseSerializer(RoleBaseSerializer):
-    class Meta(RoleBaseSerializer.Meta):
-        model = Employee
+    class Meta(RoleSerializerMeta, ManagerBaseSerializer.Meta):
+        pass
 
 
 class EmployeeSerializer(EmployeeBaseSerializer):
-    class Meta(RoleSerializerMeta):
-        model = Employee
-
-
-class StudentBaseSerializer(RoleBaseSerializer):
-    student_type_display = serializers.CharField(source='get_student_type_display')
-
-    class Meta(RoleBaseSerializer.Meta):
-        model = Student
+    class Meta(RoleSerializerMeta, EmployeeBaseSerializer.Meta):
+        pass
 
 
 class StudentSerializer(StudentBaseSerializer):
-    class Meta(RoleSerializerMeta):
-        model = Student
-
-
-class TeacherBaseSerializer(RoleBaseSerializer):
-    class Meta(RoleBaseSerializer.Meta):
-        model = Teacher
+    class Meta(RoleSerializerMeta, StudentBaseSerializer.Meta):
+        pass
 
 
 class TeacherSerializer(TeacherBaseSerializer):
-    class Meta(RoleSerializerMeta):
-        model = Teacher
-
-
-class WeChatBaseSerializer(RoleBaseSerializer):
-    class Meta(RoleBaseSerializer.Meta):
-        model = WeChat
+    class Meta(RoleSerializerMeta, TeacherBaseSerializer.Meta):
+        pass
 
 
 class WeChatSerializer(WeChatBaseSerializer):
-    class Meta(RoleSerializerMeta):
-        model = WeChat
-
-
-class QQBaseSerializer(RoleBaseSerializer):
-    class Meta(RoleBaseSerializer.Meta):
-        model = QQ
+    class Meta(RoleSerializerMeta, WeChatBaseSerializer.Meta):
+        pass
 
 
 class QQSerializer(QQBaseSerializer):
-    class Meta(RoleSerializerMeta):
-        model = QQ
-
-
-class WeiboBaseSerializer(RoleBaseSerializer):
-    class Meta(RoleBaseSerializer.Meta):
-        model = Weibo
+    class Meta(RoleSerializerMeta, QQBaseSerializer.Meta):
+        pass
 
 
 class WeiboSerializer(WeiboBaseSerializer):
-    class Meta(RoleSerializerMeta):
-        model = Weibo
+    class Meta(RoleSerializerMeta, WeiboBaseSerializer.Meta):
+        pass

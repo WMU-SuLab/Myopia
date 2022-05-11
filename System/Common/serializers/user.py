@@ -13,8 +13,8 @@
 """
 __auth__ = 'diklios'
 
-from .base import UserBaseSerializer
-from .project import ProjectSerializer
+from .base.project import ProjectBaseSerializer
+from .base.user import UserBaseSerializer
 
 
 class UserSerializer(UserBaseSerializer):
@@ -24,7 +24,7 @@ class UserSerializer(UserBaseSerializer):
     # 法2一对多关联对象序列化：此字段将被序列化为关联对象的字符串表示方式（即__str__方法的返回值）
     # projects = serializers.StringRelatedField(read_only=True,many=True)
     # 法3一对多关联对象序列化：使用关联对象的序列化器
-    projects = ProjectSerializer(many=True)
+    projects = ProjectBaseSerializer(many=True)
 
     class Meta(UserBaseSerializer.Meta):
         depth = 1

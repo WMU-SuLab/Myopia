@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   base.py    
-@Create Time    :   2022/5/5 15:25
+@File Name      :   __init__.py.py    
+@Create Time    :   2022/5/11 13:30
 @Description    :   
 @Version        :   
 @License        :   MIT
@@ -13,11 +13,7 @@
 """
 __auth__ = 'diklios'
 
-from django.conf import settings
 from rest_framework import serializers
-
-from Common.models.project import Project
-from Common.models.user import User
 
 base_exclude = []
 
@@ -45,52 +41,3 @@ class BaseSerializer(serializers.ModelSerializer):
         #     'id': {'required': True},
         #     'status': {'required': True},
         # }
-
-
-user_exclude = base_exclude + ['password']
-
-
-class UserBaseSerializer(BaseSerializer):
-    gender_display = serializers.CharField(source='get_gender_display')
-    identification_card_type_display = serializers.CharField(source='get_identification_card_type_display')
-
-    class Meta(BaseSerializer.Meta):
-        model = User
-        # fields = '__all__'
-        exclude = user_exclude
-
-
-role_exclude = base_exclude
-
-
-class RoleBaseSerializer(BaseSerializer):
-    class Meta(BaseSerializer.Meta):
-        # fields = '__all__'
-        exclude = role_exclude
-
-
-project_exclude = base_exclude
-
-
-class ProjectBaseSerializer(BaseSerializer):
-    progress_display = serializers.CharField(source='get_progress_display')
-    finished_time = serializers.DateTimeField(
-        format='%Y-%m-%d %H:%M:%S',
-        # 当时间对象中不带有时区的时候，默认使用的时区
-        # default_timezone=utc,
-        default_timezone=settings.TZ_INFO,
-    )
-
-    class Meta(BaseSerializer.Meta):
-        model = Project
-        # fields = '__all__'
-        exclude = project_exclude
-
-
-equipments_exclude = base_exclude
-
-
-class EquipmentsBaseSerializer(BaseSerializer):
-    class Meta(BaseSerializer.Meta):
-        # fields = '__all__'
-        exclude = equipments_exclude

@@ -13,93 +13,48 @@
 """
 __auth__ = 'diklios'
 
-from rest_framework import serializers
-
-from Common.models.equipments import *
-from .base import EquipmentsBaseSerializer
+from .base.equipments import *
 
 
 class EquipmentsSerializerMeta(EquipmentsBaseSerializer.Meta):
     depth = 2
 
 
-class VisualChartBaseSerializer(EquipmentsBaseSerializer):
-    glasses_type_display = serializers.CharField(source='get_glasses_type_display')
-
-    class Meta(EquipmentsBaseSerializer.Meta):
-        model = VisualChart
-
-
 class VisualChartSerializer(VisualChartBaseSerializer):
-    class Meta(EquipmentsSerializerMeta):
-        model = VisualChart
-
-
-class BioMeterBaseSerializer(EquipmentsBaseSerializer):
-    class Meta(EquipmentsBaseSerializer.Meta):
-        model = BioMeter
+    class Meta(EquipmentsSerializerMeta, VisualChartBaseSerializer.Meta):
+        pass
 
 
 class BioMeterSerializer(BioMeterBaseSerializer):
-    class Meta(EquipmentsSerializerMeta):
-        model = BioMeter
-
-
-class OptometryBaseSerializer(EquipmentsBaseSerializer):
-    class Meta(EquipmentsBaseSerializer.Meta):
-        model = Optometry
+    class Meta(EquipmentsSerializerMeta, BioMeterBaseSerializer.Meta):
+        pass
 
 
 class OptometrySerializer(OptometryBaseSerializer):
-    class Meta(EquipmentsSerializerMeta):
-        model = Optometry
-
-
-class TonoMeterBaseSerializer(EquipmentsBaseSerializer):
-    class Meta(EquipmentsBaseSerializer.Meta):
-        model = TonoMeter
+    class Meta(EquipmentsSerializerMeta, OptometryBaseSerializer.Meta):
+        pass
 
 
 class TonoMeterSerializer(TonoMeterBaseSerializer):
-    class Meta(EquipmentsSerializerMeta):
-        model = TonoMeter
-
-
-class EyeGroundBaseSerializer(EquipmentsBaseSerializer):
-    class Meta(EquipmentsBaseSerializer.Meta):
-        model = EyeGround
+    class Meta(EquipmentsSerializerMeta, TonoMeterBaseSerializer.Meta):
+        pass
 
 
 class EyeGroundSerializer(EyeGroundBaseSerializer):
-    class Meta(EquipmentsSerializerMeta):
-        model = EyeGround
-
-
-class SequenceBaseSerializer(EquipmentsBaseSerializer):
-    class Meta(EquipmentsBaseSerializer.Meta):
-        model = Sequence
+    class Meta(EquipmentsSerializerMeta, EyeGroundBaseSerializer.Meta):
+        pass
 
 
 class SequenceSerializer(SequenceBaseSerializer):
-    class Meta(EquipmentsSerializerMeta):
-        model = Sequence
-
-
-class InformedConsentBaseSerializer(EquipmentsBaseSerializer):
-    class Meta(EquipmentsBaseSerializer.Meta):
-        model = InformedConsent
+    class Meta(EquipmentsSerializerMeta, SequenceBaseSerializer.Meta):
+        pass
 
 
 class InformedConsentSerializer(InformedConsentBaseSerializer):
-    class Meta(EquipmentsSerializerMeta):
-        model = InformedConsent
-
-
-class QuestionnaireBaseSerializer(EquipmentsBaseSerializer):
-    class Meta(EquipmentsBaseSerializer.Meta):
-        model = Questionnaire
+    class Meta(EquipmentsSerializerMeta, InformedConsentBaseSerializer.Meta):
+        pass
 
 
 class QuestionnaireSerializer(QuestionnaireBaseSerializer):
-    class Meta(EquipmentsSerializerMeta):
-        model = Questionnaire
+    class Meta(EquipmentsSerializerMeta, QuestionnaireBaseSerializer.Meta):
+        pass
