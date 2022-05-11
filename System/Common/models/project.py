@@ -23,9 +23,14 @@ from .user import User
 
 
 class Project(Base):
+    progress_choices = (
+        (-1, '未开始'),
+        (0, '进行中'),
+        (1, '已完成'),
+    )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='projects', verbose_name='用户')
     name = models.CharField(max_length=63, null=True, blank=True, default=None, verbose_name='项目名称')
-    is_finished = models.BooleanField(default=False, verbose_name='是否完成')
+    progress = models.IntegerField(choices=progress_choices, null=True, blank=True, default=-1, verbose_name='是否完成')
     finished_time = models.DateTimeField(null=True, blank=True, default=None, verbose_name='完成时间')
     report_file_url = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='报告文件url')
     report_file_path = models.CharField(max_length=512, null=True, blank=True, default=None, verbose_name='报告文件路径')
@@ -34,8 +39,12 @@ class Project(Base):
     class Meta:
         verbose_name = verbose_name_plural = '项目'
 
+    def start(self):
+        self.progress = 0
+        self.save()
+
     def finish(self):
-        self.is_finished = True
+        self.progress = 1
         self.finished_time = datetime.now().astimezone(settings.TZ_INFO)
         self.save()
 

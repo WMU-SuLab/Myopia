@@ -17,7 +17,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, Permis
 from django.db import models
 
 from Common.utils.text_handler.random import random_content
-from .base import Base, handle_object_does_not_exist
+from .base import BaseManager, Base, handle_object_does_not_exist
 
 
 def random_username():
@@ -32,7 +32,7 @@ def random_password():
     return random_content(length=16, random_type='password')
 
 
-class UserManager(BaseUserManager):
+class UserManager(BaseManager, BaseUserManager):
     use_in_migrations = True
 
     def _create_user(self, username, password, **extra_fields):

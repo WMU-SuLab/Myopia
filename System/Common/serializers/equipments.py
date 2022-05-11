@@ -16,15 +16,7 @@ __auth__ = 'diklios'
 from rest_framework import serializers
 
 from Common.models.equipments import *
-from .base import base_exclude
-
-equipments_exclude = base_exclude
-
-
-class EquipmentsBaseSerializer(serializers.ModelSerializer):
-    class Meta:
-        # fields = '__all__'
-        exclude = equipments_exclude
+from .base import EquipmentsBaseSerializer
 
 
 class EquipmentsSerializerMeta(EquipmentsBaseSerializer.Meta):
@@ -32,7 +24,7 @@ class EquipmentsSerializerMeta(EquipmentsBaseSerializer.Meta):
 
 
 class VisualChartBaseSerializer(EquipmentsBaseSerializer):
-    glasses_type = serializers.CharField(source='get_glasses_type_display')
+    glasses_type_display = serializers.CharField(source='get_glasses_type_display')
 
     class Meta(EquipmentsBaseSerializer.Meta):
         model = VisualChart

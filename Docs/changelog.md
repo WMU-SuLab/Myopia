@@ -108,6 +108,16 @@
     - 优化了数据库相关的 serializers，增加了对应正向和反向关联的处理
     - 完善了导出项目数据的函数
     - 增加了通用的choices逆函数
+- 0.0.21:2022-05-11
+    - scripts
+        - 用户导入数据脚本中字段调整，添加分组
+    - models
+        - 项目更改完成字段为进度字段
+        - 添加对于status的过滤
+    - serializers
+        - 为拥有choices属性的字段添加对应的显示字段
+        - 完成BaseSerializer并为所有序列化器使用
+        - 调整Base级别的序列化器到base模块方便同时进行正反向关联
 
 ## Screening
 

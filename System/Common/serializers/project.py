@@ -13,19 +13,11 @@
 """
 __auth__ = 'diklios'
 
-from rest_framework import serializers
-
-from Common.models.project import Project
-from .base import base_exclude
-
-
-class ProjectBaseSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Project
-        # fields = '__all__'
-        exclude = base_exclude
+from .base import UserBaseSerializer, ProjectBaseSerializer
 
 
 class ProjectSerializer(ProjectBaseSerializer):
+    user = UserBaseSerializer()
+
     class Meta(ProjectBaseSerializer.Meta):
         depth = 1

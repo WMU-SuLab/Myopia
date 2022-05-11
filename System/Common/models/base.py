@@ -34,7 +34,13 @@ class StatusChoices(models.IntegerChoices):
     STATUS_TRASH = -1, _('回收站中删除')
 
 
+class BaseManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(status=1)
+
+
 class Base(models.Model):
+    objects = BaseManager()
     # 默认设置了主键id，所以基本除了外键不需要进行配置primary key
     # 所有字段默认不允许为空
     # 配置了unique的字段不需要再配置db_index索引

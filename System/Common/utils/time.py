@@ -12,8 +12,13 @@
 @Motto          :   All our science, measured against reality, is primitive and childlike - and yet it is the most precious thing we have.
 """
 __auth__ = 'diklios'
+
 import functools
 import time
+from datetime import datetime
+
+from django.conf import settings
+
 
 # 更精确的运行时间记录
 def print_accurate_execute_time(func):
@@ -26,3 +31,7 @@ def print_accurate_execute_time(func):
         return res
 
     return wrapper
+
+
+def create_tz_time(date_time: datetime):
+    return date_time.replace(tzinfo=settings.TZ_INFO).astimezone(settings.TZ_INFO)

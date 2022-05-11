@@ -16,16 +16,7 @@ __auth__ = 'diklios'
 from rest_framework import serializers
 
 from Common.models.role import *
-from .base import base_exclude
-
-role_exclude = base_exclude
-
-
-class RoleBaseSerializer(serializers.ModelSerializer):
-    class Meta:
-        abstract = True
-        # fields = '__all__'
-        exclude = role_exclude
+from .base import RoleBaseSerializer
 
 
 class RoleSerializerMeta(RoleBaseSerializer.Meta):
@@ -53,7 +44,7 @@ class EmployeeSerializer(EmployeeBaseSerializer):
 
 
 class StudentBaseSerializer(RoleBaseSerializer):
-    student_type = serializers.CharField(source='get_student_type_display')
+    student_type_display = serializers.CharField(source='get_student_type_display')
 
     class Meta(RoleBaseSerializer.Meta):
         model = Student

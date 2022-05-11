@@ -17,7 +17,6 @@ from abc import ABCMeta
 from datetime import datetime
 
 import pandas as pd
-from django.conf import settings
 from django.contrib.auth.models import Group, Permission, ContentType
 from django.core.management.base import BaseCommand
 from django.db.models import Q
@@ -26,7 +25,7 @@ from Common.models.equipments import *
 from Common.models.role import *
 from Common.models.user import User
 from Common.utils.file_handler import validate_file_path
-from Common.utils.time import print_accurate_execute_time
+from Common.utils.time import print_accurate_execute_time, create_tz_time
 from Common.viewModels.project import update_or_create_project_data
 from UserService.models.user import Feedback
 
@@ -150,11 +149,13 @@ def import_student_sampling_data(file_path: str):
                 identification_card_number=row['证件号'],
                 gender=1 if row['性别'] == '男' else 2
             )
+        normal_user_group = Group.objects.get(name='user')
+        user.groups.add(normal_user_group)
         Student.objects.update_or_create(
             user=user,
             defaults={
                 'student_number': row['学籍号'],
-                'student_type': row.get('学生类型',5),
+                'student_type': row.get('学生类型', 5),
                 'grade': str(row['学籍号'])[:2] + '级',
                 'PE_classname': row['班级名称']
             })
@@ -162,10 +163,10 @@ def import_student_sampling_data(file_path: str):
             user=user,
             defaults={
                 'name': '2022-温医大-茶山校区-大学生',
-                'is_finished': True,
+                'progress': 1,
                 # 没法用isnull()或者isna()方法来判断
-                'finished_time': datetime.strptime(str(row['创建时间']), '%Y-%m-%d %H:%M:%S').astimezone(
-                    settings.TZ_INFO) if row['创建时间'] is not pd.NaT and row['创建时间'] is not None else None,
+                'finished_time': create_tz_time(datetime.strptime(str(row['创建时间']), '%Y-%m-%d %H:%M:%S'))
+                if row['创建时间'] is not pd.NaT and row['创建时间'] is not None else None,
             }
         )
         update_or_create_project_data(project, row)
@@ -192,6 +193,8 @@ def import_teacher_sampling_data(file_path: str):
                 username=row['教工号'],
                 name=row['教师名称']
             )
+        normal_user_group = Group.objects.get(name='user')
+        user.groups.add(normal_user_group)
         Teacher.objects.update_or_create(
             user=user,
             defaults={
@@ -202,9 +205,9 @@ def import_teacher_sampling_data(file_path: str):
             user=user,
             defaults={
                 'name': '2022-温医大-茶山校区-教职工',
-                'is_finished': True,
-                'finished_time': datetime.strptime(str(row['创建时间']), '%Y-%m-%d %H:%M:%S').astimezone(
-                    settings.TZ_INFO) if row['创建时间'] is not pd.NaT and row['创建时间'] is not None else None,
+                'progress': 1,
+                'finished_time': create_tz_time(datetime.strptime(str(row['创建时间']), '%Y-%m-%d %H:%M:%S'))
+                if row['创建时间'] is not pd.NaT and row['创建时间'] is not None else None,
             }
         )
         update_or_create_project_data(project, row)
