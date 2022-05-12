@@ -11,6 +11,7 @@ pandas = "*"
 pydantic = "*"
 django = "*"
 #database
+djantic = "*"
 django-mysql = "*"
 pymysql = "*"
 #注意不是python-memcached也不是memcache

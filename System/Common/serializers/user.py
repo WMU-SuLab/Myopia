@@ -13,6 +13,7 @@
 """
 __auth__ = 'diklios'
 
+from .base import base_exclude
 from .base.project import ProjectBaseSerializer
 from .base.user import UserBaseSerializer
 
@@ -28,3 +29,4 @@ class UserSerializer(UserBaseSerializer):
 
     class Meta(UserBaseSerializer.Meta):
         depth = 1
+        exclude = base_exclude

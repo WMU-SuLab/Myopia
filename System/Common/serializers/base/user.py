@@ -18,7 +18,7 @@ from rest_framework import serializers
 from Common.models.user import User
 from . import base_exclude, BaseSerializer
 
-user_exclude = base_exclude + ['password']
+user_exclude = base_exclude + ('password',)
 
 
 class UserBaseSerializer(BaseSerializer):
@@ -28,4 +28,4 @@ class UserBaseSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
         model = User
         # fields = '__all__'
-        exclude = user_exclude
+        exclude = user_exclude + ('groups', 'user_permissions')

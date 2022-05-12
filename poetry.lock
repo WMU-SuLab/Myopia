@@ -324,6 +324,19 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "djantic"
+version = "0.7.0"
+description = "Pydantic model support for Django ORM"
+category = "main"
+optional = false
+python-versions = ">=3.7"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "drf-spectacular"
 version = "0.22.0"
 description = "Sane and flexible OpenAPI 3 schema generation for Django REST framework"
@@ -1187,7 +1200,7 @@ reference = "tsinghua"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "e2533edc1df7dc3461cb6cc992e3f1ca381e4ed157e158fb6d77c7ff6606ce9c"
+content-hash = "8d8e1af1c4b22fe9c226a7e467b5e8311ded0336c27f2d57fe5b58747d0f0d5f"
 
 [metadata.files]
 asgiref = [
@@ -1329,6 +1342,10 @@ djangorestframework = [
 djangorestframework-simplejwt = [
     {file = "djangorestframework_simplejwt-5.1.0-py3-none-any.whl", hash = "sha256:cd3ee3aabdc98de104957c136e74ba2a16571b151c88ecd97421fce171a03ea4"},
     {file = "djangorestframework_simplejwt-5.1.0.tar.gz", hash = "sha256:75323528a7b910843b879194746f0ebc3481c4ad9f354de2dd162160662fb95a"},
+]
+djantic = [
+    {file = "djantic-0.7.0-py3-none-any.whl", hash = "sha256:1ea0e6560d41e2d2350d8bb6a173ed8b1bcdd86fa8af5d0b7748e3609a8d5924"},
+    {file = "djantic-0.7.0.tar.gz", hash = "sha256:1b074b595879145582a726d9e6491b9c72e53e98efdfd445420c6b12ddfe5a85"},
 ]
 drf-spectacular = [
     {file = "drf-spectacular-0.22.0.tar.gz", hash = "sha256:1d6bf33f57ec7d973a7a29a4976fab602333e0bcd0ab16fd3b4cd1e7b427613d"},

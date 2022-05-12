@@ -15,7 +15,7 @@ __auth__ = 'diklios'
 
 from rest_framework import serializers
 
-base_exclude = []
+base_exclude = ()
 
 
 class BaseSerializer(serializers.ModelSerializer):

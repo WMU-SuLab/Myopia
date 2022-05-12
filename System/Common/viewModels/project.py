@@ -27,6 +27,16 @@ from Common.utils.text_handler.identity_card import get_age
 from Common.viewModels.equipments import count_spherical_equivalent
 
 
+def prefetch_project_data(project: Project.objects.all()):
+    Project.objects.prefetch_related()
+    return project.prefetch_related(
+        'user', 'user__groups', 'user__groups__permissions', 'user__user_permissions',
+        'user__manager_role', 'user__employee_role', 'user__student_role', 'user__teacher_role',
+        'visual_chart', 'bio_meter', 'optometry', 'tono_meter', 'eye_ground', 'sequence', 'informed_consent',
+        'questionnaire',
+    )
+
+
 def generate_project_report_filename(project: Project):
     return f'{project.user.username}-{project.id}-report.pdf'
 
