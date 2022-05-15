@@ -28,9 +28,11 @@
     - poetry(推荐)
         - 安装 poetry：`pip install poetry`
         - 安装依赖：`poetry install`
+        - 可在conda环境下使用
     - pipenv(推荐)
         - 安装 pipenv：`pip install pipenv`
         - 安装依赖：`pipenv install`
+        - 不可在conda环境下使用
     - conda
         - 使用导出的环境文件重建虚拟环境：`conda env create -f Dependencies/conda.yaml`
         - 单独创建

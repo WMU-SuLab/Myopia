@@ -35,7 +35,7 @@ LOGGING = {
         },
     },
     # 过滤器：可以对日志进行输出时的过滤用的
-    'filters':{
+    'filters': {
         # 在debug=True下产生的一些日志信息，要不要记录日志，需要的话就在handlers中加上这个过滤器，不需要就不加
         'require_debug_true': {
             '()': 'django.utils.log.RequireDebugTrue',
@@ -61,7 +61,7 @@ LOGGING = {
             'class': 'logging.handlers.RotatingFileHandler',
             # 日志位置,日志文件名,日志保存目录必须手动创建
             # 注意，你的文件应该有读写权限。
-            'filename': os.path.join(BASE_DIR,"Common","logs","django", "system.log"),
+            'filename': os.path.join(BASE_DIR, "Common", "logs", "django", "system.log"),
             # 日志文件的最大值,这里我们设置300M
             'maxBytes': 300 * 1024 * 1024,
             # 日志文件的数量,设置最大日志数量为10

@@ -105,6 +105,23 @@ DATABASES = {
     }
 }
 
+# 多数据库配置
+# DATABASE_ROUTERS = [
+#     # 使用多个数据库缓存表作为缓存时候需要添加的路由，需要放在一般的路由之前
+#     # 'Manage.database_router.CacheRouter',
+#     'Config.db_router.DatabaseRouter',
+# ]
+
+# DATABASE_APPS_MAPPING={
+#     # example:'app_name':'database_name',
+#     'admin': 'default',
+#     'auth': 'default',
+#     'contenttypes': 'default',
+#     'sessions': 'default',
+#     'Common': 'default',
+#     'UserService': 'default',
+# }
+
 # 缓存配置
 # CACHES = {
 #     "default": {
