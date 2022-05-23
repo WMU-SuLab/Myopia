@@ -202,6 +202,9 @@ REST_FRAMEWORK = {
         # drf在api查看界面的数据显示模式，加上这个模式后，会显示页面
         # 'rest_framework.renderers.BrowsableAPIRenderer',
     ],
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
+    ],
     # 异常处理
     'EXCEPTION_HANDLER': 'Common.utils.http.exceptions.exception_handler',
     # 文档
@@ -285,8 +288,8 @@ SIMPLE_JWT = {
     'JTI_CLAIM': 'jti',
 
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    'SLIDING_TOKEN_LIFETIME': timedelta(hours=1),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=3),
 }
 
 # drf-spectacular文档配置
@@ -339,7 +342,7 @@ ADMINS = (
 )
 MANAGERS = (
     # ('xingsl', 'xingsl@wmu.edu.cn'),
-    ('yaoyh','yhyao_corner@hotmail.com'),
+    ('yaoyh', 'yhyao_corner@hotmail.com'),
 )
 # 发送邮件的后端
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -374,7 +377,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', '')
 # 邮件标题前缀，默认是'[django]'
 EMAIL_SUBJECT_PREFIX = '[WMU-IBBD]'
 # 错误信息来自的电子邮件地址，例如发送到 ADMINS 和 MANAGERS 的邮件，这个地址只用于错误信息，它不是用 send_mail() 发送普通邮件的地址
-SERVER_EMAIL= EMAIL_HOST_USER
+SERVER_EMAIL = EMAIL_HOST_USER
 # 邮件发送人地址，默认电子邮件地址，用于网站管理员的各种自动通信
 # fred @ example.com 和 Fred < fred @ example.com > 形式都是合法的
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

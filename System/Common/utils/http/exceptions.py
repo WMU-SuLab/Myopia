@@ -14,6 +14,7 @@
 __auth__ = 'diklios'
 
 from pydantic import ValidationError as PydanticValidationError
+from rest_framework.exceptions import APIException as RestFrameWorkAPIException
 from rest_framework.views import Response
 from rest_framework.views import exception_handler as _exception_handler
 
@@ -26,6 +27,12 @@ def exception_handler(exc, context):
         return Response(exc.to_dict())
     elif isinstance(exc, PydanticValidationError):
         return Response(ParameterError(msg=str(exc)).to_dict())
+    elif isinstance(exc, RestFrameWorkAPIException):
+        return Response(BaseError(
+            status_code=exc.status_code,
+            msg=exc.default_code,
+            msg_detail=exc.default_detail
+        ).to_dict())
     else:
         return _exception_handler(exc, context)
 
@@ -43,6 +50,7 @@ class BaseError(APIException):
     code = 1000
     status_code = 500
     msg = 'error/failure'
+    msg_detail = 'error/failure'
     chinese_msg = '错误/失败'
 
 
@@ -127,10 +135,40 @@ class NotAcceptable(APIException):
     chinese_msg = '不接受'
 
 
+class ProxyAuthenticationRequired(APIException):
+    status_code = 407
+    msg = 'proxy authentication required'
+    chinese_msg = '代理认证'
+
+
+class Timeout(APIException):
+    status_code = 408
+    msg = 'timeout'
+    chinese_msg = '超时'
+
+
+class Conflict(APIException):
+    status_code = 409
+    msg = 'conflict'
+    chinese_msg = '冲突'
+
+
+class PreconditionFailed(APIException):
+    status_code = 412
+    msg = 'precondition failed'
+    chinese_msg = '条件失败'
+
+
 class UnsupportedMediaType(APIException):
     status_code = 415
     msg = 'unsupported media type'
     chinese_msg = '不支持的媒体类型'
+
+
+class ProcessingError(APIException):
+    status_code = 422
+    msg = 'processing error'
+    chinese_msg = '处理错误'
 
 
 class Throttled(APIException):

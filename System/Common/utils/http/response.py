@@ -14,8 +14,23 @@
 __auth__ = 'diklios'
 
 import json
+from typing import Union, Dict, List, Any, Type
 
 from django.http.response import JsonResponse as _JsonResponse
+from pydantic import BaseModel
+
+JSON = Union[Dict[str, Any], List[Any], int, str, float, bool, Type[None]]
+
+
+class HTTPJSONStructure(BaseModel):
+    success: bool
+    code: int
+    status_code: str
+    msg: str
+    msg_detail: str
+    chinese_msg: str
+    data: JSON
+    extra: JSON = {}
 
 
 class BaseHTTPJSONStructure:
@@ -23,6 +38,7 @@ class BaseHTTPJSONStructure:
     code = 0
     status_code = 200
     msg = ''
+    msg_detail = ''
     chinese_msg = ''
     data = None
 
@@ -32,13 +48,13 @@ class BaseHTTPJSONStructure:
 
     def __init__(
             self, data: dict or list = None, success: bool = None, code: int = None, status_code: int = None,
-            msg: str = None, chinese_msg: str = None, **kwargs):
+            msg: str = None, msg_detail: str = None, chinese_msg: str = None, **kwargs):
         self.data = data if data is not None else {}
         self.success = success if success is not None else self.success
         self.code = code if code is not None else self.code
         self.status_code = status_code if status_code is not None else self.status_code
         self.msg = msg if msg is not None else self.msg
-        # self.message = msg
+        self.msg_detail = msg_detail if msg_detail is not None else self.msg_detail
         self.chinese_msg = chinese_msg if chinese_msg is not None else self.chinese_msg
         self.extra = kwargs if kwargs is not None else {}
 
@@ -47,8 +63,8 @@ class BaseHTTPJSONStructure:
             'success': self.success,
             'code': self.code,
             'status_code': self.status_code,
-            # 'message': self.message
             'msg': self.msg,
+            'msg_detail': self.msg_detail,
             'chinese_msg': self.chinese_msg,
             'data': self.data,
             'extra': self.extra
@@ -63,15 +79,34 @@ class BaseHTTPJSONStructure:
 
 # 重写django原生的JsonResponse
 class JsonResponse(_JsonResponse):
-    data = None
     success = True
-    code = 100
+    code = 0
+    status_code = 200
     msg = 'success'
+    msg_detail = ''
     chinese_msg = '成功'
+    data = None
 
     def __init__(
             self, data=None, success: bool = True, code: int = 100, status_code: int = 200,
-            msg: str = 'success', chinese_msg: str = '成功', **kwargs):
-        self.status_code = status_code
-        data = {'data': data, 'success': success, 'status_code': code, 'msg': msg, 'chinese_msg': chinese_msg}
+            msg: str = 'success', msg_detail: str = '', chinese_msg: str = '成功', **kwargs):
+        self.data = data if data is not None else {}
+        self.success = success if success is not None else self.success
+        self.code = code if code is not None else self.code
+        self.status_code = status_code if status_code is not None else self.status_code
+        self.msg = msg if msg is not None else self.msg
+        self.msg_detail = msg_detail if msg_detail is not None else self.msg_detail
+        self.chinese_msg = chinese_msg if chinese_msg is not None else self.chinese_msg
+        self.extra = kwargs if kwargs is not None else {}
+
+        data = {
+            'success': self.success,
+            'code': self.code,
+            'status_code': self.status_code,
+            'msg': self.msg,
+            'msg_detail': self.msg_detail,
+            'chinese_msg': self.chinese_msg,
+            'data': self.data,
+            'extra': self.extra
+        }
         super().__init__(data, **kwargs)

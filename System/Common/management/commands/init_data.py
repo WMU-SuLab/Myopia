@@ -55,10 +55,10 @@ def init_group():
     employee_group, employee_group_created = Group.objects.get_or_create(name='employee')
     if employee_group_created:
         project_content_types = ContentType.objects.get_for_models(
-            Project, VisualChart, BioMeter, Optometry, TonoMeter, EyeGround, Sequence, InformedConsent, Questionnaire
+            Project, VisualChart, Optometry, TonoMeter,  Sequence,
         ).values()
         project_permissions = Permission.objects.filter(content_type__in=project_content_types).exclude(
-            Q(codename__icontains='delete') | Q(codename__icontains='change')
+            codename__icontains='delete'
         )
         employee_group.permissions.add(*project_permissions)
         user_role_content_types = ContentType.objects.get_for_models(User, Student, Teacher, WeChat, QQ, Weibo).values()

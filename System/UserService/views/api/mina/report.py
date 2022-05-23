@@ -52,14 +52,14 @@ def get_user_report_pdf_file(request):
         dir_path = os.path.join(settings.BASE_DIR, 'Common', 'libs', 'pdf')
         file_name = generate_project_report_filename(project)
         file_path = os.path.join(dir_path, file_name)
-        project.report_file_path = file_path
-        project.save()
         if not os.path.exists(file_path):
             report_str = render_to_string(
                 template_name='UserService/report/single.html',
                 context={'user': generate_user_report_data(**user_info.dict())}
             )
             HTML(string=report_str).write_pdf(file_path)
+            project.report_file_path = file_path
+            project.save()
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
     else:
         return FileResponse(open(project.report_pdf_file, 'rb'), as_attachment=True,

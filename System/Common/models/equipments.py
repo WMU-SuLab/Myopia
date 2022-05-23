@@ -16,11 +16,20 @@ __auth__ = 'diklios'
 from django.core.validators import MinValueValidator, MaxValueValidator, DecimalValidator
 from django.db import models
 
+from Common.viewModels.equipments import count_spherical_equivalent
 from .base import Base
 from .project import Project
+from .user import User
 
 
-class VisualChart(Base):
+class BaseEquipment(Base):
+    operator = models.ForeignKey(User, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='操作人')
+
+    class Meta:
+        abstract = True
+
+
+class VisualChart(BaseEquipment):
     """
     视力表
     """
@@ -30,25 +39,29 @@ class VisualChart(Base):
         ('contact_lenses', '隐形眼镜'),
         ('OK', '角膜塑形镜'),
     )
-
     project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='visual_chart', verbose_name='项目')
 
-    distance = models.FloatField(max_length=2, validators=[MinValueValidator(0)], default=5,
-                                 verbose_name='测量距离，单位：米(m)')
+    distance = models.FloatField(
+        max_length=2, validators=[MinValueValidator(0)], default=5, verbose_name='测量距离，单位：米(m)')
 
-    eyesight_range_validators = [MinValueValidator(0), MaxValueValidator(5.3), DecimalValidator(2, 1)]
-    uncorrected_visual_acuity_right = models.FloatField(validators=eyesight_range_validators, null=True, blank=True,
-                                                        default=None, verbose_name='右眼未校正/裸眼视力')
-    uncorrected_visual_acuity_left = models.FloatField(validators=eyesight_range_validators, null=True, blank=True,
-                                                       default=None, verbose_name='左眼未校正/裸眼视力')
+    eyesight_range_validators = [
+        MinValueValidator(0),
+        MaxValueValidator(5.3),
+        # 只能用于models.DecimalField
+        # DecimalValidator(2, 1)
+    ]
+    uncorrected_visual_acuity_right = models.FloatField(
+        validators=eyesight_range_validators, null=True, blank=True, default=None, verbose_name='右眼未校正/裸眼视力')
+    uncorrected_visual_acuity_left = models.FloatField(
+        validators=eyesight_range_validators, null=True, blank=True, default=None, verbose_name='左眼未校正/裸眼视力')
 
-    corrected_visual_acuity_right = models.FloatField(validators=eyesight_range_validators, null=True, blank=True,
-                                                      default=None, verbose_name='右眼校正/裸眼视力')
-    corrected_visual_acuity_left = models.FloatField(validators=eyesight_range_validators, null=True, blank=True,
-                                                     default=None, verbose_name='左眼校正/裸眼视力')
+    corrected_visual_acuity_right = models.FloatField(
+        validators=eyesight_range_validators, null=True, blank=True, default=None, verbose_name='右眼校正/裸眼视力')
+    corrected_visual_acuity_left = models.FloatField(
+        validators=eyesight_range_validators, null=True, blank=True, default=None, verbose_name='左眼校正/裸眼视力')
 
-    glasses_type = models.CharField(max_length=50, choices=glasses, null=True, blank=True, default=None,
-                                    verbose_name='眼镜类型')
+    glasses_type = models.CharField(
+        max_length=50, choices=glasses, null=True, blank=True, default=None, verbose_name='眼镜类型')
 
     class Meta:
         verbose_name = verbose_name_plural = '视力表'
@@ -57,7 +70,7 @@ class VisualChart(Base):
         return f'Belong to project {self.project_id}'
 
 
-class BioMeter(Base):
+class BioMeter(BaseEquipment):
     """
     生物测量仪
     """
@@ -100,7 +113,7 @@ class BioMeter(Base):
         return f'Belong to project {self.project_id}'
 
 
-class Optometry(Base):
+class Optometry(BaseEquipment):
     """
     电脑验光仪
     """
@@ -115,6 +128,24 @@ class Optometry(Base):
     SE_right = models.FloatField(null=True, blank=True, default=None, verbose_name='右眼等效球镜SE')
     SE_left = models.FloatField(null=True, blank=True, default=None, verbose_name='左眼等效球镜SE')
 
+    @property
+    def spherical_equivalent_right(self):
+        if self.SE_right:
+            return self.SE_right
+        elif self.spherical_right and self.column_right:
+            return count_spherical_equivalent(self.spherical_right, self.column_right)
+        else:
+            return None
+
+    @property
+    def spherical_equivalent_left(self):
+        if self.SE_left:
+            return self.SE_left
+        elif self.spherical_left and self.column_left:
+            return count_spherical_equivalent(self.spherical_left, self.column_left)
+        else:
+            return None
+
     axis_right = models.FloatField(null=True, blank=True, default=None, verbose_name='右轴位a')
     axis_left = models.FloatField(null=True, blank=True, default=None, verbose_name='左轴位a')
 
@@ -127,7 +158,12 @@ class Optometry(Base):
         return f'Belong to project {self.project_id}'
 
 
-class TonoMeter(Base):
+class RefractoMeter(Optometry):
+    class Meta:
+        proxy = True
+
+
+class TonoMeter(BaseEquipment):
     """
     眼压计
     """
@@ -173,13 +209,13 @@ class EyeGround(Base):
         return f'Belong to project {self.project_id}'
 
 
-class Sequence(Base):
+class Sequence(BaseEquipment):
     """
     测序
     """
     project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='sequence', verbose_name='项目')
     serial_number = models.CharField(max_length=32, null=True, blank=True, default=None, verbose_name='测序编号')
-    file_path = models.CharField(max_length=512,null=True, blank=True, default=None, verbose_name='测序文件路径')
+    file_path = models.CharField(max_length=512, null=True, blank=True, default=None, verbose_name='测序文件路径')
     file_url = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='测序文件远程URL')
 
     @property
@@ -199,7 +235,7 @@ class InformedConsent(Base):
     """
     project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='informed_consent',
                                    verbose_name='项目')
-    file_path = models.CharField(max_length=512,null=True, blank=True, default=None, verbose_name='知情同意书文件路径')
+    file_path = models.CharField(max_length=512, null=True, blank=True, default=None, verbose_name='知情同意书文件路径')
     file_url = models.CharField(max_length=512, null=True, blank=True, default=None, verbose_name='知情同意书文件远程URL')
 
     @property

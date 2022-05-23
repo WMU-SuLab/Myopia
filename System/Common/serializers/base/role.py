@@ -38,7 +38,7 @@ class EmployeeBaseSerializer(RoleBaseSerializer):
 
 
 class StudentBaseSerializer(RoleBaseSerializer):
-    student_type_display = serializers.CharField(source='get_student_type_display')
+    student_type_display = serializers.CharField(source='get_student_type_display', required=False)
 
     class Meta(RoleBaseSerializer.Meta):
         model = Student

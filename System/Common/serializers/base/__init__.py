@@ -22,9 +22,9 @@ class BaseSerializer(serializers.ModelSerializer):
     """
     基础序列化器
     """
-    status_display = serializers.CharField(source='get_status_display')
-    created_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
-    modified_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S')
+    status_display = serializers.CharField(source='get_status_display', required=False)
+    created_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', required=False)
+    modified_time = serializers.DateTimeField(format='%Y-%m-%d %H:%M:%S', required=False)
 
     class Meta:
         # fields 是 result 接口需要返回的字段
@@ -37,7 +37,10 @@ class BaseSerializer(serializers.ModelSerializer):
         # 把一个字段变成只读字段,自增字段默认是只读的，不显式表示也是可以的
         # read_only_fields = []
         # extra_kwargs参数为ModelSerializer添加或修改原有的选项参数
-        # extra_kwargs = {
-        #     'id': {'required': True},
-        #     'status': {'required': True},
-        # }
+        extra_kwargs = {
+            'created_time': {'required': False, 'read_only': True},
+            'modified_time': {'required': False, 'read_only': True},
+            'status': {'required': False},
+            'remarks': {'required': False},
+            'remarks_json': {'required': False},
+        }

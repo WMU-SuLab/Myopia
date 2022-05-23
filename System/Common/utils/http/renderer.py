@@ -13,9 +13,11 @@
 """
 __auth__ = 'diklios'
 
+from pydantic import ValidationError
 from rest_framework.renderers import JSONRenderer as _JSONRenderer
 
-from .response import BaseHTTPJSONStructure
+from .response import HTTPJSONStructure, BaseHTTPJSONStructure
+from .successes import Success
 
 
 # 重写drf的JSONRenderer
@@ -27,5 +29,9 @@ class JSONRenderer(_JSONRenderer):
             # 判断实例的类型，返回的数据可能是列表也可能是字典
             if isinstance(data, BaseHTTPJSONStructure):
                 data = data.to_dict()
+            try:
+                data = HTTPJSONStructure(**data).json()
+            except ValidationError as e:
+                data = Success(data=data).to_dict()
         # 返回JSON数据
         return super().render(data, accepted_media_type, renderer_context)

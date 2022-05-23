@@ -14,6 +14,7 @@
 __auth__ = 'diklios'
 
 from .base.equipments import *
+from .base.user import UserBaseSerializer
 
 
 class EquipmentsSerializerMeta(EquipmentsBaseSerializer.Meta):
@@ -21,21 +22,29 @@ class EquipmentsSerializerMeta(EquipmentsBaseSerializer.Meta):
 
 
 class VisualChartSerializer(VisualChartBaseSerializer):
+    operator = UserBaseSerializer()
+
     class Meta(EquipmentsSerializerMeta, VisualChartBaseSerializer.Meta):
         pass
 
 
 class BioMeterSerializer(BioMeterBaseSerializer):
+    operator = UserBaseSerializer()
+
     class Meta(EquipmentsSerializerMeta, BioMeterBaseSerializer.Meta):
         pass
 
 
 class OptometrySerializer(OptometryBaseSerializer):
+    operator = UserBaseSerializer()
+
     class Meta(EquipmentsSerializerMeta, OptometryBaseSerializer.Meta):
         pass
 
 
 class TonoMeterSerializer(TonoMeterBaseSerializer):
+    operator = UserBaseSerializer()
+
     class Meta(EquipmentsSerializerMeta, TonoMeterBaseSerializer.Meta):
         pass
 
@@ -46,6 +55,8 @@ class EyeGroundSerializer(EyeGroundBaseSerializer):
 
 
 class SequenceSerializer(SequenceBaseSerializer):
+    operator = UserBaseSerializer()
+
     class Meta(EquipmentsSerializerMeta, SequenceBaseSerializer.Meta):
         pass
 

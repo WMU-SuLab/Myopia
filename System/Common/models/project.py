@@ -18,7 +18,7 @@ from datetime import datetime
 from django.conf import settings
 from django.db import models
 
-from .base import Base
+from .base import Base, handle_object_does_not_exist
 from .user import User
 
 
@@ -32,9 +32,9 @@ class Project(Base):
     name = models.CharField(max_length=63, null=True, blank=True, default=None, verbose_name='项目名称')
     progress = models.IntegerField(choices=progress_choices, null=True, blank=True, default=-1, verbose_name='是否完成')
     finished_time = models.DateTimeField(null=True, blank=True, default=None, verbose_name='完成时间')
+    report_data = models.JSONField(null=True, blank=True, default=dict, verbose_name='报告数据')
     report_file_url = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='报告文件url')
     report_file_path = models.CharField(max_length=512, null=True, blank=True, default=None, verbose_name='报告文件路径')
-    report_data = models.JSONField(null=True, blank=True, default=dict, verbose_name='报告数据')
 
     class Meta:
         verbose_name = verbose_name_plural = '项目'
@@ -67,6 +67,50 @@ class Project(Base):
 
     def set_project_name_city_rule(self, year, city, city_region, user_role):
         self.name = f'{year}-{city}-{city_region}-{user_role}'
+
+    @handle_object_does_not_exist
+    def has_equipment(self, equipment_type):
+        return getattr(self, 'has_'+equipment_type)
+
+    @handle_object_does_not_exist
+    @property
+    def has_visual_chart(self):
+        return True if self.visual_chart else False
+
+    @handle_object_does_not_exist
+    @property
+    def has_bio_meter(self):
+        return True if self.bio_meter else False
+
+    @handle_object_does_not_exist
+    @property
+    def has_optometry(self):
+        return True if self.optometry else False
+
+    @handle_object_does_not_exist
+    @property
+    def has_tono_meter(self):
+        return True if self.tono_meter else False
+
+    @handle_object_does_not_exist
+    @property
+    def has_eye_ground(self):
+        return True if self.eye_ground else False
+
+    @handle_object_does_not_exist
+    @property
+    def has_sequence(self):
+        return True if self.sequence else False
+
+    @handle_object_does_not_exist
+    @property
+    def has_informed_consent(self):
+        return True if self.informed_consent else False
+
+    @handle_object_does_not_exist
+    @property
+    def has_questionnaire(self):
+        return True if self.questionnaire else False
 
     def __str__(self):
         return f'<Project : {self.id}-user:{self.user_id}>'

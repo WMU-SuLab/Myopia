@@ -23,12 +23,13 @@ project_exclude = base_exclude
 
 
 class ProjectBaseSerializer(BaseSerializer):
-    progress_display = serializers.CharField(source='get_progress_display')
+    progress_display = serializers.CharField(source='get_progress_display', required=False)
     finished_time = serializers.DateTimeField(
         format='%Y-%m-%d %H:%M:%S',
         # 当时间对象中不带有时区的时候，默认使用的时区
         # default_timezone=utc,
         default_timezone=settings.TZ_INFO,
+        required=False,
     )
 
     class Meta(BaseSerializer.Meta):

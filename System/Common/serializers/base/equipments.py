@@ -28,10 +28,18 @@ class EquipmentsBaseSerializer(BaseSerializer):
 
 
 class VisualChartBaseSerializer(EquipmentsBaseSerializer):
-    glasses_type_display = serializers.CharField(source='get_glasses_type_display')
+    glasses_type_display = serializers.CharField(source='get_glasses_type_display', required=False)
 
     class Meta(EquipmentsBaseSerializer.Meta):
         model = VisualChart
+        extra_kwargs = {
+            **EquipmentsBaseSerializer.Meta.extra_kwargs,
+            'uncorrected_visual_acuity_right': {'required': False},
+            'uncorrected_visual_acuity_left': {'required': False},
+            'corrected_visual_acuity_right': {'required': False},
+            'corrected_visual_acuity_left': {'required': False},
+            'glasses_type': {'required': False},
+        }
 
 
 class BioMeterBaseSerializer(EquipmentsBaseSerializer):

@@ -14,6 +14,7 @@
 __auth__ = 'diklios'
 
 from rest_framework.authentication import SessionAuthentication
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser, IsAuthenticatedOrReadOnly
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -24,16 +25,36 @@ class AllowAnyAPIView(APIView):
     permission_classes = [AllowAny]
 
 
+class AllowAnyGenericAPIView(GenericAPIView):
+    authentication_classes = [SessionAuthentication, JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
 class IsAuthenticatedAPIView(APIView):
+    authentication_classes = [SessionAuthentication, JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+class IsAuthenticatedGenericAPIView(GenericAPIView):
     authentication_classes = [SessionAuthentication, JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
 
 class IsAdminUserAPIView(APIView):
     authentication_classes = [SessionAuthentication, JWTAuthentication]
-    permission_classes = [IsAuthenticated,IsAdminUser]
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+
+class IsAdminUserGenericAPIView(GenericAPIView):
+    authentication_classes = [SessionAuthentication, JWTAuthentication]
+    permission_classes = [IsAdminUser]
 
 
 class IsAuthenticatedOrReadOnlyAPIView(APIView):
+    authentication_classes = [SessionAuthentication, JWTAuthentication]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+
+class IsAuthenticatedOrReadOnlyGenericAPIView(GenericAPIView):
     authentication_classes = [SessionAuthentication, JWTAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]

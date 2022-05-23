@@ -41,8 +41,15 @@ def generate_project_report_filename(project: Project):
     return f'{project.user.username}-{project.id}-report.pdf'
 
 
+def get_project_from_report_filename(filename: str):
+    return Project.objects.get(id=int(filename.split('-')[1]))
+
+
 # 不使用序列化快速书写的原因是导出需要中文
-def update_or_create_project_data(project: Project, row):
+def update_or_create_project_data(project: Project, row,user: User=None):
+    # 一般做这种整体project数据更新的都是管理员级别以上的用户
+    if not user:
+        user = User.objects.get(username='superuser')
     # 视力表
     uncorrected_visual_acuity_left = row['左裸眼视力']
     uncorrected_visual_acuity_right = row['右裸眼视力']
@@ -53,6 +60,8 @@ def update_or_create_project_data(project: Project, row):
         VisualChart.objects.update_or_create(
             project=project,
             defaults=parameters_to_dict(
+                operator=user,
+
                 distance=5,
                 uncorrected_visual_acuity_right=uncorrected_visual_acuity_right,
                 uncorrected_visual_acuity_left=uncorrected_visual_acuity_left,
@@ -64,6 +73,8 @@ def update_or_create_project_data(project: Project, row):
         VisualChart.objects.update_or_create(
             project=project,
             defaults=parameters_to_dict(
+                operator=user,
+
                 distance=5,
                 corrected_visual_acuity_right=corrected_visual_acuity_right,
                 corrected_visual_acuity_left=corrected_visual_acuity_left,
@@ -75,6 +86,8 @@ def update_or_create_project_data(project: Project, row):
     BioMeter.objects.update_or_create(
         project=project,
         defaults=parameters_to_dict(
+            operator=user,
+
             axial_length_right=row['右眼眼轴长度(AL)'],
             axial_length_left=row['左眼眼轴长度(AL)'],
 
@@ -109,6 +122,8 @@ def update_or_create_project_data(project: Project, row):
     Optometry.objects.update_or_create(
         project=project,
         defaults=parameters_to_dict(
+            operator=user,
+
             spherical_right=row['右球镜s'],
             spherical_left=row['左球镜s'],
 
@@ -127,6 +142,8 @@ def update_or_create_project_data(project: Project, row):
     TonoMeter.objects.update_or_create(
         project=project,
         defaults=parameters_to_dict(
+            operator=user,
+
             intraocular_tension_right=row['右眼眼压'],
             intraocular_tension_left=row['左眼眼压']
         )
@@ -134,6 +151,8 @@ def update_or_create_project_data(project: Project, row):
     Sequence.objects.update_or_create(
         project=project,
         defaults=parameters_to_dict(
+            operator=user,
+
             serial_number=row['条形码']
         )
     )
@@ -274,7 +293,7 @@ def generate_report_suggestions(eye_data: dict) -> list:
     return suggestions
 
 
-def generate_report_data_from_project(project: Project) -> JSONField | dict[str, str | list | Any]:
+def generate_report_data_from_project(project: Project) -> JSONField | dict[str | list | Any]:
     report_data = project.report_data
     if report_data:
         return report_data
@@ -304,8 +323,8 @@ def generate_report_data_from_project(project: Project) -> JSONField | dict[str,
         'column_left': project.optometry.column_left,
         'axis_right': project.optometry.axis_right,
         'axis_left': project.optometry.axis_left,
-        'spherical_equivalent_right': project.optometry.spherical_right,
-        'spherical_equivalent_left': project.optometry.spherical_left,
+        'spherical_equivalent_right': project.optometry.spherical_equivalent_right,
+        'spherical_equivalent_left': project.optometry.spherical_equivalent_left,
     }
     suggestions = generate_report_suggestions(eye_data)
     report_data = {

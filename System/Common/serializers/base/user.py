@@ -22,8 +22,9 @@ user_exclude = base_exclude + ('password',)
 
 
 class UserBaseSerializer(BaseSerializer):
-    gender_display = serializers.CharField(source='get_gender_display')
-    identification_card_type_display = serializers.CharField(source='get_identification_card_type_display')
+    gender_display = serializers.CharField(source='get_gender_display', required=False)
+    identification_card_type_display = serializers.CharField(
+        source='get_identification_card_type_display', required=False)
 
     class Meta(BaseSerializer.Meta):
         model = User

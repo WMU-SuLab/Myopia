@@ -19,6 +19,7 @@ from abc import ABCMeta
 from PyPDF2 import PdfFileMerger
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.db.models import Q
 from django.template.loader import render_to_string
 from weasyprint import HTML
 
@@ -27,37 +28,37 @@ from Common.viewModels.project import generate_project_report_filename, generate
 
 
 def generate_user_reports(divide=False, file_path=None, dir_path=None):
+    projects = Project.objects.all().prefetch_related(
+        'user', 'user__student_role', 'visual_chart', 'tono_meter', 'bio_meter', 'optometry')
     if divide:
-        for project in Project.objects.all().prefetch_related(
-                'user', 'user__student_role', 'visual_chart', 'tono_meter', 'bio_meter', 'optometry').all():
+        for project in projects:
             report_str = render_to_string(
                 template_name='UserService/report/single.html', context=generate_report_data_from_project(project))
             HTML(string=report_str).write_pdf(os.path.join(dir_path, generate_project_report_filename(project)))
     else:
-        users_report_data = [
-            generate_report_data_from_project(project)
-            for project in Project.objects.all().prefetch_related(
-                'user', 'user__student_role', 'visual_chart', 'tono_meter', 'bio_meter', 'optometry').all()
-        ]
+        users_report_data = [generate_report_data_from_project(project) for project in projects]
         report_str = render_to_string(template_name='UserService/report/multiple.html', context=users_report_data)
         HTML(string=report_str).write_pdf(file_path)
 
 
 def merge_pdf(dir_path):
-    files_paths = [[
-        os.path.join(dir_path, generate_project_report_filename(project)),
-        os.path.join(dir_path, f'{project.user.name}-{project.user.username}.pdf')
-    ] for project in Project.objects.filter(is_finished=True)]
-    merger = PdfFileMerger()
-    for file_paths in files_paths:
-        for file_path in file_paths:
-            merger.append(file_path)
-        file_name = os.path.basename(file_paths[0])
-        merger.write(os.path.join(dir_path, 'joint-' + file_name))
+    for project in Project.objects.filter(is_finished=True):
+        merger = PdfFileMerger()
+        file_path1 = os.path.join(dir_path, generate_project_report_filename(project))
+        file_path2 = os.path.join(dir_path, f'{project.user.name}-{project.user.username}.pdf')
+        if os.path.exists(file_path1) and os.path.exists(file_path2):
+            joint_file_path = os.path.join(dir_path, 'joint-' + generate_project_report_filename(project))
+            merger.append(file_path1)
+            merger.append(file_path2)
+            merger.write(joint_file_path)
+            project.report_file_path = joint_file_path
+            project.remarks_json['report_file_full'] = True
+            project.save()
 
 
 class Command(BaseCommand, metaclass=ABCMeta):
     def add_arguments(self, parser):
+        parser.add_argument('-c', '--clean', action='store_true', help='clean all reports')
         parser.add_argument('-g', '--generate', action='store_true', help='generate users\' reports')
         parser.add_argument('-d', '--divide', action='store_true', help='divide report in different files')
         parser.add_argument('-f', '--file_path', type=str, help='import data file path')
@@ -65,7 +66,11 @@ class Command(BaseCommand, metaclass=ABCMeta):
         parser.add_argument('--dir_path', type=str, help='dir path')
 
     def handle(self, *args, **options):
-        if options['generate']:
+        if options['clean']:
+            Project.objects.filter(
+                Q(report_data__isnull=False) | Q(report_file_url__isnull=False) | Q(report_file_path__isnull=False)) \
+                .update(report_data=None, report_file_url=None, report_file_path=None)
+        elif options['generate']:
             file_path = options['file_path']
             divide = options['divide']
             dir_path = options['dir_path']

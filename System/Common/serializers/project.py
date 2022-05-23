@@ -13,6 +13,9 @@
 """
 __auth__ = 'diklios'
 
+from .base.equipments import VisualChartBaseSerializer, BioMeterBaseSerializer, OptometryBaseSerializer, \
+    TonoMeterBaseSerializer, EyeGroundBaseSerializer, SequenceBaseSerializer, InformedConsentBaseSerializer, \
+    QuestionnaireBaseSerializer
 from .base.project import ProjectBaseSerializer
 from .base.user import UserBaseSerializer
 
@@ -22,3 +25,14 @@ class ProjectSerializer(ProjectBaseSerializer):
 
     class Meta(ProjectBaseSerializer.Meta):
         depth = 1
+
+
+class ProjectEquipmentSerializer(ProjectBaseSerializer):
+    visual_chart = VisualChartBaseSerializer()
+    bio_meter = BioMeterBaseSerializer()
+    optometry = OptometryBaseSerializer()
+    tono_meter = TonoMeterBaseSerializer()
+    eye_ground = EyeGroundBaseSerializer()
+    sequence = SequenceBaseSerializer()
+    informed_consent = InformedConsentBaseSerializer()
+    questionnaire = QuestionnaireBaseSerializer()
