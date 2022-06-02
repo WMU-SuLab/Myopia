@@ -20,7 +20,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from Common.utils.http.successes import Success
-
+from django.conf import settings
 
 @extend_schema(
     description='测试接口',
@@ -39,4 +39,7 @@ from Common.utils.http.successes import Success
 @permission_classes([AllowAny])
 @authentication_classes([])
 def test(request):
-    return Response(Success(data={'args': request.GET.dict(), 'json': request.json}, msg='test success'))
+    return Response(Success(data={
+        'kwargs': request.GET.dict(),
+        'json': request.json
+    }, msg='test success'))

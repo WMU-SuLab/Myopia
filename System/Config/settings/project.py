@@ -13,11 +13,13 @@
 """
 __auth__ = 'diklios'
 
+from cryptography.fernet import Fernet
+
 from .base import *
 
 # Hash
 # 必须使用Fernet.generate_key()生成，而且是字节类型
-CRYPTOGRAPHY_SECRET_KEY = os.environ.get('CRYPTOGRAPHY_SECRET_KEY', 'diklios')
+CRYPTOGRAPHY_SECRET_KEY = os.environ.get('CRYPTOGRAPHY_SECRET_KEY', Fernet.generate_key().decode())
 
 # Project settings
 SERVER_DOMAIN = os.environ.get('SERVER_DOMAIN', 'localhost')
@@ -64,7 +66,7 @@ LOGS_DIR_PATH_LIST = [
 # SimpleUI settings
 
 # MINA
-mina = {
+MINA = {
     'screening': {
         'appid': os.environ.get('MINA_SCREENING_APPID', None),
         'app_secret': os.environ.get('MINA_SCREENING_APP_SECRET', None),
