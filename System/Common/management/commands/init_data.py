@@ -24,9 +24,9 @@ from django.contrib.auth.models import Group, Permission, ContentType
 from django.core.management.base import BaseCommand
 
 from Common.models.equipments import *
-from Common.models.regions import Country, Province, City, Area, Street, Nationality
+from Common.models.regions import Country, Province, City, Area, Street
 from Common.models.role import *
-from Common.models.user import User
+from Common.models.user import User, Nationality
 from Common.utils.file_handler import validate_file_path
 from Common.utils.file_handler.dir import make_dir
 from Common.utils.time import print_accurate_execute_time, create_tz_time
