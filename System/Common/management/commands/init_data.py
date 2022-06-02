@@ -36,7 +36,7 @@ from UserService.models.user import Feedback
 
 @print_accurate_execute_time
 def init_dirs():
-    for dir_path in settings.DATA_DIR_PATH + settings.LOGS_DIR_PATH:
+    for dir_path in settings.DATA_DIR_PATH_LIST + settings.LOGS_DIR_PATH_LIST:
         make_dir(dir_path)
     print('初始化目录完成')
 
