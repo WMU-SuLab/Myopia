@@ -153,6 +153,6 @@ gen
 test
 
 # 本项目特有的文件或文件夹
-System/data
+System/data/user
 System/libs
 System/logs
