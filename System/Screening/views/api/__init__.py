@@ -16,10 +16,8 @@ __auth__ = 'diklios'
 from django.urls import path, include
 
 from Screening import app_name
-from .test import test
 
 urlpatterns = [
-    path('test', test, name='test'),
     path('mina/', include(('Screening.views.api.mina', app_name), namespace='mina')),
     path('manage/', include(('Screening.views.api.manage', app_name), namespace='manage')),
 ]

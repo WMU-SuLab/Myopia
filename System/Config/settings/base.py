@@ -31,7 +31,7 @@ HASHID_FIELD_SALT = os.environ.get('HASHID_FIELD_SALT', 'WMU-SuLab hashids salt 
 ALLOWED_HOSTS = ['*']
 
 # Application definition
-
+# 加载顺序是从上往下
 INSTALLED_APPS = [
     # simpleui需要保证在django.contrib.admin之前，以保证admin页面会被覆盖和自定义的admin模板能够正常使用
     'simpleui',
@@ -52,7 +52,18 @@ INSTALLED_APPS = [
     'UserService',
 ]
 
+# Django允许你通过修改setting.py文件中的 AUTH_USER_MODEL 设置覆盖默认的User模型
+# 对于AUTH_USER_MODEL参数的设置一定要在第一次数据库迁移之前就设置好，否则后续使用可能出现未知错误
+# 必须是 'app_label.ModelName' 的形式，不需要加中间的models模块名，但是如果有更深的模块，一定要把User提取到顶层的models模块的__init__.py中
 AUTH_USER_MODEL = 'Common.User'
+
+# PASSWORD_HASHERS = [
+#     'django.contrib.auth.hashers.ScryptPasswordHasher',
+#     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+#     'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+#     'django.contrib.auth.hashers.Argon2PasswordHasher',
+#     'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+# ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -200,10 +211,13 @@ REST_FRAMEWORK = {
         # 原版drf的JSONRenderer
         # 'rest_framework.renderers.JSONRenderer',
         # drf在api查看界面的数据显示模式，加上这个模式后，会显示页面
-        # 'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
     ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.FileUploadParser',
     ],
     # 异常处理
     'EXCEPTION_HANDLER': 'Common.utils.http.exceptions.exception_handler',

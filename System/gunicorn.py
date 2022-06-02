@@ -16,7 +16,7 @@ __auth__ = 'diklios'
 import multiprocessing
 import os
 
-from Config.settings import BASE_DIR
+from Config.settings.project import BASE_DIR, GUNICORN_LOGS_DIR_PATH
 
 # 绑定ip和端口号
 bind = '0.0.0.0:8000'
@@ -38,6 +38,6 @@ threads = 3
 loglevel = 'info'
 access_log_format = '%(t)s %(p)s %(h)s "%(r)s" %(s)s %(L)s %(b)s %(f)s" "%(a)s"'
 # 访问日志文件
-accesslog = os.path.join(BASE_DIR, 'Common', 'logs', 'gunicorn', "access.log")
+accesslog = os.path.join(GUNICORN_LOGS_DIR_PATH, "access.log")
 # 错误日志文件
-errorlog = os.path.join(BASE_DIR, 'Common', 'logs', 'gunicorn', "error.log")
+errorlog = os.path.join(GUNICORN_LOGS_DIR_PATH, "error.log")

@@ -15,8 +15,16 @@ __auth__ = 'diklios'
 
 from rest_framework import serializers
 
-from Common.models.user import User
+from Common.models.user import *
 from . import base_exclude, BaseSerializer
+
+
+class NationalityBaseSerializer(BaseSerializer):
+    class Meta:
+        model = Nationality
+        fields = ['name']
+        # exclude = base_exclude
+
 
 user_exclude = base_exclude + ('password',)
 

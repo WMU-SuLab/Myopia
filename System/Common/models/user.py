@@ -18,6 +18,49 @@ from django.db import models
 
 from Common.utils.text_handler.random import random_content
 from .base import BaseManager, Base, handle_object_does_not_exist
+from .regions import Country, Province, City, Area, Street
+
+
+class Language(Base):
+    name = models.CharField(max_length=20, unique=True, verbose_name='语言名称')
+    code = models.CharField(max_length=20, unique=True, verbose_name='语言代码')
+
+    class Meta:
+        verbose_name = verbose_name_plural = '语言'
+
+    def __str__(self):
+        return self.name
+
+
+class Race(Base):
+    name = models.CharField(max_length=20, unique=True, verbose_name='人种名称')
+
+    class Meta:
+        verbose_name = verbose_name_plural = '人种'
+
+    def __str__(self):
+        return self.name
+
+
+class Ethnicity(Base):
+    name = models.CharField(max_length=20, unique=True, verbose_name='种族名称')
+
+    class Meta:
+        verbose_name = verbose_name_plural = '种族'
+
+    def __str__(self):
+        return self.name
+
+
+class Nationality(Base):
+    name = models.CharField(max_length=20, unique=True, verbose_name='民族名称')
+    pinyin = models.CharField(max_length=32, unique=True, verbose_name='民族名称拼音')
+
+    class Meta:
+        verbose_name = verbose_name_plural = '民族'
+
+    def __str__(self):
+        return self.name
 
 
 def random_username():
@@ -35,7 +78,7 @@ def random_password():
 class UserManager(BaseManager, BaseUserManager):
     use_in_migrations = True
 
-    def _create_user(self, username, password, **extra_fields):
+    def _create_user(self, username=None, password=None, **extra_fields):
         if not username:
             username = random_username()
             # raise ValueError('The given username must be set')
@@ -46,7 +89,7 @@ class UserManager(BaseManager, BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_user(self, username, password=None, **extra_fields):
+    def create_user(self, username=None, password=None, **extra_fields):
         extra_fields.setdefault('is_confirmed', True)
         extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_staff', False)
@@ -54,7 +97,7 @@ class UserManager(BaseManager, BaseUserManager):
 
         return self._create_user(username, password, **extra_fields)
 
-    def create_admin_user(self, username, password=None, **extra_fields):
+    def create_admin_user(self, username=None, password=None, **extra_fields):
         extra_fields.setdefault('is_confirmed', True)
         extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_staff', True)
@@ -65,7 +108,7 @@ class UserManager(BaseManager, BaseUserManager):
 
         return self._create_user(username, password, **extra_fields)
 
-    def create_superuser(self, username, password=None, **extra_fields):
+    def create_superuser(self, username=None, password=None, **extra_fields):
         extra_fields.setdefault('is_confirmed', True)
         extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('is_staff', True)
@@ -123,15 +166,32 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
     def sex(self, sex):
         self.gender = sex
 
+    education_choices = (
+        (-1, '未知'),
+        (0, '未受过教育'),
+        (1, '幼儿园'),
+        (2, '小学'),
+        (3, '初级中学'),
+        (4, '高级中学（中专）'),
+        (5, '大学专科'),
+        (6, '大学本科'),
+        (7, '硕士研究生'),
+        (8, '博士研究生'),
+    )
+
     age = models.SmallIntegerField(blank=True, null=True, default=None, verbose_name='年龄')
     birthday = models.DateField(blank=True, null=True, default=None, verbose_name='出生日期')
-    native_place = models.CharField(max_length=32, blank=True, null=True, default=None, verbose_name='籍贯')
-    home_address = models.CharField(max_length=255, blank=True, null=True, default=None, verbose_name='家庭住址')
+    native_place = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name='籍贯')
+    nationality = models.ForeignKey(Nationality, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='民族')
+    education = models.IntegerField(choices=education_choices, blank=True, null=True, default=-1, verbose_name='受教育程度')
+    address = models.CharField(max_length=255, blank=True, null=True, default=None, verbose_name='地址')
+    detailed_address = models.CharField(max_length=128, blank=True, null=True, default=None, verbose_name='详细住址')
+    street = models.ForeignKey(Street, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='街道')
+    area = models.ForeignKey(Area, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='区县')
+    city = models.ForeignKey(City, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='城市')
+    province = models.ForeignKey(Province, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='省份')
+    country = models.ForeignKey(Country, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='国家')
     language = models.CharField(max_length=32, blank=True, null=True, default='zh_CN', verbose_name='使用语言')
-    street = models.CharField(max_length=255, blank=True, null=True, default=None, verbose_name='街道')
-    city = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name='城市')
-    province = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name='省份')
-    country = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name='国家')
 
     is_confirmed = models.BooleanField(blank=False, null=True, default=False, verbose_name='账户是否激活')
     # 用于查看区分用户是否长时间不使用

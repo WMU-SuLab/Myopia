@@ -24,10 +24,10 @@ from Common.serializers.base.equipments import VisualChartBaseSerializer, BioMet
     QuestionnaireBaseSerializer
 from Common.utils.http.exceptions import ParameterError, NotFound, PreconditionFailed
 from Common.viewModels.base import retrieve_model
-from Screening.utils.auth.views.api import EmployeeLoginRequiredGenericAPIView
+from Screening.utils.auth.views.api import EmployeeIsAuthenticatedGenericAPIView
 
 
-class EquipmentGenericAPIView(EmployeeLoginRequiredGenericAPIView):
+class EquipmentGenericAPIView(EmployeeIsAuthenticatedGenericAPIView):
     equipment_model_name = None
 
     def get_project(self, data):

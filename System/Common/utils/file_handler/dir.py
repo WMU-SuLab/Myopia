@@ -14,6 +14,7 @@
 __auth__ = 'diklios'
 
 import os
+from shutil import copytree, move, rmtree
 
 
 def make_dir(make_dir_path: str) -> bool:
@@ -29,3 +30,37 @@ def make_dir(make_dir_path: str) -> bool:
             print(str(e))
             return False
     return True
+
+
+def copy_dir(source_dir_path, target_dir_path):
+    """
+    把指定的文件夹连文件夹一起，全部拷贝到新的指定的文件夹（必须是不存在到文件夹，会自动重新创建）
+    """
+    if os.path.isdir(source_dir_path) and os.path.isdir(target_dir_path):
+        copytree(source_dir_path, target_dir_path)
+        return True
+    else:
+        return False
+
+
+def move_dir(source_dir_path, target_dir_path):
+    """
+    如果目标是已存在的目录，则 src 会被移至该目录下。 如果目标已存在但不是目录，它可能会被覆盖
+    如果是不存在的目录，将直接创建这个目录，再把文件夹中的内容移过去（不是包括文件夹本身的移动）
+    """
+    if os.path.isdir(source_dir_path) and os.path.isdir(target_dir_path):
+        move(source_dir_path, target_dir_path)
+        return True
+    else:
+        return False
+
+
+def remove_dir(dir_path):
+    """
+    有文件夹，则删除文件夹，如果没有文件，则什么都不做
+    """
+    if os.path.isdir(dir_path):
+        rmtree(dir_path)
+        return True
+    else:
+        return False

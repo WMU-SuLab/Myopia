@@ -13,7 +13,8 @@
 """
 __auth__ = 'diklios'
 
-from .user import User
-from .role import *
-from .project import Project
 from .equipments import *
+from .project import Project
+from .regions import *
+from .role import *
+from .user import User

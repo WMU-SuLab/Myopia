@@ -30,7 +30,7 @@ class JSONRenderer(_JSONRenderer):
             if isinstance(data, BaseHTTPJSONStructure):
                 data = data.to_dict()
             try:
-                data = HTTPJSONStructure(**data).json()
+                data = HTTPJSONStructure(**data).dict()
             except ValidationError as e:
                 data = Success(data=data).to_dict()
         # 返回JSON数据

@@ -25,7 +25,7 @@ JSON = Union[Dict[str, Any], List[Any], int, str, float, bool, Type[None]]
 class HTTPJSONStructure(BaseModel):
     success: bool
     code: int
-    status_code: str
+    status_code: int
     msg: str
     msg_detail: str
     chinese_msg: str

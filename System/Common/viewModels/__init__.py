@@ -16,7 +16,16 @@ __auth__ = 'diklios'
 from django.db import models
 
 
-def reverse_choices(choices: tuple[tuple] or models.Choices) -> dict:
+def choices_to_dict(choices: tuple[tuple] or models.Choices):
+    if isinstance(choices, tuple):
+        return {k: v for k, v in choices}
+    elif isinstance(choices, models.Choices):
+        return {k: v for k, v in choices.choices}
+    else:
+        raise TypeError('choices must be tuple or models.Choices')
+
+
+def reverse_choices_to_dict(choices: tuple[tuple] or models.Choices) -> dict:
     """
     将choices的逆序转换为字典
     """
@@ -26,3 +35,15 @@ def reverse_choices(choices: tuple[tuple] or models.Choices) -> dict:
         return {v: k for k, v in choices.choices}
     else:
         raise TypeError('choices must be tuple or models.Choices')
+
+
+def get_choices_key(choices, choice_value):
+    choices_dict = choices_to_dict(choices)
+    for k, v in choices_dict.items():
+        if choice_value in v:
+            return k
+    return None
+
+
+def get_choices_key_strict(choices, choice_value):
+    return reverse_choices_to_dict(choices).get(choice_value, None)

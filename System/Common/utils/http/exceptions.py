@@ -28,10 +28,11 @@ def exception_handler(exc, context):
     elif isinstance(exc, PydanticValidationError):
         return Response(ParameterError(msg=str(exc)).to_dict())
     elif isinstance(exc, RestFrameWorkAPIException):
+        msg_detail = str(exc.default_detail)
         return Response(BaseError(
             status_code=exc.status_code,
             msg=exc.default_code,
-            msg_detail=exc.default_detail
+            msg_detail=msg_detail
         ).to_dict())
     else:
         return _exception_handler(exc, context)
@@ -175,3 +176,9 @@ class Throttled(APIException):
     status_code = 429
     msg = 'throttled'
     chinese_msg = '被限流'
+
+
+class FileNotFound(APIException):
+    status_code = 404
+    msg = 'file not found'
+    chinese_msg = '文件未找到'

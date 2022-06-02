@@ -13,7 +13,7 @@
 """
 __auth__ = 'diklios'
 
-from django.core.validators import MinValueValidator, MaxValueValidator, DecimalValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
 from Common.viewModels.equipments import count_spherical_equivalent
@@ -33,16 +33,11 @@ class VisualChart(BaseEquipment):
     """
     视力表
     """
-    glasses = (
-        ('none', '无(裸眼)'),
-        ('normal', '框架眼镜'),
-        ('contact_lenses', '隐形眼镜'),
-        ('OK', '角膜塑形镜'),
-    )
     project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='visual_chart', verbose_name='项目')
 
-    distance = models.FloatField(
-        max_length=2, validators=[MinValueValidator(0)], default=5, verbose_name='测量距离，单位：米(m)')
+    distance_validators=[MinValueValidator(0), MaxValueValidator(10)]
+    distance = models.FloatField(max_length=2, validators=distance_validators, default=5,
+                                 verbose_name='测量距离，单位：米(m)')
 
     eyesight_range_validators = [
         MinValueValidator(0),
@@ -60,8 +55,14 @@ class VisualChart(BaseEquipment):
     corrected_visual_acuity_left = models.FloatField(
         validators=eyesight_range_validators, null=True, blank=True, default=None, verbose_name='左眼校正/裸眼视力')
 
+    glasses_choices = (
+        ('none', '无(裸眼)'),
+        ('normal', '框架眼镜'),
+        ('contact_lenses', '隐形眼镜'),
+        ('OK', '角膜塑形镜'),
+    )
     glasses_type = models.CharField(
-        max_length=50, choices=glasses, null=True, blank=True, default=None, verbose_name='眼镜类型')
+        max_length=50, choices=glasses_choices, null=True, blank=True, default=None, verbose_name='眼镜类型')
 
     class Meta:
         verbose_name = verbose_name_plural = '视力表'
@@ -169,7 +170,11 @@ class TonoMeter(BaseEquipment):
     """
     project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='tono_meter', verbose_name='项目')
 
-    tension_validators = [MinValueValidator(0), MaxValueValidator(50), DecimalValidator(3, 1)]
+    tension_validators = [
+        MinValueValidator(0),
+        MaxValueValidator(50),
+        # DecimalValidator(3, 1)
+    ]
 
     intraocular_tension_right = models.FloatField(
         validators=tension_validators, null=True, blank=True, default=None, verbose_name='右眼眼压(mmHg)')
@@ -213,8 +218,17 @@ class Sequence(BaseEquipment):
     """
     测序
     """
+
     project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='sequence', verbose_name='项目')
     serial_number = models.CharField(max_length=32, null=True, blank=True, default=None, verbose_name='测序编号')
+
+    process_choices = (
+        (0, '正在寄送'),
+        (1, '正在分析'),
+        (2, '分析完成'),
+    )
+    process = models.IntegerField(choices=process_choices, null=True, blank=True, default=0, verbose_name='分析进度')
+
     file_path = models.CharField(max_length=512, null=True, blank=True, default=None, verbose_name='测序文件路径')
     file_url = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='测序文件远程URL')
 

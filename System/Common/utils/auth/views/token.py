@@ -26,7 +26,6 @@ class TokenObtainPairView(_TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
 
 
-
 class TokenRefreshView(_TokenRefreshView):
     serializer_class = TokenRefreshSerializer
 

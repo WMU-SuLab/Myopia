@@ -153,5 +153,6 @@ gen
 test
 
 # 本项目特有的文件或文件夹
-System/Common/libs
-System/Common/logs
+System/data
+System/libs
+System/logs

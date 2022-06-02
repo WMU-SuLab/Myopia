@@ -50,6 +50,11 @@ class UserInfoUpdateSuccess(Success):
     chinese_msg = '用户信息更新成功'
 
 
+class UserPasswordUpdateSuccess(Success):
+    msg = 'user password update success'
+    chinese_msg = '用户密码更新成功'
+
+
 class UserDeleteSuccess(Success):
     msg = 'user delete success'
     chinese_msg = '用户注销成功'

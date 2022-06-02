@@ -17,10 +17,10 @@ from rest_framework.generics import RetrieveAPIView
 
 from Common.models.project import Project
 from Common.serializers.project import ProjectEquipmentSerializer
-from Screening.utils.auth.views.api import InsiderLoginRequiredGenericAPIView
+from Screening.utils.auth.views.api import InsiderIsAuthenticatedGenericAPIView
 
 
-class ProjectRetrieveAPIView(InsiderLoginRequiredGenericAPIView, RetrieveAPIView):
+class ProjectRetrieveAPIView(InsiderIsAuthenticatedGenericAPIView, RetrieveAPIView):
     queryset = Project.objects.all()
     serializer_class = ProjectEquipmentSerializer
     lookup_field = 'project_id'

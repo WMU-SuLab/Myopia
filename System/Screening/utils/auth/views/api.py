@@ -13,54 +13,32 @@
 """
 __auth__ = 'diklios'
 
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views import View
-from rest_framework.authentication import SessionAuthentication
-from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from Common.utils.auth.permissions import DjangoModelPermissions
 from Common.utils.auth.permissions.user import IsMangerUser, IsEmployeeUser, IsInsiderUser
+from Common.utils.auth.views.api import IsAuthenticatedAPIView, IsAuthenticatedGenericAPIView
 
 
-class LoginRequiredView(LoginRequiredMixin, View):
-    """
-    比较原始，没有办法做更加复杂的用户身份验证，所以用来传页面就可以了，不能用与API
-    """
-    login_url = 'Screening:manage:index'
-    # 因为next是python的关键字，使用next会导致字典获取不到值，所以使用next_url
-    redirect_field_name = 'next_url'
+class ManagerIsAuthenticatedAPIView(IsAuthenticatedAPIView):
+    permission_classes = (IsAuthenticated, IsMangerUser)
 
 
-class LoginRequiredAPIView(APIView):
-    authentication_classes = (SessionAuthentication, JWTAuthentication)
-
-
-class LoginRequiredGenericAPIView(GenericAPIView):
-    authentication_classes = (SessionAuthentication, JWTAuthentication)
-
-
-class ManagerLoginRequiredAPIView(LoginRequiredAPIView):
+class ManagerIsAuthenticatedGenericAPIView(IsAuthenticatedGenericAPIView):
     permission_classes = (IsAuthenticated, IsMangerUser, DjangoModelPermissions)
 
 
-class ManagerLoginRequiredGenericAPIView(LoginRequiredGenericAPIView):
-    permission_classes = (IsAuthenticated, IsMangerUser, DjangoModelPermissions)
+class EmployeeIsAuthenticatedAPIView(IsAuthenticatedAPIView):
+    permission_classes = (IsAuthenticated, IsEmployeeUser)
 
 
-class EmployeeLoginRequiredAPIView(LoginRequiredAPIView):
+class EmployeeIsAuthenticatedGenericAPIView(IsAuthenticatedGenericAPIView):
     permission_classes = (IsAuthenticated, IsEmployeeUser, DjangoModelPermissions)
 
 
-class EmployeeLoginRequiredGenericAPIView(LoginRequiredGenericAPIView):
-    permission_classes = (IsAuthenticated, IsEmployeeUser, DjangoModelPermissions)
+class InsiderIsAuthenticatedAPIView(IsAuthenticatedAPIView):
+    permission_classes = (IsAuthenticated, IsInsiderUser)
 
 
-class InsiderLoginRequiredAPIView(LoginRequiredAPIView):
-    permission_classes = (IsAuthenticated, IsInsiderUser, DjangoModelPermissions)
-
-
-class InsiderLoginRequiredGenericAPIView(LoginRequiredGenericAPIView):
+class InsiderIsAuthenticatedGenericAPIView(IsAuthenticatedGenericAPIView):
     permission_classes = (IsAuthenticated, IsInsiderUser, DjangoModelPermissions)

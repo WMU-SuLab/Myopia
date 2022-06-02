@@ -16,11 +16,9 @@ __auth__ = 'diklios'
 from django.urls import path, include
 
 from UserService import app_name
-from .test import test
 from .user import user_feedback
 
 urlpatterns = [
-    path('test', test, name='test'),
-    path('mina/', include(('UserService.views.api.mina', app_name), namespace='mina')),
     path('user/feedback', user_feedback, name='user_feedback'),
+    path('mina/', include(('UserService.views.api.mina', app_name), namespace='mina')),
 ]

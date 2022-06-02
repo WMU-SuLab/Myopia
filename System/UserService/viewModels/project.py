@@ -18,8 +18,8 @@ from django.urls import reverse
 from Common.models.project import Project
 from Common.utils.http.exceptions import NotFound
 from Common.utils.http.url import params_dict_to_url_query_string
+from Common.utils.text_handler.hash import encrypt_dict_to_text
 from Common.viewModels.project import generate_report_data_from_project
-from UserService.utils.text_handler.hash import encrypt_dict_to_text
 
 
 def search_project(

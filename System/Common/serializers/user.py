@@ -14,6 +14,8 @@
 __auth__ = 'diklios'
 
 from .base.project import ProjectBaseSerializer
+from .base.regions import CountryBaseSerializer, ProvinceBaseSerializer, CityBaseSerializer, AreaBaseSerializer, \
+    StreetBaseSerializer
 from .base.user import user_exclude, UserBaseSerializer
 
 
@@ -25,6 +27,13 @@ class UserSerializer(UserBaseSerializer):
     # projects = serializers.StringRelatedField(read_only=True,many=True)
     # 法3一对多关联对象序列化：使用关联对象的序列化器
     projects = ProjectBaseSerializer(many=True)
+
+    # 地址
+    country = CountryBaseSerializer()
+    province = ProvinceBaseSerializer()
+    city = CityBaseSerializer()
+    area = AreaBaseSerializer()
+    street = StreetBaseSerializer()
 
     class Meta(UserBaseSerializer.Meta):
         depth = 1

@@ -230,6 +230,22 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "django-extensions"
+version = "3.1.5"
+description = "Extensions for Django"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[package.dependencies]
+Django = ">=2.2"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "django-guardian"
 version = "2.4.0"
 description = "Implementation of per object permissions for Django."
@@ -1286,7 +1302,7 @@ reference = "tsinghua"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "6e9bebf3b5d4d6e826106626645e036d648a5b5dec6b06285c042762df9bf2f9"
+content-hash = "cc61d6f71400dacfeff098f7438e48dd7763b420b0efc5895866e6713ef818c3"
 
 [metadata.files]
 asgiref = [
@@ -1410,6 +1426,10 @@ django = [
 django-cors-headers = [
     {file = "django-cors-headers-3.11.0.tar.gz", hash = "sha256:eb98389bf7a2afc5d374806af4a9149697e3a6955b5a2dc2bf049f7d33647456"},
     {file = "django_cors_headers-3.11.0-py3-none-any.whl", hash = "sha256:a22be2befd4069c4fc174f11cf067351df5c061a3a5f94a01650b4e928b0372b"},
+]
+django-extensions = [
+    {file = "django-extensions-3.1.5.tar.gz", hash = "sha256:28e1e1bf49f0e00307ba574d645b0af3564c981a6dfc87209d48cb98f77d0b1a"},
+    {file = "django_extensions-3.1.5-py3-none-any.whl", hash = "sha256:9238b9e016bb0009d621e05cf56ea8ce5cce9b32e91ad2026996a7377ca28069"},
 ]
 django-guardian = [
     {file = "django-guardian-2.4.0.tar.gz", hash = "sha256:c58a68ae76922d33e6bdc0e69af1892097838de56e93e78a8361090bcd9f89a0"},

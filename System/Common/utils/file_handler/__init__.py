@@ -14,6 +14,7 @@
 __auth__ = 'diklios'
 
 import os
+from shutil import move, copy2
 
 
 def validate_file_path(file_path):
@@ -26,4 +27,50 @@ def validate_file_path(file_path):
         return True
     else:
         print('file path is required or path error')
+        return False
+
+
+def handle_uploaded_file(f, file_path):
+    """
+    处理上传文件
+    :param f:
+    :param file_path:
+    :return:
+    """
+    with open(file_path, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+    return True
+
+
+def copy_file(source_file_path, target_path):
+    """
+    如果目标是目录，使用原文件名，否则使用目标路径的文件名
+    """
+    if os.path.isfile(source_file_path):
+        copy2(source_file_path, target_path)
+        return True
+    else:
+        return False
+
+
+def move_file(source_file_path, target_file_path):
+    """
+    同复制，如果目标是目录，使用原文件名，否则使用目标路径的文件名
+    """
+    if os.path.isfile(source_file_path):
+        move(source_file_path, target_file_path)
+        return True
+    else:
+        return False
+
+
+def remove_file(file_path):
+    """
+    有文件就删除文件，没有文件就什么都不做
+    """
+    if os.path.isfile(file_path):
+        os.remove(file_path)
+        return True
+    else:
         return False

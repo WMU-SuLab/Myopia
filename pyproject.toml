@@ -24,6 +24,7 @@ pillow = "^9.1.0"
 pydantic = "^1.9.0"
 djantic = "^0.7.0"
 Django = "^4.0.4"
+django-extensions = "^3.1.5"
 #Database
 pymysql = "^1.0.2"
 django-mysql = "^4.5.0"

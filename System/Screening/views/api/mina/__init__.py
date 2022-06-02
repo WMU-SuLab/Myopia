@@ -15,8 +15,6 @@ __auth__ = 'diklios'
 
 from django.urls import path
 
-from Screening.utils.auth.views.token import EmployeeTokenObtainPairView, EmployeeTokenBlacklistView, \
-    EmployeeTokenRefreshView, EmployeeTokenVerifyView
 from .equipments import VisualChartCreateRetrieveUpdateGenericAPIView, BioMeterCreateRetrieveUpdateGenericAPIView, \
     OptometryCreateRetrieveUpdateGenericAPIView, TonoMeterCreateRetrieveUpdateGenericAPIView, \
     EyeGroundCreateRetrieveUpdateGenericAPIView, SequenceCreateRetrieveUpdateGenericAPIView, \
@@ -25,12 +23,8 @@ from .project import ProjectRetrieveAPIView
 from .user import UserPermissionsAPIView
 
 urlpatterns = [
-    # user
-    path('login', EmployeeTokenObtainPairView.as_view(), name='login'),
-    path('logout', EmployeeTokenBlacklistView.as_view(), name='logout'),
-    path('token/refresh', EmployeeTokenRefreshView.as_view(), name='token_refresh'),
-    path('token/verify', EmployeeTokenVerifyView.as_view(), name='token_verify'),
-    path('user/permissions', UserPermissionsAPIView.as_view(), name='user_permissions'),
+    # employee user
+    path('employee/permissions', UserPermissionsAPIView.as_view(), name='employee_permissions'),
     # project
     path('projects/<int:project_id>', ProjectRetrieveAPIView.as_view(), name='get_project'),
     # equipments

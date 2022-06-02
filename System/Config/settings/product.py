@@ -38,7 +38,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'Common', 'logs', 'django', 'system.log'),
+            'filename': os.path.join(DJANGO_LOGS_DIR_PATH,'system.log'),
             'formatter': 'default',
             'maxBytes': 1024 * 1024,
             'backupCount': 5,
@@ -46,7 +46,7 @@ LOGGING = {
         'time_handler': {
             'level': 'INFO',
             'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': os.path.join(BASE_DIR,'Common','logs','django', "time.log"),
+            'filename': os.path.join(DJANGO_LOGS_DIR_PATH, "time.log"),
             'when': 'S',
             'interval': 10,
             'backupCount': 5,

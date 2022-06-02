@@ -23,11 +23,11 @@ from rest_framework.response import Response
 from weasyprint import HTML
 
 from Common.models.project import Project
-from Common.utils.http.successes import Success
 from Common.utils.http.exceptions import NotFound
+from Common.utils.http.successes import Success
+from Common.utils.text_handler.hash import decrypt_text_to_dict
 from Common.viewModels.project import generate_project_report_filename
 from UserService.utils.schemes.report import UserReportSearchForm
-from UserService.utils.text_handler.hash import decrypt_text_to_dict
 from UserService.viewModels.project import generate_user_report_data
 
 
@@ -49,7 +49,7 @@ def get_user_report_pdf_file(request):
         user_info_json = decrypt_text_to_dict(data['user_info_json'])
         user_info = UserReportSearchForm(**user_info_json)
         # 创建文件
-        dir_path = os.path.join(settings.BASE_DIR, 'Common', 'libs', 'pdf')
+        dir_path = settings.PDF_DATA_DIR_PATH
         file_name = generate_project_report_filename(project)
         file_path = os.path.join(dir_path, file_name)
         if not os.path.exists(file_path):
@@ -62,5 +62,5 @@ def get_user_report_pdf_file(request):
             project.save()
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
     else:
-        return FileResponse(open(project.report_pdf_file, 'rb'), as_attachment=True,
-                            filename=project.report_pdf_file.split('/')[-1])
+        return FileResponse(open(project.report_file_path, 'rb'), as_attachment=True,
+                            filename=project.report_file_path.split('/')[-1])

@@ -24,9 +24,12 @@ from .user import User
 
 class Project(Base):
     progress_choices = (
-        (-1, '未开始'),
-        (0, '进行中'),
-        (1, '已完成'),
+        (-1, '未知'),
+        (1, '采样中'),
+        (2, '已收样'),
+        (3, '分析中'),
+        (4, '出报告'),
+        (5, '已完成'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='projects', verbose_name='用户')
     name = models.CharField(max_length=63, null=True, blank=True, default=None, verbose_name='项目名称')

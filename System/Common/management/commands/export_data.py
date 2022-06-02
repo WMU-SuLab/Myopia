@@ -13,19 +13,21 @@
 """
 __auth__ = 'diklios'
 
+import os
 from abc import ABCMeta
 
 import pandas as pd
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from Common.models.user import User
 from Common.viewModels.user import export_users_projects_data
 
 
-def export_all_user_data(file_name):
-    if not file_name:
-        file_name = 'user_projects_data.xlsx'
-    writer = pd.ExcelWriter(file_name, mode="a", engine="openpyxl")
+def export_all_user_data(file_path):
+    if not file_path:
+        file_path = os.path.join(settings.EXPORT_DATA_DIR_PATH, 'user_projects_data.xlsx')
+    writer = pd.ExcelWriter(file_path, mode="a", engine="openpyxl")
     student_rows = pd.DataFrame(export_users_projects_data(
         User.objects.filter(student_role__isnull=False).select_related('student_role', 'projects')))
     student_rows.to_excel(writer, sheet_name="Student", index=False)

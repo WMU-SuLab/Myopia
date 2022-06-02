@@ -13,7 +13,7 @@
 """
 __auth__ = 'diklios'
 
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
 
 from Common.utils.http.successes import EmailSendSuccess
@@ -21,15 +21,7 @@ from UserService.viewModels.feedback import handle_user_feedback
 
 
 @api_view(['POST'])
+@authentication_classes([])
 def user_feedback(request):
     data = request.json
     return Response(EmailSendSuccess(handle_user_feedback(data)))
-
-
-def register(request):
-    """
-    注册
-    :param request:
-    :return:
-    """
-    pass

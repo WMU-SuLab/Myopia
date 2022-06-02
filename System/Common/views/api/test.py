@@ -13,12 +13,30 @@
 """
 __auth__ = 'diklios'
 
-from rest_framework.decorators import api_view
-from rest_framework.views import Response
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, inline_serializer
+from rest_framework import serializers
+from rest_framework.decorators import api_view, permission_classes, authentication_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
 
 from Common.utils.http.successes import Success
 
 
+@extend_schema(
+    description='测试接口',
+    parameters=[
+        OpenApiParameter(name='test', description='Not required', required=False, type=str),
+    ],
+    examples=[
+        OpenApiExample(name='test', value=[{'test': 'test'}]),
+        OpenApiExample(name='test2', value=[{'test2': 'test2'}]),
+    ],
+    responses={
+        200: inline_serializer(name='success', fields={'code': serializers.IntegerField()}),
+    }
+)
 @api_view(['GET', 'POST'])
+@permission_classes([AllowAny])
+@authentication_classes([])
 def test(request):
-    return Response(Success(data={}))
+    return Response(Success(data={'args': request.GET.dict(), 'json': request.json}, msg='test success'))

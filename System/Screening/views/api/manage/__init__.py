@@ -19,8 +19,8 @@ from .index import init, clear
 from .user import user_login, user_logout
 
 urlpatterns = [
-    path('login', user_login, name='login'),
-    path('logout', user_logout, name='logout'),
+    path('user/login', user_login, name='login'),
+    path('user/logout', user_logout, name='logout'),
     path('init', init, name='init'),
     path('clear', clear, name='clear'),
 ]
