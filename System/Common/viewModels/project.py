@@ -28,7 +28,6 @@ from Common.viewModels.equipments import count_spherical_equivalent
 
 
 def prefetch_project_data(project: Project.objects.all()):
-    Project.objects.prefetch_related()
     return project.prefetch_related(
         'user', 'user__groups', 'user__groups__permissions', 'user__user_permissions',
         'user__manager_role', 'user__employee_role', 'user__student_role', 'user__teacher_role',
@@ -205,13 +204,13 @@ def handle_eyes(eye_data: dict, key: str, issue: str, level: int, classification
                 ) -> dict:
     """
     处理眼睛数据
-    :param eye_data:
+    :param eye_data: 眼睛数据
     :param key: 有问题的字段
-    :param issue:
+    :param issue: 问题描述
     :param classification: 分级
-    :param level: 等级
-    :param greater_than:
-    :param less_than:
+    :param level: 当前等级
+    :param greater_than: 大于
+    :param less_than: 小于
     :return:
     """
     if not eye_data:

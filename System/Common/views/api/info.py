@@ -15,23 +15,29 @@ __auth__ = 'diklios'
 
 from rest_framework.response import Response
 
-from Common.viewModels import choices_to_dict
 from Common.models.user import User, Nationality
 from Common.serializers.base.user import NationalityBaseSerializer
 from Common.utils.auth.views.api import AllowAnyAPIView
 from Common.utils.http.successes import Success
+from Common.viewModels import choices_to_dict
 
 
 class GenderAPIView(AllowAnyAPIView):
-    def get(self, request):
+    # throttle_scope = 'api_user_info'
+
+    def get(self, request, *args, **kwargs):
         return Response(Success(data=choices_to_dict(User.gender_choices)))
 
 
 class EducationAPIView(AllowAnyAPIView):
+    # throttle_scope = 'api_user_info'
+
     def get(self, request, *args, **kwargs):
         return Response(Success(data=choices_to_dict(User.education_choices)))
 
 
 class NationalityAPIView(AllowAnyAPIView):
+    # throttle_scope = 'api_user_info'
+
     def get(self, request, *args, **kwargs):
         return Response(Success(data=NationalityBaseSerializer(Nationality.objects.all(), many=True).data))

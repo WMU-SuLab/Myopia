@@ -225,19 +225,45 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     # 节流
     'DEFAULT_THROTTLE_CLASSES': [
-        'rest_framework.throttling.AnonRateThrottle',
-        'rest_framework.throttling.UserRateThrottle',
-        'Common.utils.throttles.user.EmployeeRateThrottle',
-        'Common.utils.throttles.user.ManagerRateThrottle',
-        'Common.utils.throttles.user.AdminRateThrottle',
+        # 'rest_framework.throttling.AnonRateThrottle',
+        # 'rest_framework.throttling.UserRateThrottle',
         'rest_framework.throttling.ScopedRateThrottle',
+        'Common.utils.http.throttling.anon.AnonSecondRateThrottle',
+        'Common.utils.http.throttling.anon.AnonMinuteRateThrottle',
+        'Common.utils.http.throttling.anon.AnonHourRateThrottle',
+        'Common.utils.http.throttling.anon.AnonDayRateThrottle',
+        'Common.utils.http.throttling.user.UserSecondRateThrottle',
+        'Common.utils.http.throttling.user.UserMinuteRateThrottle',
+        'Common.utils.http.throttling.user.UserHourRateThrottle',
+        'Common.utils.http.throttling.user.UserDayRateThrottle',
     ],
+    # 统一配置，因为类分开找起来比较麻烦，不需要单独配置THROTTLE_RATES
     'DEFAULT_THROTTLE_RATES': {
-        'anon': '100/day',
-        'user': '500/day',
-        'employee': '300/hour',
-        'manager': '10000/day',
-        'admin': '100000/day',
+        # 原始的设置
+        'anon': '10/min',
+        'user':'60/min',
+        # 用户
+        'anon_second': '1/second',
+        'anon_minute': '10/minute',
+        'anon_hour': '100/hour',
+        'anon_day': '500/day',
+        'user_second': '3/second',
+        'user_minute': '20/minute',
+        'user_hour': '200/hour',
+        'user_day': '500/day',
+        'employee_second': '3/second',
+        'employee_minute': '20/minute',
+        'employee_hour': '200/hour',
+        'employee_day': '1000/day',
+        'manager_second': '5/second',
+        'manager_minute': '100/minute',
+        'manager_hour': '1000/hour',
+        'manager_day': '10000/day',
+        'admin_second': '5/second',
+        'admin_minute': '200/minute',
+        'admin_hour': '2000/hour',
+        'admin_day': '50000/day',
+        # 暂无superuser
     }
 }
 

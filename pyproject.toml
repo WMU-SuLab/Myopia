@@ -5,6 +5,22 @@ description = ""
 authors = ["diklios <47837462+diklios5768@users.noreply.github.com>"]
 license = "MIT"
 
+# 阿里云
+#[[tool.poetry.source]]
+#name = "aliyun"
+#url = "https://mirrors.aliyun.com/pypi/simple/"
+
+#豆瓣：
+#[[tool.poetry.source]]
+#name = "douban"
+#url = "https://pypi.doubanio.com/simple/"
+
+#网易：
+#[[tool.poetry.source]]
+#name = "163"
+#url = "https://mirrors.163.com/pypi/simple/"
+
+#清华
 [[tool.poetry.source]]
 name = "tsinghua"
 url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
@@ -23,7 +39,7 @@ PyPDF2 = "^1.27.4"
 pillow = "^9.1.0"
 pydantic = "^1.9.0"
 djantic = "^0.7.0"
-Django = "^4.0.4"
+django = "^4.0.5"
 django-extensions = "^3.1.5"
 #Database
 pymysql = "^1.0.2"

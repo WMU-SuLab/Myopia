@@ -20,43 +20,77 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from Common.utils.auth.permissions import DjangoModelPermissions
+from Common.utils.http.throttling.anon import AnonSecondRateThrottle, AnonMinuteRateThrottle, AnonHourRateThrottle, \
+    AnonDayRateThrottle
+from Common.utils.http.throttling.role import AdminSecondRateThrottle, AdminMinuteRateThrottle, AdminHourRateThrottle, \
+    AdminDayRateThrottle
+from Common.utils.http.throttling.user import UserSecondRateThrottle, UserMinuteRateThrottle, UserHourRateThrottle, \
+    UserDayRateThrottle
 
 
 class AllowAnyAPIView(APIView):
     authentication_classes = ()
     permission_classes = (AllowAny,)
+    throttle_classes = ()
 
 
 class AllowAnyGenericAPIView(GenericAPIView):
     authentication_classes = ()
     permission_classes = (AllowAny,)
+    throttle_classes = ()
+
+
+class AnonUserAPIView(APIView):
+    authentication_classes = ()
+    permission_classes = (AllowAny,)
+    throttle_classes = (
+        AnonSecondRateThrottle, AnonMinuteRateThrottle, AnonHourRateThrottle, AnonDayRateThrottle
+    )
+
+
+class AnonUserGenericAPIView(GenericAPIView):
+    authentication_classes = ()
+    permission_classes = (AllowAny,)
+    throttle_classes = (
+        AnonSecondRateThrottle, AnonMinuteRateThrottle, AnonHourRateThrottle, AnonDayRateThrottle
+    )
 
 
 class IsAuthenticatedAPIView(APIView):
     authentication_classes = (SessionAuthentication, JWTAuthentication)
     permission_classes = (IsAuthenticated,)
+    throttle_classes = (
+        UserSecondRateThrottle, UserMinuteRateThrottle, UserHourRateThrottle, UserDayRateThrottle,
+    )
 
 
 class IsAuthenticatedGenericAPIView(GenericAPIView):
     authentication_classes = (SessionAuthentication, JWTAuthentication)
     permission_classes = (IsAuthenticated, DjangoModelPermissions)
+    throttle_classes = (
+        UserSecondRateThrottle, UserMinuteRateThrottle, UserHourRateThrottle, UserDayRateThrottle,
+    )
 
 
-class IsAuthenticatedOrReadOnlyAPIView(APIView):
-    authentication_classes = (SessionAuthentication, JWTAuthentication)
+class IsAuthenticatedOrReadOnlyAPIView(IsAuthenticatedAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
-class IsAuthenticatedOrReadOnlyGenericAPIView(GenericAPIView):
-    authentication_classes = (SessionAuthentication, JWTAuthentication)
+class IsAuthenticatedOrReadOnlyGenericAPIView(IsAuthenticatedGenericAPIView):
     permission_classes = (IsAuthenticatedOrReadOnly, DjangoModelPermissions)
 
 
 class AdminIsAuthenticatedAPIView(APIView):
     authentication_classes = (SessionAuthentication, JWTAuthentication)
     permission_classes = (IsAuthenticated, IsAdminUser)
+    throttle_classes = (
+        AdminSecondRateThrottle, AdminMinuteRateThrottle, AdminHourRateThrottle, AdminDayRateThrottle,
+    )
 
 
 class AdminIsAuthenticatedGenericAPIView(GenericAPIView):
     authentication_classes = (SessionAuthentication, JWTAuthentication)
     permission_classes = (IsAuthenticated, IsAdminUser, DjangoModelPermissions)
+    throttle_classes = (
+        AdminSecondRateThrottle, AdminMinuteRateThrottle, AdminHourRateThrottle, AdminDayRateThrottle,
+    )

@@ -66,13 +66,3 @@ LOGS_DIR_PATH_LIST = [
 # SimpleUI settings
 
 # MINA
-MINA = {
-    'screening': {
-        'appid': os.environ.get('MINA_SCREENING_APPID', None),
-        'app_secret': os.environ.get('MINA_SCREENING_APP_SECRET', None),
-    },
-    'user_service': {
-        'appid': os.environ.get('MINA_USER_SERVICE_APPID', None),
-        'app_secret': os.environ.get('MINA_USER_SERVICE_APP_SECRET', None),
-    },
-}
