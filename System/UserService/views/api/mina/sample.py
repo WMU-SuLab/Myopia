@@ -21,61 +21,67 @@ from rest_framework.response import Response
 
 from Common.models.equipments import Sequence, InformedConsent
 from Common.models.project import Project
-from Common.models.user import User,Nationality
-from Common.viewModels import get_choices_key
+from Common.models.user import User, Nationality
+from Common.serializers.base.equipments import SequenceBaseSerializer
 from Common.utils.auth.views.api import IsAuthenticatedAPIView
 from Common.utils.file_handler import handle_uploaded_file, remove_file
+from Common.utils.file_handler.image_handler import is_image_file
 from Common.utils.http.exceptions import NotFound, ParameterError, MethodNotAllowed
 from Common.utils.http.successes import Success
 from Common.utils.text_handler.hash import encrypt_text
-from Common.utils.file_handler.image_handler import is_image_file
+from Common.viewModels import get_choices_key
 from UserService.utils.forms.sample import SampleForm
 
 
-class InquireSerialNumber(IsAuthenticatedAPIView):
-    def get(self, request, *args, **kwargs):
-        serial_number = request.data.get('serial_number', None)
-        if serial_number:
-            sequence = Sequence.objects.filter(serial_number=serial_number)
-            if sequence.exists():
-                sequence = sequence.first()
-                project = sequence.project
-                user = project.user
+class SerialNumberList(IsAuthenticatedAPIView):
+    def get(self, request):
+        """
+        获取自采样的序列号列表
+        """
+        sequences = [sequence.serial_number for sequence in Sequence.objects.filter(project__user=request.user)]
+        return Response(Success(data=sequences))
 
-                data = {
-                    'serial_number': serial_number,
-                    'project_process':project.get_progress_display(),
-                    'user': {
-                        'name': user.name,
-                        'gender':user.get_gender_display(),
-                        'age': user.age,
-                        'birthday': user.birthday.strftime('%Y-%m-%d'),
-                        'native_place': user.native_place,
-                        'contact_phone': project.remarks_json.get('contact_phone', ''),
-                        'nationality': user.nationality.name,
-                        'education': user.get_education_display(),
-                    },
-                    'eye': {
-                        'optometry_left':project.remarks_json.get('optometry_left',None),
-                        'optometry_right':project.remarks_json.get('optometry_right',None),
-                        'family_history': project.remarks_json.get('family_history', None),
-                    },
-                    'informed_consent': reverse('Common:api:download_image', kwargs={
-                        'encrypted_file_text': encrypt_text(project.informed_consent.file_path)
-                    }),
 
-                }
-                return Response(Success(data=data))
-            else:
-                return Response(NotFound(chinese_msg='序列号不存在'))
+class SerialNumberRetrieve(IsAuthenticatedAPIView):
+    def get(self, request, serial_number, *args, **kwargs):
+        sequence = Sequence.objects.filter(serial_number=serial_number)
+        if sequence.exists():
+            sequence = sequence.first()
+            project = sequence.project
+            user = project.user
+
+            data = {
+                'serial_number': serial_number,
+                'project_process': project.get_progress_display(),
+                'user': {
+                    'name': user.name,
+                    'gender': user.get_gender_display(),
+                    'age': user.age,
+                    'birthday': user.birthday.strftime('%Y-%m-%d'),
+                    'native_place': user.native_place,
+                    'contact_phone': project.remarks_json.get('contact_phone', ''),
+                    'nationality': user.nationality.name,
+                    'education': user.get_education_display(),
+                },
+                'eye': {
+                    'optometry_left': project.remarks_json.get('optometry_left', None),
+                    'optometry_right': project.remarks_json.get('optometry_right', None),
+                    'family_history': project.remarks_json.get('family_history', None),
+                },
+                'informed_consent': reverse('Common:api:download_image', kwargs={
+                    'encrypted_file_text': encrypt_text(project.informed_consent.file_path)
+                }),
+
+            }
+            return Response(Success(data=data))
         else:
-            return Response(ParameterError(chinese_msg='请输入序列号'))
+            return Response(NotFound(chinese_msg='序列号不存在'))
 
 
 class SubmitSampleForm(IsAuthenticatedAPIView):
     def set_user_info(self, user, data):
         user.name = data['name']
-        user.gender=get_choices_key(User.gender_choices,data['gender'])
+        user.gender = get_choices_key(User.gender_choices, data['gender'])
         user.age = data['age']
         user.birthday = data['birthday']
         user.native_place = data['native_place']
@@ -90,7 +96,7 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
             if Sequence.objects.filter(serial_number=serial_number).exists():
                 return Response(MethodNotAllowed(chinese_msg='序列号已存在，不允许使用此方法'))
 
-            user: User =request.user
+            user: User = request.user
             self.set_user_info(user, sample_form.cleaned_data)
 
             project = Project.objects.create(

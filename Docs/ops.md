@@ -1,12 +1,14 @@
 # 运维文档
 
 - 项目根文件夹使用**ProjectRoot**代替
+- 一般用于测试环境和生产环境，开发环境只需要创建Python虚拟环境即可
+- 文档不会面面俱到，事无巨细，建议学习过相关知识后再使用
 
 ## 环境
 
 ### 环境安装
 
-- 基础环境（基础环境安装请自行搜索，不同操作系统有不同安装方法）
+- 基础环境（基础环境安装请自行搜索，不同操作系统有不同安装方法，开发环境暂时只需要一个Python即可）
     - Python(3.9+)或者Conda(4.10+)
         - 本项目有部分命令使用了conda，可以替换为相应激活环境和安装包的方式
     - NGINX(1.20+)
@@ -15,37 +17,42 @@
         - supervisor在不同的服务器的最新版本不同，但是使用Python安装的一定是最新的
     - Redis(4.0+)
     - Memcached(1.5+)
-    - pango(1.40+)
-        - Python的 weasyprint 模块需要根据自己的系统和 pango 版本手动使用 pip 进行安装
-- 环境依赖文件位置
-    - pipenv:`ProjectRoot/Pipfile`
-    - conda
-        - `ProjectRoot/Dependencies/conda.yaml`
-        - `ProjectRoot/Dependencies/requirements-conda.txt`
-    - pip:`ProjectRoot/Dependencies/requirements-pip.txt`
-- 首先需要进入项目文件夹：`cd ProjectRoot`
-- 提供了以下几种环境安装方法
-    - poetry(推荐)
-        - 安装 poetry：`pip install poetry`
-        - 安装依赖：`poetry install`
-        - 可在conda环境下使用
-    - pipenv(推荐)
-        - 安装 pipenv：`pip install pipenv`
-        - 安装依赖：`pipenv install`
-        - 不可在conda环境下使用
-    - conda
-        - 使用导出的环境文件重建虚拟环境：`conda env create -f Dependencies/conda.yaml`
-        - 单独创建
-            - 创建虚拟环境：`conda create -n django python=3.10`
-            - 激活虚拟环境：`conda activate django`
-            - 安装依赖：`pip install -r requirements-conda.txt`
-                - 此处也可以直接使用`Dependencies/requirements-pip.txt`安装依赖
-    - 原生虚拟环境
-        - 创建虚拟环境：`virtualenv -p python3.10 venv`
-        - 激活虚拟环境：`source venv/bin/activate`
-        - 安装依赖：`pip install -r Dependencies/requirements-pip.txt`
+    - pango(1.40+)/gtk3(3.24.31+)
+        - pango是Linux环境
+        - gtk3是Windows环境，直接官网下载安装即可
+        - 用于Python的 weasyprint 模块
+            - 需要根据自己的系统和 pango 版本手动使用 pip 指定版本进行安装，详见[issue文档](issues.md)
+- Python虚拟环境
+    - Python环境依赖文件位置
+        - poetry:`ProjectRoot/pyproject.toml`
+        - pipenv:`ProjectRoot/Pipfile`
+        - conda
+            - `ProjectRoot/Dependencies/conda.yaml`
+            - `ProjectRoot/Dependencies/requirements-conda.txt`
+        - pip:`ProjectRoot/Dependencies/requirements-pip.txt`
+    - 提供了以下几种Python环境安装方法
+        - 首先需要进入项目文件夹：`cd ProjectRoot`
+        - poetry(推荐)
+            - 安装 poetry：`pip install poetry`
+            - 安装依赖：`poetry install`
+            - 可在conda环境下使用
+        - pipenv(推荐)
+            - 安装 pipenv：`pip install pipenv`
+            - 安装依赖：`pipenv install`
+            - 不可在conda环境下使用
+        - conda
+            - 使用导出的环境文件重建虚拟环境：`conda env create -f Dependencies/conda.yaml`
+            - 单独创建
+                - 创建虚拟环境：`conda create -n django python=3.10`
+                - 激活虚拟环境：`conda activate django`
+                - 安装依赖：`pip install -r requirements-conda.txt`
+                    - 此处也可以直接使用`Dependencies/requirements-pip.txt`安装依赖
+        - 原生虚拟环境
+            - 创建虚拟环境：`virtualenv -p python3.10 venv`
+            - 激活虚拟环境：`source venv/bin/activate`
+            - 安装依赖：`pip install -r Dependencies/requirements-pip.txt`
 
-### 环境导出
+### Python环境导出
 
 - 导出conda环境
     - `conda env export > conda.yaml`
@@ -61,12 +68,10 @@
 - 打开NGINX端口:80和443
     - 根据情况也可以是别的端口
 - 数据库端口
+    - 根据服务器环境可以更换端口，或者禁止外部访问
     - 打开MySQL端口:3306
-        - 便于开发调试
     - 打开Redis端口:6379
-        - 便于开发调试
     - 打开Memcached端口:11211
-        - 便于开发调试
 - 打开邮件通信端口:25或者465或者587(根据自己服务器的情况)
 
 ## 项目启动（需要先激活虚拟环境）
@@ -74,9 +79,10 @@
 - 推荐先进入项目文件夹`cd /.../ProjectRoot`
 - 配置环境变量
     - `ProjectRoot/System`文件夹下创建`.env`文件
-    - 配置`DJANGO_ENV`:`develop`或者`product`
+    - 配置`DJANGO_ENV`:`develop`或者`test`或者`product`
     - 配置加密
         - 配置`SECRET_KEY`
+        - 配置`CRYPTOGRAPHY_SECRET_KEY`
         - 配置`HASHID_FIELD_SALT`
     - 配置邮箱
     - 配置数据库
@@ -84,10 +90,10 @@
             - 根据是否使用多数据库添加其他数据库相应字段
         - Redis
         - Memcached
-    - 配置小程序
 
 ```dotenv
 # .env文件示例
+# 详见Config.settings.base和Config.settings.project模块对应的生成方法
 SECRET_KEY=''
 CRYPTOGRAPHY_SECRET_KEY=''
 HASHID_FIELD_SALT=''
@@ -127,33 +133,26 @@ DATABASE_DEFAULT_PASSWORD=''
 
 #Redis
 REDIS_URL='redis://127.0.0.1:6379'
-
-#MINA
-MINA_SCREENING_APPID=''
-MINA_SCREENING_APP_SECRET=''
-MINA_USER_SERVICE_APPID=''
-MINA_USER_SERVICE_APP_SECRET=''
-
 ```
 
-- 创建资源文件夹
-    - 使用`mkdir -p`创建多级目录
-    - `ProjectRoot/System/Common/libs`
-        - `ProjectRoot/System/Common/libs/pdf`
-- 创建日志文件夹，使用`mkdir`命令
+- 初始化项目
+    - 拷贝数据文件到服务器
+    - `python3 manage.py init_data -i`
+      - 请详细看完代码之后再使用，根据当前的情况，可能需要修改命令参数，比如不需要创建用户、文件夹等等
+- 创建日志文件夹，使用`mkdir`命令一个个创建，或者使用`python manage.py init_data -d`
     - django
-        - 只需要创建文件夹：`ProjectRoot/System/Common/logs/django`
+        - 只需要创建文件夹：`ProjectRoot/System/logs/django`
         - 不需要自己创建文件
     - gunicorn
-        - 创建gunicorn的日志文件夹，路径为：`ProjectRoot/System/Common/logs/gunicorn`
+        - 创建gunicorn的日志文件夹，路径为：`ProjectRoot/System/logs/gunicorn`
         - 创建日志文件
-            - `touch ProjectRoot/System/Common/logs/gunicorn/access.log`
-            - `touch ProjectRoot/System/Common/logs/gunicorn/error.log`
+            - `touch ProjectRoot/System/logs/gunicorn/access.log`
+            - `touch ProjectRoot/System/logs/gunicorn/error.log`
     - supervisor
-        - 创建supervisor的日志文件夹，路径为：`ProjectRoot/System/Common/logs/supervisor`
+        - 创建supervisor的日志文件夹，路径为：`ProjectRoot/System/logs/supervisor`
         - 创建日志文件
-            - `touch ProjectRoot/System/Common/logs/supervisor/access.log`
-            - `touch ProjectRoot/System/Common/logs/supervisor/error.log`
+            - `touch ProjectRoot/System/logs/supervisor/access.log`
+            - `touch ProjectRoot/System/logs/supervisor/error.log`
     - NGINX一般放在`/var/log/nginx`文件夹下，剩下具体根据自己的配置文件决定
         - 创建文件夹：`mkdir -p /var/log/nginx`
         - 不需要创建文件，配置文件里写好后NGINX自动创建文件
@@ -164,9 +163,9 @@ MINA_USER_SERVICE_APP_SECRET=''
         - 修改域名或者ip地址
         - 修改用户名相关部分
         - 修改静态资源文件目录
-        - 修改日志路径
+        - 修改日志文件路径
         - 修改django服务器相关部分
-        - 修改ssl相关配置
+        - 修改ssl相关配置，拷贝证书到对应目录下
     - 全部修改完成后将配置链接到nginx的配置文件:`sudo ln -s /.../ProjectRoot/System/nginx.conf /etc/nginx/conf.d/myopia.conf`
     - 启动NGINX：`sudo systemctl start nginx`
         - 或者`sudo service nginx start`
@@ -177,7 +176,7 @@ MINA_USER_SERVICE_APP_SECRET=''
         - `CREATE DATABASE DjangoAuth;`
         - `CREATE DATABASE SilencerAtlas;`
         - 其余步骤自己查，或者用数据库管理工具建表，更加方便快速
-        - ☆☆☆☆☆***一定要使用utf8mb4编码和utf8mb4_0900_as_cs排序规则，否则字段内容大小写不敏感，导致插入内容插插进去***☆☆☆☆☆
+        - ☆☆☆☆☆***一定要使用utf8mb4编码和utf8mb4_0900_as_cs排序规则，否则字段内容大小写不敏感，导致插入内容插不进去***☆☆☆☆☆
     - 配置`System/Manage/settings/product.py`
         - 修改`DATABASES`数据库用户和密码
     - 迁移数据库
@@ -192,11 +191,12 @@ MINA_USER_SERVICE_APP_SECRET=''
 - 启动Redis:``
 - 配置gunicorn
     - 可以修改`System/gunicorn.py`文件中的端口等内容，默认不需要进行修改
-    - 启动：`gunicorn Config.wsgi -c gunicorn.py`
+    - 测试能否启动：`gunicorn Config.wsgi -c gunicorn.py`
+        - 能够启动即可，确认能够运行后关闭，后续会使用supervisor来管理
         - 如果不准备使用supervisor可以将gunicorn改为后台运行
 - 配置supervisor
     - **配置项目文件夹和启动命令**
-        - 根据自己的服务器情况更换文件路径即可
+        - 根据自己的服务器情况更换文件路径、虚拟环境路径、启动命令
     - 你可以选择使用默认的`/etc/supervisord.conf`和`/etc/supervisord.d`文件夹，或者像下面这样进行配置
         - 创建supervisor配置文件夹
             - `mkdir -p /etc/supervisor`

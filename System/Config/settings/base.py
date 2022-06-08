@@ -16,6 +16,7 @@ __auth__ = 'diklios'
 import os
 from datetime import timedelta
 from zoneinfo import ZoneInfo
+from django.core.management.utils import get_random_secret_key
 
 from . import BASE_DIR
 
@@ -24,9 +25,9 @@ from . import BASE_DIR
 DEFAULT_CHARSET = 'utf-8'
 # SECURITY WARNING: keep the secret key used in production secret!
 # 使用from django.core.management.utils import get_random_secret_key 生成 secret_key
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-secret-key')
+SECRET_KEY = os.environ.get('SECRET_KEY', get_random_secret_key())
 # django-hashid-field插件的id加密配置
-HASHID_FIELD_SALT = os.environ.get('HASHID_FIELD_SALT', 'WMU-SuLab hashids salt secret key')
+HASHID_FIELD_SALT = os.environ.get('HASHID_FIELD_SALT', get_random_secret_key())
 # 允许的主机
 ALLOWED_HOSTS = ['*']
 

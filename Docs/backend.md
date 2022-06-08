@@ -16,14 +16,18 @@
     - System: 系统主文件夹
         - Config: 系统配置部分
         - Common: 公共程序
+        - data: 数据文件
+        - libs: 资源文件
+        - logs: 日志文件
         - Screening: 采样程序
         - UserService: 用户服务程序
         - .env: 系统环境变量
         - gunicorn.py: gunicorn配置文件
         - manage.py: 主程序入口
-        - nginx.conf: nginx配置文件
-        - supervisor.ini: supervisor配置文件
         - test.py: 测试程序文件
+        - nginx.conf: nginx配置文件
+        - nginx-test.conf: nginx测试服务器配置文件
+        - supervisor.ini: supervisor配置文件
         - uwsgi.ini: uwsgi配置文件
     - .gitignore: git 会的忽略文件或文件夹的配置文件
     - LICENSE: 许可证
