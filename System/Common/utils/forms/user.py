@@ -34,7 +34,7 @@ class PhoneUserForm(forms.Form):
             raise forms.ValidationError('手机号已被注册')
         return phone
 
-    def clean_password(self):
+    def clean_confirm_password(self):
         data = self.cleaned_data
         password: str = data.get('password', None)
         confirm_password: str = data.get('confirm_password', None)
@@ -50,11 +50,16 @@ class ResetPasswordForm(forms.Form):
 
     def clean_new_password(self):
         data = self.cleaned_data
-        original_password: str = data.get('original_password', None)
-        new_password: str = data.get('new_password', None)
-        confirm_password: str = data.get('confirm_password', None)
+        original_password: str = data['original_password']
+        new_password: str = data['new_password']
         if compare_digest(original_password, new_password):
             raise forms.ValidationError('新密码不能与原密码相同')
+        return new_password
+
+    def clean_confirm_password(self):
+        data = self.cleaned_data
+        new_password: str = data['new_password']
+        confirm_password: str = data['confirm_password']
         if not compare_digest(new_password, confirm_password):
             raise forms.ValidationError('两次输入的密码不一致，请修改!')
-        return new_password
+        return confirm_password
