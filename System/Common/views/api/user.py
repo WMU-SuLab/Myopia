@@ -17,7 +17,8 @@ from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
 
 from Common.models.user import User
-from Common.utils.forms.user import PhoneUserForm
+from Common.utils.auth.views.api import IsAuthenticatedAPIView
+from Common.utils.forms.user import PhoneUserForm, ResetPasswordForm
 from Common.utils.http.exceptions import ParameterError
 from Common.utils.http.successes import UserRegisterSuccess, UserPasswordUpdateSuccess
 
@@ -36,7 +37,16 @@ def register(request):
         return Response(ParameterError(msg_detail=str(phone_user_form.errors)))
 
 
-@api_view(['POST'])
-def reset_password():
-    # todo:
-    return Response(UserPasswordUpdateSuccess())
+class RestPasswordAPIView(IsAuthenticatedAPIView):
+    def post(self, request):
+        user: User = request.user
+        reset_password_form = ResetPasswordForm(request.POST)
+        if reset_password_form.is_valid():
+            if user.check_password(reset_password_form.cleaned_data['original_password']):
+                user.set_password(reset_password_form.cleaned_data['new_password'])
+                user.save()
+                return Response(UserPasswordUpdateSuccess())
+            else:
+                return Response(ParameterError(msg_detail='原密码错误'))
+        else:
+            return Response(ParameterError(msg_detail=str(reset_password_form.errors)))

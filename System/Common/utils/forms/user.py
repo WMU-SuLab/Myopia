@@ -16,24 +16,12 @@ __auth__ = 'diklios'
 from secrets import compare_digest
 
 from django import forms
-from django.core.validators import RegexValidator
 
 from Common.models.user import User
-from Common.utils.text_handler.validator import validate_phone
+from .validators import phone_validator, password_validators
 
 
 class PhoneUserForm(forms.Form):
-    password_validators = [
-        # 不需要大写
-        RegexValidator(r'^(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{6,32}$')
-        # 强制需要大小写
-        # RegexValidator(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,32}$')
-    ]
-    phone_validator = [
-        validate_phone,
-        # RegexValidator(r'^1[3-9]\d{9}$', '手机号码格式不正确')
-    ]
-
     phone = forms.CharField(validators=phone_validator)
     password = forms.CharField(validators=password_validators)
     confirm_password = forms.CharField(validators=password_validators)
@@ -46,10 +34,27 @@ class PhoneUserForm(forms.Form):
             raise forms.ValidationError('手机号已被注册')
         return phone
 
-    def clean_confirm_password(self):
+    def clean_password(self):
         data = self.cleaned_data
         password: str = data.get('password', None)
         confirm_password: str = data.get('confirm_password', None)
         if not compare_digest(password, confirm_password):
             raise forms.ValidationError('两次输入的密码不一致，请修改!')
         return password
+
+
+class ResetPasswordForm(forms.Form):
+    original_password = forms.CharField(validators=password_validators)
+    new_password = forms.CharField(validators=password_validators)
+    confirm_password = forms.CharField(validators=password_validators)
+
+    def clean_new_password(self):
+        data = self.cleaned_data
+        original_password: str = data.get('original_password', None)
+        new_password: str = data.get('new_password', None)
+        confirm_password: str = data.get('confirm_password', None)
+        if compare_digest(original_password, new_password):
+            raise forms.ValidationError('新密码不能与原密码相同')
+        if not compare_digest(new_password, confirm_password):
+            raise forms.ValidationError('两次输入的密码不一致，请修改!')
+        return new_password

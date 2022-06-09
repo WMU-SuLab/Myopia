@@ -20,13 +20,13 @@ from .file import DownloadFileAPIView, DownloadImageAPIView
 from .info import GenderAPIView, EducationAPIView, NationalityAPIView
 from .regions import CountryListAPIView, ProvinceListAPIView, CityListAPIView, AreaListAPIView, StreetListAPIView
 from .test import test
-from .user import register, reset_password
+from .user import register, RestPasswordAPIView
 
 urlpatterns = [
     path('test', test, name='test'),
     # 用户
     path('user/register', register, name='user_register'),
-    path('user/reset_password', reset_password, name='user_rest_password'),
+    path('user/reset_password', RestPasswordAPIView.as_view(), name='user_rest_password'),
     path('user/login', TokenObtainPairView.as_view(), name='user_login'),
     path('user/logout', TokenBlacklistView.as_view(), name='user_logout'),
     path('user/token/refresh', TokenRefreshView.as_view(), name='user_token_refresh'),
