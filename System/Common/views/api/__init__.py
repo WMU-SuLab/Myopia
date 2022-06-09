@@ -36,7 +36,7 @@ urlpatterns = [
     path('download_image/<str:encrypted_file_text>', DownloadImageAPIView.as_view(), name='download_image'),
     # 地区
     path('countries', CountryListAPIView.as_view(), name='get_countries'),
-    path('provinces/<int:country_id>', CountryListAPIView.as_view(), name='get_provinces'),
+    path('provinces/<int:country_id>', ProvinceListAPIView.as_view(), name='get_provinces'),
     path('cities/<int:province_id>', CityListAPIView.as_view(), name='get_cities'),
     path('areas/<int:city_id>', AreaListAPIView.as_view(), name='get_areas'),
     path('streets/<int:area_id>', StreetListAPIView.as_view(), name='get_streets'),
