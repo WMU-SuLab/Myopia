@@ -40,3 +40,25 @@
 - 不断exit status 0; not expected
     - supervisor无法处理不在前台的程序，如nohup、gunicorn设置了守护进程等
     - 多次出现是因为没有监测到前台程序不断重启
+
+## 数据库
+
+### MySQL
+
+- <span id="mysql-tzinfo">时区问题</span>
+    - 出现问题：`Database returned an invalid datetime value. Are time zone definitions for your database installed`
+    - 解决方法参考：https://blog.csdn.net/kq1983/article/details/109767343
+        - 使用`mysql_tzinfo_to_sql`命令
+            - `mysql_tzinfo_to_sql tz_dir`
+                - 常用：`mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root -p密码 mysql`
+            - `mysql_tzinfo_to_sql tz_file tz_name`
+                - 常用：`mysql_tzinfo_to_sql tz_file tz_name | mysql -u root -p密码 mysql`
+            - `mysql_tzinfo_to_sql --leap tz_file`
+                - 常用：`mysql_tzinfo_to_sql --leap tz_file | mysql -u root -p密码 mysql`
+        - 没有`mysql_tzinfo_to_sql`命令，如轻量级应用服务器安装等，直接使用sql文件
+            - 下载地址：<https://dev.mysql.com/downloads/timezones.html>
+                - 请注意下载与数据库对应的版本
+            - 导入：`mysql -u root -p密码 mysql < 文件名称`
+            - 或者使用Navicat等工具导入，非常简单
+        - 最后可能需要刷新一下:`mysql -u root -p -e "flush tables;" mysql`
+        - 或者重启一下：`sudo service mysql restart`

@@ -17,6 +17,7 @@ from rest_framework.decorators import api_view
 from rest_framework.views import Response
 
 from Common.utils.http.successes import Success
+from Common.utils.http.response import RawHTTPJSONStructure
 from Screening.libs.menus import init_json
 from Screening.views.manage.index import screening_manage_login_required
 
@@ -24,7 +25,7 @@ from Screening.views.manage.index import screening_manage_login_required
 @screening_manage_login_required
 @api_view(['GET'])
 def init(request):
-    return Response(data=init_json, status=200)
+    return Response(RawHTTPJSONStructure(data=init_json), status=200)
 
 
 @screening_manage_login_required

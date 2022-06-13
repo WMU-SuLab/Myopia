@@ -13,6 +13,7 @@
 """
 __auth__ = 'diklios'
 
+from django.conf import settings
 from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiExample, inline_serializer
 from rest_framework import serializers
 from rest_framework.decorators import api_view, permission_classes, authentication_classes
@@ -20,7 +21,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from Common.utils.http.successes import Success
-from django.conf import settings
+
 
 @extend_schema(
     description='测试接口',
@@ -41,5 +42,6 @@ from django.conf import settings
 def test(request):
     return Response(Success(data={
         'kwargs': request.GET.dict(),
-        'json': request.json
+        'json': request.json,
+        'env': settings.DJANGO_ENV,
     }, msg='test success'))

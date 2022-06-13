@@ -177,6 +177,7 @@ REDIS_URL='redis://127.0.0.1:6379'
         - `CREATE DATABASE SilencerAtlas;`
         - 其余步骤自己查，或者用数据库管理工具建表，更加方便快速
         - ☆☆☆☆☆***一定要使用utf8mb4编码和utf8mb4_0900_as_cs排序规则，否则字段内容大小写不敏感，导致插入内容插不进去***☆☆☆☆☆
+    - 启用时区，具体参考[问题文档](issues.md#mysql)
     - 配置`System/Manage/settings/product.py`
         - 修改`DATABASES`数据库用户和密码
     - 迁移数据库

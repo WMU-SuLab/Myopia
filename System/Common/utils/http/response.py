@@ -22,7 +22,7 @@ from pydantic import BaseModel
 JSON = Union[Dict[str, Any], List[Any], int, str, float, bool, Type[None]]
 
 
-class HTTPJSONStructure(BaseModel):
+class HTTPJSONStructureModel(BaseModel):
     success: bool
     code: int
     status_code: int
@@ -110,3 +110,11 @@ class JsonResponse(_JsonResponse):
             'extra': self.extra
         }
         super().__init__(data, **kwargs)
+
+
+class RawHTTPJSONStructure:
+    def __init__(self, data: JSON):
+        self.data = data
+
+    def get_body(self):
+        return self.data

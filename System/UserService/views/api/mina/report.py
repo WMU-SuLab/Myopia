@@ -18,7 +18,7 @@ import os
 from django.conf import settings
 from django.http.response import FileResponse
 from django.template.loader import render_to_string
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view,authentication_classes
 from rest_framework.response import Response
 from weasyprint import HTML
 
@@ -32,6 +32,7 @@ from UserService.viewModels.project import generate_user_report_data
 
 
 @api_view(['POST'])
+@authentication_classes([])
 def get_user_report_data(request):
     data = request.json
     user_info = UserReportSearchForm(**data)
@@ -39,6 +40,7 @@ def get_user_report_data(request):
 
 
 @api_view(['GET'])
+@authentication_classes([])
 def get_user_report_pdf_file(request):
     data = request.GET.dict()
     project_id = data.get('project_id', None)
