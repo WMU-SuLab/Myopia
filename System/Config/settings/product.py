@@ -15,6 +15,8 @@ __auth__ = 'diklios'
 
 from .project import *
 
+DJANGO_ENV = 'product'
+
 # 日志配置
 LOGGING = {
     'version': 1,
@@ -38,7 +40,7 @@ LOGGING = {
         'file': {
             'level': 'INFO',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(DJANGO_LOGS_DIR_PATH,'system.log'),
+            'filename': os.path.join(DJANGO_LOGS_DIR_PATH, 'system.log'),
             'formatter': 'default',
             'maxBytes': 1024 * 1024,
             'backupCount': 5,

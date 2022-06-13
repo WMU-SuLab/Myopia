@@ -18,6 +18,8 @@ from .project import *
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+DJANGO_ENV = 'develop'
+
 # 日志配置
 LOGGING = {
     # 使用的python内置的logging模块，python可能会对它进行升级，所以需要写一个版本号，目前就是1版本

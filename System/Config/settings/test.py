@@ -15,6 +15,8 @@ __auth__ = 'diklios'
 
 from .project import *
 
+DJANGO_ENV = 'test'
+
 # 日志配置
 LOGGING = {
     'version': 1,
