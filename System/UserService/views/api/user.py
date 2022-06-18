@@ -23,5 +23,5 @@ from UserService.viewModels.feedback import handle_user_feedback
 @api_view(['POST'])
 @authentication_classes([])
 def user_feedback(request):
-    data = request.json
+    data = request.data
     return Response(EmailSendSuccess(handle_user_feedback(data)))

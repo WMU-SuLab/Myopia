@@ -41,7 +41,9 @@ from Common.utils.http.successes import Success
 @authentication_classes([])
 def test(request):
     return Response(Success(data={
-        'kwargs': request.GET.dict(),
-        'json': request.json,
+        'headers':request.headers,
+        'query': request.GET.dict(),
+        'form_data':request.POST.dict(),
+        'json': request.data,
         'env': settings.DJANGO_ENV,
     }, msg='test success'))
