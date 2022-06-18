@@ -31,6 +31,10 @@ DATA_DIR_PATH = os.path.join(BASE_DIR, 'data')
 EXPORT_DATA_DIR_PATH = os.path.join(DATA_DIR_PATH, 'export')
 IMPORT_DATA_DIR_PATH = os.path.join(DATA_DIR_PATH, 'import')
 IMPORT_JSON_DATA_DIR_PATH = os.path.join(IMPORT_DATA_DIR_PATH, 'json')
+IMPORT_SQL_DATA_DIR_PATH = os.path.join(IMPORT_DATA_DIR_PATH, 'sql')
+IMPORT_XLSX_DATA_DIR_PATH = os.path.join(IMPORT_DATA_DIR_PATH, 'xlsx')
+IMPORT_XLS_DATA_DIR_PATH = os.path.join(IMPORT_DATA_DIR_PATH, 'xls')
+IMPORT_CSV_DATA_DIR_PATH = os.path.join(IMPORT_DATA_DIR_PATH, 'csv')
 
 # 用户数据文件夹（非存储到数据库）
 USER_DATA_DIR_PATH = os.path.join(DATA_DIR_PATH, 'user')

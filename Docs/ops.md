@@ -18,7 +18,7 @@
     - Redis(4.0+)
     - Memcached(1.5+)
     - pango(1.40+)/gtk3(3.24.31+)
-        - pango是Linux环境
+        - pango是Unix/Linux/MacOS环境
         - gtk3是Windows环境，直接官网下载安装即可
         - 用于Python的 weasyprint 模块
             - 需要根据自己的系统和 pango 版本手动使用 pip 指定版本进行安装，详见[issue文档](issues.md)

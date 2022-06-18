@@ -154,10 +154,10 @@ class Conflict(APIException):
     chinese_msg = '冲突'
 
 
-class PreconditionFailed(APIException):
+class InsufficientPreconditions(APIException):
     status_code = 412
     msg = 'precondition failed'
-    chinese_msg = '条件失败'
+    chinese_msg = '前提条件不足'
 
 
 class UnsupportedMediaType(APIException):

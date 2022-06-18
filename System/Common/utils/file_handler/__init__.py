@@ -37,10 +37,14 @@ def handle_uploaded_file(f, file_path):
     :param file_path:
     :return:
     """
-    with open(file_path, 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
-    return True
+    try:
+        with open(file_path, 'wb+') as destination:
+            for chunk in f.chunks():
+                destination.write(chunk)
+        return True
+    except Exception as e:
+        print(e)
+        return False
 
 
 def copy_file(source_file_path, target_path):
@@ -71,6 +75,50 @@ def remove_file(file_path):
     """
     if os.path.isfile(file_path):
         os.remove(file_path)
+        return True
+    else:
+        return False
+
+
+def rename_file(file_path, new_file_path):
+    """
+    重命名文件
+    """
+    if os.path.isfile(file_path):
+        os.rename(file_path, new_file_path)
+        return True
+    else:
+        return False
+
+
+def rename_file_by_name(file_path, new_name):
+    """
+    重命名文件，文件名为new_name
+    """
+    if os.path.isfile(file_path):
+        os.rename(file_path, os.path.join(os.path.dirname(file_path), new_name))
+        return True
+    else:
+        return False
+
+
+def rename_dir(dir_path, new_dir_path):
+    """
+    重命名目录
+    """
+    if os.path.isdir(dir_path):
+        os.rename(dir_path, new_dir_path)
+        return True
+    else:
+        return False
+
+
+def rename_dir_by_name(dir_path, new_name):
+    """
+    重命名目录，目录名为 new_name
+    """
+    if os.path.isdir(dir_path):
+        os.rename(dir_path, os.path.join(os.path.dirname(dir_path), new_name))
         return True
     else:
         return False

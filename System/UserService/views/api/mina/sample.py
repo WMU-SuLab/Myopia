@@ -22,14 +22,14 @@ from rest_framework.response import Response
 from Common.models.equipments import Sequence, InformedConsent
 from Common.models.project import Project
 from Common.models.user import User, Nationality
-from Common.serializers.base.equipments import SequenceBaseSerializer
 from Common.utils.auth.views.api import IsAuthenticatedAPIView
-from Common.utils.file_handler import handle_uploaded_file, remove_file
+from Common.utils.file_handler import handle_uploaded_file, remove_file,rename_file
 from Common.utils.file_handler.image_handler import is_image_file
 from Common.utils.http.exceptions import NotFound, ParameterError, MethodNotAllowed
 from Common.utils.http.successes import Success
 from Common.utils.text_handler.hash import encrypt_text
 from Common.viewModels import get_choices_key
+from Common.viewModels.equipments import generate_project_informed_consent_file_name
 from UserService.utils.forms.sample import SampleForm
 
 
@@ -117,13 +117,20 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
                 return Response(ParameterError(chinese_msg='请上传同意书'))
             informed_consent_dir_path = os.path.join(settings.USER_IMAGES_DATA_DIR_PATH, 'informed_consent')
             informed_consent_file_path = os.path.join(informed_consent_dir_path, informed_consent_file.name)
-            handle_uploaded_file(informed_consent_file, informed_consent_file_path)
-            if is_image_file(informed_consent_file_path):
-                InformedConsent.objects.create(
-                    project=project,
-                    file_path=informed_consent_file_path,
-                )
-                return Response(Success(chinese_msg='提交成功'))
+            if handle_uploaded_file(informed_consent_file, informed_consent_file_path) \
+                    and is_image_file(informed_consent_file_path):
+                informed_consent = InformedConsent.objects.create(project=project)
+                informed_consent_new_file_path = os.path.join(
+                    informed_consent_dir_path,
+                    generate_project_informed_consent_file_name(
+                        informed_consent,
+                        file_type=informed_consent_file.name.split('.')[-1]))
+                if rename_file(informed_consent_file_path, informed_consent_new_file_path):
+                    informed_consent.file_path = informed_consent_new_file_path
+                    informed_consent.save()
+                    return Response(Success(chinese_msg='提交成功'))
+                else:
+                    return Response(ParameterError(chinese_msg='提交失败'))
             else:
                 remove_file(informed_consent_file_path)
                 return Response(ParameterError(chinese_msg='上传的不是图片文件'))

@@ -22,7 +22,7 @@ from Common.serializers.base.equipments import VisualChartBaseSerializer, BioMet
     OptometryBaseSerializer, \
     TonoMeterBaseSerializer, EyeGroundBaseSerializer, SequenceBaseSerializer, InformedConsentBaseSerializer, \
     QuestionnaireBaseSerializer
-from Common.utils.http.exceptions import ParameterError, NotFound, PreconditionFailed
+from Common.utils.http.exceptions import ParameterError, NotFound, InsufficientPreconditions
 from Common.viewModels.base import retrieve_model
 from Screening.utils.auth.views.api import EmployeeIsAuthenticatedGenericAPIView
 
@@ -39,7 +39,7 @@ class EquipmentGenericAPIView(EmployeeIsAuthenticatedGenericAPIView):
     def precondition(self, data):
         project = self.get_project(data)
         if self.equipment_model_name != 'visual_chart' and getattr(project, 'has_visual_chart', False):
-            raise PreconditionFailed(chinese_msg='还未做视力表')
+            raise InsufficientPreconditions(chinese_msg='还未做视力表')
         return True
 
     def set_equipment_pk(self, data):

@@ -20,7 +20,7 @@ from Common.utils.http.exceptions import NotFound
 from Common.utils.http.url import params_dict_to_url_query_string
 from Common.utils.text_handler.hash import encrypt_dict_to_text
 from Common.viewModels.project import generate_report_data_from_project
-
+from Common.utils.text_handler.hash import encrypt_text
 
 def search_project(
         identification_card_number: str,
@@ -77,8 +77,15 @@ def generate_user_report_data(
         project.report_file_url = report_file_url
         project.remarks_json['report_file_full'] = False
         project.save()
+    if not project.has_informed_consent:
+        return {'project_id': project.id}
+    if not project.informed_consent.file_path and not project.informed_consent.file_url:
+        return {'project_id': project.id}
     return {
         **generate_report_data_from_project(project),
+        # 使用文件而不是图片是因为可能以后使用PDF存储
+        'informed_consent_file_url': reverse('Common:api:download_file',args=(encrypt_text(project.informed_consent.file_path),))
+        if project.has_informed_consent else None,
         'report_file_url': project.report_file_url,
         'report_file_full': project.remarks_json.get('report_file_full', False),
     }

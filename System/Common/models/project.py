@@ -71,47 +71,46 @@ class Project(Base):
     def set_project_name_city_rule(self, year, city, city_region, user_role):
         self.name = f'{year}-{city}-{city_region}-{user_role}'
 
-    @handle_object_does_not_exist
     def has_equipment(self, equipment_type):
         return getattr(self, 'has_'+equipment_type)
 
-    @handle_object_does_not_exist
     @property
+    @handle_object_does_not_exist
     def has_visual_chart(self):
         return True if self.visual_chart else False
 
-    @handle_object_does_not_exist
     @property
+    @handle_object_does_not_exist
     def has_bio_meter(self):
         return True if self.bio_meter else False
 
-    @handle_object_does_not_exist
     @property
+    @handle_object_does_not_exist
     def has_optometry(self):
         return True if self.optometry else False
 
-    @handle_object_does_not_exist
     @property
+    @handle_object_does_not_exist
     def has_tono_meter(self):
         return True if self.tono_meter else False
 
-    @handle_object_does_not_exist
     @property
+    @handle_object_does_not_exist
     def has_eye_ground(self):
         return True if self.eye_ground else False
 
-    @handle_object_does_not_exist
     @property
+    @handle_object_does_not_exist
     def has_sequence(self):
         return True if self.sequence else False
 
-    @handle_object_does_not_exist
     @property
+    @handle_object_does_not_exist
     def has_informed_consent(self):
         return True if self.informed_consent else False
 
-    @handle_object_does_not_exist
     @property
+    @handle_object_does_not_exist
     def has_questionnaire(self):
         return True if self.questionnaire else False
 

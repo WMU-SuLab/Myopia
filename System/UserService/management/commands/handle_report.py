@@ -48,11 +48,17 @@ def merge_pdf(dir_path):
         file_path2 = os.path.join(dir_path, f'{project.user.name}-{project.user.username}.pdf')
         if os.path.exists(file_path1) and os.path.exists(file_path2):
             joint_file_path = os.path.join(dir_path, 'joint-' + generate_project_report_filename(project))
+            if project.report_file_path==joint_file_path and os.path.exists(joint_file_path):
+                continue
             merger.append(file_path1)
             merger.append(file_path2)
             merger.write(joint_file_path)
             project.report_file_path = joint_file_path
             project.remarks_json['report_file_full'] = True
+            project.save()
+        elif os.path.exists(file_path1):
+            project.report_file_path = file_path1
+            project.remarks_json['report_file_full'] = False
             project.save()
 
 

@@ -15,13 +15,14 @@ __auth__ = 'diklios'
 
 from django.urls import path
 
-from .report import get_user_report_data, get_user_report_pdf_file
+from .report import UploadInformedConsent,get_user_report_data, get_user_report_pdf_file
 from .sample import SerialNumberList, SerialNumberRetrieve, SubmitSampleForm
 
 urlpatterns = [
     # 报告
-    path('get_user_report_data', get_user_report_data, name='get_user_report_data'),
-    path('get_user_report_pdf_file', get_user_report_pdf_file, name='get_user_report_pdf_file'),
+    path('report/data', get_user_report_data, name='get_user_report_data'),
+    path('report/upload_informed_consent', UploadInformedConsent.as_view(), name='upload_informed_consent'),
+    path('report/pdf_file', get_user_report_pdf_file, name='get_user_report_pdf_file'),
     # 自采样
     path('sample/serial_numbers', SerialNumberList.as_view(), name='sample_list_serial_numbers'),
     path('sample/serial_numbers/<str:serial_number>', SerialNumberRetrieve.as_view(),
