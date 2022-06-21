@@ -23,7 +23,7 @@ class SampleForm(forms.Form):
     serial_number = forms.CharField(min_length=9)
     # person info
     name = forms.CharField(max_length=32)
-    gender=forms.CharField()
+    gender = forms.CharField()
     age = forms.IntegerField(required=False)
     birthday = forms.DateField()
     native_place = forms.CharField(max_length=32)
@@ -31,6 +31,7 @@ class SampleForm(forms.Form):
     nationality = forms.CharField(max_length=20)
     education = forms.IntegerField()
     # eye info
+    wear_glasses_first_time = forms.CharField()
     optometry_left = forms.CharField()
     optometry_right = forms.CharField()
 

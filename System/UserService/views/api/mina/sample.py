@@ -23,7 +23,7 @@ from Common.models.equipments import Sequence, InformedConsent
 from Common.models.project import Project
 from Common.models.user import User, Nationality
 from Common.utils.auth.views.api import IsAuthenticatedAPIView
-from Common.utils.file_handler import handle_uploaded_file, remove_file,rename_file
+from Common.utils.file_handler import handle_uploaded_file, remove_file, rename_file
 from Common.utils.file_handler.image_handler import is_image_file
 from Common.utils.http.exceptions import NotFound, ParameterError, MethodNotAllowed
 from Common.utils.http.successes import Success
@@ -64,6 +64,7 @@ class SerialNumberRetrieve(IsAuthenticatedAPIView):
                     'education': user.get_education_display(),
                 },
                 'eye': {
+                    'wear_glasses_first_time': project.remarks_json.get('wear_glasses_first_time', None),
                     'optometry_left': project.remarks_json.get('optometry_left', None),
                     'optometry_right': project.remarks_json.get('optometry_right', None),
                     'family_history': project.remarks_json.get('family_history', None),
@@ -105,6 +106,7 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
                 progress=1,
                 remarks_json={
                     'contact_phone': sample_form.cleaned_data['contact_phone'],
+                    'wear_glasses_first_time': sample_form.cleaned_data['wear_glasses_first_time'],
                     'optometry_left': sample_form.cleaned_data['optometry_left'],
                     'optometry_right': sample_form.cleaned_data['optometry_right'],
                     'family_history': sample_form.cleaned_data['family_history'],
@@ -163,10 +165,11 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
                 else:
                     remove_file(informed_consent_file_path)
                     return Response(ParameterError(chinese_msg='上传的不是图片文件'))
+            project.remarks_json['contact_phone'] = sample_form.cleaned_data['contact_phone']
+            project.remarks_json['wear_glasses_first_time'] = sample_form.cleaned_data['wear_glasses_first_time']
             project.remarks_json['family_history'] = sample_form.cleaned_data['family_history']
             project.remarks_json['optometry_left'] = sample_form.cleaned_data['optometry_left']
             project.remarks_json['optometry_right'] = sample_form.cleaned_data['optometry_right']
-            project.remarks_json['contact_phone'] = sample_form.cleaned_data['contact_phone']
             self.set_user_info(user, sample_form.cleaned_data)
             return Response(Success(chinese_msg='更新成功'))
         else:
