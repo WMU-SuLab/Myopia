@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   equipments.py    
-@Create Time    :   2022/4/14 16:22
+@File Name      :   optometry.py    
+@Create Time    :   2022/6/21 16:45
 @Description    :   
 @Version        :   
 @License        :   MIT
@@ -12,16 +12,6 @@
 @Motto          :   All our science, measured against reality, is primitive and childlike - and yet it is the most precious thing we have.
 """
 __auth__ = 'diklios'
-
-
-def generate_project_informed_consent_file_name(informed_consent, file_type: str = 'jpg') -> str:
-    """
-    生成项目提供的informed consent文件名
-    :param informed_consent:
-    :param file_type:
-    :return:
-    """
-    return f'{informed_consent.project.user.username}-{informed_consent.project_id}-{informed_consent.id}.{file_type}'
 
 
 def count_spherical_equivalent(spherical: float, column: float) -> float:

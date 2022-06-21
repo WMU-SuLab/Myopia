@@ -24,7 +24,7 @@ from Common.serializers.equipments import VisualChartBaseSerializer, BioMeterBas
     TonoMeterBaseSerializer, SequenceBaseSerializer
 from Common.utils.text_handler.dicts import parameters_to_dict
 from Common.utils.text_handler.identity_card import get_age
-from Common.viewModels.equipments import count_spherical_equivalent
+from Common.viewModels.equipments.optometry import count_spherical_equivalent
 
 
 def prefetch_project_data(project: Project.objects.all()):
@@ -45,7 +45,7 @@ def get_project_from_report_filename(filename: str):
 
 
 # 不使用序列化快速书写的原因是导出需要中文
-def update_or_create_project_data(project: Project, row,user: User=None):
+def update_or_create_project_data(project: Project, row, user: User = None):
     # 一般做这种整体project数据更新的都是管理员级别以上的用户
     if not user:
         user = User.objects.get(username='superuser')

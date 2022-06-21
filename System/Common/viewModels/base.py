@@ -13,13 +13,12 @@
 """
 __auth__ = 'diklios'
 
-from Common.models.base import Base, handle_object_does_not_exist
 from Common.utils.http.exceptions import ParameterError
 
 
-@handle_object_does_not_exist
-def retrieve_model(model: type(Base) = None, model_id: int = None, data: dict = None, **kwargs):
+def retrieve_model(model=None, model_id: int = None, data: dict = None, **kwargs):
     model_id = model_id or data.get('id', None)
     if model_id is None:
         return ParameterError('model_id is None')
-    return model.objects.get(id=model_id, **kwargs)
+    model_item: model = model.objects.get(id=model_id, **kwargs)
+    return model_item

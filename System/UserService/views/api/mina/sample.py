@@ -25,11 +25,11 @@ from Common.models.user import User, Nationality
 from Common.utils.auth.views.api import IsAuthenticatedAPIView
 from Common.utils.file_handler import handle_uploaded_file, remove_file, rename_file
 from Common.utils.file_handler.image_handler import is_image_file
-from Common.utils.http.exceptions import NotFound, ParameterError, MethodNotAllowed
+from Common.utils.http.exceptions import NotFound, ParameterError, MethodNotAllowed, Conflict
 from Common.utils.http.successes import Success
 from Common.utils.text_handler.hash import encrypt_text
 from Common.viewModels import get_choices_key
-from Common.viewModels.equipments import generate_project_informed_consent_file_name
+from Common.viewModels.equipments.informed_consent import generate_project_informed_consent_file_name
 from UserService.utils.forms.sample import SampleForm
 
 
@@ -121,6 +121,8 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
             informed_consent_file_path = os.path.join(informed_consent_dir_path, informed_consent_file.name)
             if handle_uploaded_file(informed_consent_file, informed_consent_file_path) \
                     and is_image_file(informed_consent_file_path):
+                if project.has_informed_consent:
+                    raise Conflict(chinese_msg='已经上传过同意书，不允许重复上传')
                 informed_consent = InformedConsent.objects.create(project=project)
                 informed_consent_new_file_path = os.path.join(
                     informed_consent_dir_path,
@@ -158,8 +160,8 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
                 remove_file(informed_consent.file_path)
                 informed_consent_dir_path = os.path.join(settings.USER_IMAGES_DATA_DIR_PATH, 'informed_consent')
                 informed_consent_file_path = os.path.join(informed_consent_dir_path, informed_consent_file.name)
-                handle_uploaded_file(informed_consent_file, informed_consent_file_path)
-                if is_image_file(informed_consent_file_path):
+                if handle_uploaded_file(informed_consent_file, informed_consent_file_path) and is_image_file(
+                        informed_consent_file_path):
                     informed_consent.file_path = informed_consent_file_path
                     informed_consent.save()
                 else:

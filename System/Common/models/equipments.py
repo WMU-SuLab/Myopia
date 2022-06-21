@@ -16,7 +16,7 @@ __auth__ = 'diklios'
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 
-from Common.viewModels.equipments import count_spherical_equivalent
+from Common.viewModels.equipments.optometry import count_spherical_equivalent
 from .base import Base
 from .project import Project
 from .user import User

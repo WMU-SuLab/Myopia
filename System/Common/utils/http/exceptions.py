@@ -12,7 +12,7 @@
 @Motto          :   All our science, measured against reality, is primitive and childlike - and yet it is the most precious thing we have.
 """
 __auth__ = 'diklios'
-
+from django.core.exceptions import ObjectDoesNotExist
 from pydantic import ValidationError as PydanticValidationError
 from rest_framework.exceptions import APIException as RestFrameWorkAPIException
 from rest_framework.views import Response
@@ -34,6 +34,8 @@ def exception_handler(exc, context):
             msg=exc.default_code,
             msg_detail=msg_detail
         ).to_dict())
+    elif isinstance(exc, ObjectDoesNotExist):
+        return Response(NotFound(msg=str(exc),chinese_msg='数据库对象未找到').to_dict())
     else:
         return _exception_handler(exc, context)
 
