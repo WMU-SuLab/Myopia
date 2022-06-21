@@ -231,7 +231,7 @@ def import_student_sampling_data(file_path: str):
         project, project_created = Project.objects.update_or_create(
             user=user,
             defaults={
-                'name': '2022-温医大-茶山校区-大学生',
+                'name': row['项目名称'],
                 'progress': 5,
                 # 没法用isnull()或者isna()方法来判断
                 'finished_time': create_tz_time(datetime.strptime(str(row['创建时间']), '%Y-%m-%d %H:%M:%S'))

@@ -16,20 +16,11 @@ __auth__ = 'diklios'
 from rest_framework.generics import RetrieveAPIView
 
 from Common.models.project import Project
-from Common.serializers.project import ProjectEquipmentSerializer
+from Common.serializers.project import ProjectEquipmentsBaseSerializer
 from Screening.utils.auth.views.api import InsiderIsAuthenticatedGenericAPIView
 
 
 class ProjectRetrieveAPIView(InsiderIsAuthenticatedGenericAPIView, RetrieveAPIView):
     queryset = Project.objects.all()
-    serializer_class = ProjectEquipmentSerializer
-    lookup_field = 'project_id'
-
-    # def get(self, request, *args, **kwargs):
-    #     data = request.data
-    #     project_id = data.get('project_id', None)
-    #     if project_id:
-    #         self.kwargs['pk'] = project_id
-    #         return super().get(request, *args, **kwargs)
-    #     else:
-    #         return Response(ParameterError(msg='项目id不能为空'))
+    serializer_class = ProjectEquipmentsBaseSerializer
+    lookup_url_kwarg = 'project_id'

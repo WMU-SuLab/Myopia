@@ -12,7 +12,7 @@
 @Motto          :   All our science, measured against reality, is primitive and childlike - and yet it is the most precious thing we have.
 """
 __auth__ = 'diklios'
-
+from django.http.response import HttpResponseRedirect
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
@@ -22,7 +22,8 @@ from Common.serializers.base.equipments import VisualChartBaseSerializer, BioMet
     OptometryBaseSerializer, \
     TonoMeterBaseSerializer, EyeGroundBaseSerializer, SequenceBaseSerializer, InformedConsentBaseSerializer, \
     QuestionnaireBaseSerializer
-from Common.utils.http.exceptions import ParameterError, NotFound, InsufficientPreconditions
+from Common.utils.http.exceptions import ParameterError, NotFound, MethodNotAllowed, InsufficientPreconditions
+from Common.utils.http.successes import Success
 from Common.viewModels.base import retrieve_model
 from Screening.utils.auth.views.api import EmployeeIsAuthenticatedGenericAPIView
 
@@ -38,6 +39,10 @@ class EquipmentGenericAPIView(EmployeeIsAuthenticatedGenericAPIView):
 
     def precondition(self, data):
         project = self.get_project(data)
+        if self.equipment_model_name != 'informed_consent' and getattr(project, 'has_informed_consent', False):
+            raise InsufficientPreconditions(chinese_msg='还未填写知情同意书')
+        if self.equipment_model_name != 'questionnaire' and getattr(project, 'has_questionnaire', False):
+            raise InsufficientPreconditions(chinese_msg='还未填写问卷')
         if self.equipment_model_name != 'visual_chart' and getattr(project, 'has_visual_chart', False):
             raise InsufficientPreconditions(chinese_msg='还未做视力表')
         return True
@@ -61,14 +66,36 @@ class EquipmentCreateRetrieveUpdateGenericAPIView(EquipmentGenericAPIView, Retri
         return Response(NotFound(chinese_msg='无数据'))
 
     def put(self, request, *args, **kwargs):
-        if self.set_equipment_pk(request.data):
-            return super().put(request, *args, **kwargs)
-        return Response(NotFound(chinese_msg='无数据'))
+        return Response(MethodNotAllowed(chinese_msg='不支持该方法'))
+        # if self.set_equipment_pk(request.data):
+        #     return super().put(request, *args, **kwargs)
+        # return Response(NotFound(chinese_msg='无数据'))
 
     def patch(self, request, *args, **kwargs):
         if self.set_equipment_pk(request.data):
             return super().patch(request, *args, **kwargs)
         return Response(NotFound(chinese_msg='无数据'))
+
+
+class InformedConsentCreateRetrieveUpdateGenericAPIView(EquipmentCreateRetrieveUpdateGenericAPIView):
+    queryset = InformedConsent.objects.all()
+    serializer_class = InformedConsentBaseSerializer
+    equipment_model_name = 'informed_consent'
+
+    def post(self, request, *args, **kwargs):
+        return Response(Success())
+
+    def get(self, request, *args, **kwargs):
+        return Response(Success())
+
+    def patch(self, request, *args, **kwargs):
+        return Response(Success())
+
+
+class QuestionnaireCreateRetrieveUpdateGenericAPIView(EquipmentCreateRetrieveUpdateGenericAPIView):
+    queryset = Questionnaire.objects.all()
+    serializer_class = QuestionnaireBaseSerializer
+    equipment_model_name = 'questionnaire'
 
 
 class VisualChartCreateRetrieveUpdateGenericAPIView(EquipmentCreateRetrieveUpdateGenericAPIView):
@@ -106,14 +133,11 @@ class SequenceCreateRetrieveUpdateGenericAPIView(EquipmentCreateRetrieveUpdateGe
     serializer_class = SequenceBaseSerializer
     equipment_model_name = 'sequence'
 
+    def post(self, request, *args, **kwargs):
+        return Response(Success())
 
-class InformedConsentCreateRetrieveUpdateGenericAPIView(EquipmentCreateRetrieveUpdateGenericAPIView):
-    queryset = InformedConsent.objects.all()
-    serializer_class = InformedConsentBaseSerializer
-    equipment_model_name = 'informed_consent'
+    def get(self, request, *args, **kwargs):
+        return Response(Success())
 
-
-class QuestionnaireCreateRetrieveUpdateGenericAPIView(EquipmentCreateRetrieveUpdateGenericAPIView):
-    queryset = Questionnaire.objects.all()
-    serializer_class = QuestionnaireBaseSerializer
-    equipment_model_name = 'questionnaire'
+    def patch(self, request, *args, **kwargs):
+        return Response(Success())

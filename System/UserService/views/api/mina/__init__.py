@@ -15,11 +15,12 @@ __auth__ = 'diklios'
 
 from django.urls import path
 
-from .report import UploadInformedConsent,get_user_report_data, get_user_report_pdf_file
+from .report import ReportProjectsAPIView,UploadInformedConsent,get_user_report_data, get_user_report_pdf_file
 from .sample import SerialNumberList, SerialNumberRetrieve, SubmitSampleForm
 
 urlpatterns = [
     # 报告
+    path('report/projects',ReportProjectsAPIView.as_view(),name='report_projects'),
     path('report/data', get_user_report_data, name='get_user_report_data'),
     path('report/upload_informed_consent', UploadInformedConsent.as_view(), name='upload_informed_consent'),
     path('report/pdf_file', get_user_report_pdf_file, name='get_user_report_pdf_file'),

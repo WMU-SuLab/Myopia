@@ -33,7 +33,22 @@ from Common.utils.text_handler.hash import decrypt_text_to_dict
 from Common.viewModels.equipments import generate_project_informed_consent_file_name
 from Common.viewModels.project import generate_project_report_filename
 from UserService.utils.schemes.report import UserReportSearchForm
-from UserService.viewModels.project import generate_user_report_data
+from UserService.viewModels.project import search_projects, generate_user_report_data
+
+
+class ReportProjectsAPIView(AllowAnyAPIView):
+    def get(self, request, *args, **kwargs):
+        """
+        获取用户可以查看的项目列表
+        """
+        data = request.data
+        user_info = UserReportSearchForm(**data)
+        projects = search_projects(**user_info.dict())
+        return Response(Success(data= [{
+            'project_id':project.id,
+            'project_name':project.name,
+            'project_finished_time':project.finished_time,
+        } for project in projects]))
 
 
 @api_view(['GET'])

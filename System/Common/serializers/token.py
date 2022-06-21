@@ -58,7 +58,6 @@ class TokenObtainPairSerializer(_TokenObtainPairSerializer):
 class TokenRefreshSerializer(_TokenRefreshSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-
         return data
 
 

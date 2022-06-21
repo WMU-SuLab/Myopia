@@ -25,6 +25,7 @@ class UserReportSearchForm(BaseModel):
     identification_card_number: str
     user_role: Union[StudentRole, TeacherRole]
     name: str = None
+    project_id: int = None
     project_name: str = None
     finished_time: datetime = None
 

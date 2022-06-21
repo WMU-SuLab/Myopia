@@ -138,8 +138,8 @@ REDIS_URL='redis://127.0.0.1:6379'
 - 初始化项目
     - 拷贝数据文件到服务器
     - `python3 manage.py init_data -i`
-      - 请详细看完代码之后再使用，根据当前的情况，可能需要修改命令参数，比如不需要创建用户、文件夹等等
-- 创建日志文件夹，使用`mkdir`命令一个个创建，或者使用`python manage.py init_data -d`
+        - 请详细看完代码之后再使用，根据当前的情况，可能需要修改命令参数，比如不需要创建用户、文件夹等等
+- 创建日志文件夹，使用`mkdir`命令一个一个创建，或者使用`python manage.py init_data -d`
     - django
         - 只需要创建文件夹：`ProjectRoot/System/logs/django`
         - 不需要自己创建文件
@@ -156,6 +156,10 @@ REDIS_URL='redis://127.0.0.1:6379'
     - NGINX一般放在`/var/log/nginx`文件夹下，剩下具体根据自己的配置文件决定
         - 创建文件夹：`mkdir -p /var/log/nginx`
         - 不需要创建文件，配置文件里写好后NGINX自动创建文件
+- 配置用户数据文件夹
+    - 使用软连接：`ln -s /.../ProjectRoot/System/data/user 某个存放用户数据的文件夹`
+        - 因为用户有很多数据无法存入数据库
+        - 有可能数据很大，需要保存在另一个有很大空间的磁盘中
 - 配置NGINX
     - 先收集静态文件:`python manage.py collectstatic`
     - 修改`nginx.conf`

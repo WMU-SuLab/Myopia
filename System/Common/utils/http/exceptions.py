@@ -106,6 +106,12 @@ class NotAuthenticated(APIException):
     chinese_msg = '未认证'
 
 
+class InvalidToken(APIException):
+    status_code = 401
+    msg = 'Token is invalid or expired'
+    chinese_msg = 'token不合法或过期'
+
+
 class NotActive(APIException):
     status_code = 401
     msg = 'account not active'

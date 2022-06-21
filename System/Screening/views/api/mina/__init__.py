@@ -28,6 +28,10 @@ urlpatterns = [
     # project
     path('projects/<int:project_id>', ProjectRetrieveAPIView.as_view(), name='get_project'),
     # equipments
+    path('equipments/informed_consent', InformedConsentCreateRetrieveUpdateGenericAPIView.as_view(),
+         name='equipments_informed_consent'),
+    path('equipments/questionnaire', QuestionnaireCreateRetrieveUpdateGenericAPIView.as_view(),
+         name='equipments_questionnaire'),
     path('equipments/visual_chart', VisualChartCreateRetrieveUpdateGenericAPIView.as_view(),
          name='equipments_visual_chart'),
     path('equipments/bio_meter', BioMeterCreateRetrieveUpdateGenericAPIView.as_view(), name='equipments_bio_meter'),
@@ -35,8 +39,5 @@ urlpatterns = [
     path('equipments/tono_meter', TonoMeterCreateRetrieveUpdateGenericAPIView.as_view(), name='equipments_tono_meter'),
     path('equipments/eye_ground', EyeGroundCreateRetrieveUpdateGenericAPIView.as_view(), name='equipments_eye_ground'),
     path('equipments/sequence', SequenceCreateRetrieveUpdateGenericAPIView.as_view(), name='equipments_sequence'),
-    path('equipments/informed_consent', InformedConsentCreateRetrieveUpdateGenericAPIView.as_view(),
-         name='equipments_informed_consent'),
-    path('equipments/questionnaire', QuestionnaireCreateRetrieveUpdateGenericAPIView.as_view(),
-         name='equipments_questionnaire'),
+
 ]

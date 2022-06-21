@@ -13,6 +13,9 @@
 """
 __auth__ = 'diklios'
 
+from datetime import datetime
+
+from rest_framework.response import Response
 from rest_framework_simplejwt.views import TokenObtainPairView as _TokenObtainPairView, \
     TokenRefreshView as _TokenRefreshView, \
     TokenVerifyView as _TokenVerifyView, TokenBlacklistView as _TokenBlacklistView, \
@@ -20,22 +23,66 @@ from rest_framework_simplejwt.views import TokenObtainPairView as _TokenObtainPa
 
 from Common.serializers.token import TokenObtainPairSerializer, TokenRefreshSerializer, TokenVerifySerializer, \
     TokenBlacklistSerializer, TokenObtainSlidingSerializer, TokenRefreshSlidingSerializer
+from Common.utils.http.exceptions import AuthenticationFailed, InvalidToken
 
 
+# 全部改造为 HTTP Only 的方式，如果需要切换回来，将所有的 get 和 post 方法注释即可
 class TokenObtainPairView(_TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+        refresh = response.data.pop('refresh', None)
+        refresh_expire_at = response.data.pop('refresh_expire_at', 0)
+        if refresh:
+            refresh_expires = int((datetime.fromtimestamp(refresh_expire_at) - datetime.now()).total_seconds())
+            response.set_cookie('refresh', refresh, max_age=refresh_expires, expires=refresh_expires, httponly=True)
+        return response
 
 
 class TokenRefreshView(_TokenRefreshView):
     serializer_class = TokenRefreshSerializer
 
+    def get(self, request, *args, **kwargs):
+        refresh = request.COOKIES.get('refresh', None)
+        if refresh:
+            request.data['refresh'] = refresh
+            return super().post(request, *args, **kwargs)
+        else:
+            return Response(InvalidToken(msg_detail='None token'))
+
 
 class TokenVerifyView(_TokenVerifyView):
     serializer_class = TokenVerifySerializer
 
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        token = request.data.get('token', None)
+        if token:
+            return super().post(request, *args, **kwargs)
+        token = request.COOKIES.get('refresh', None)
+        if token:
+            request.data['token'] = token
+            return super().post(request, *args, **kwargs)
+        return Response(InvalidToken(msg_detail='None token'))
+
 
 class TokenBlacklistView(_TokenBlacklistView):
     serializer_class = TokenBlacklistSerializer
+
+    def get(self, request, *args, **kwargs):
+        refresh = request.COOKIES.get('refresh', None)
+        if refresh:
+            request.data['refresh'] = refresh
+            response = super().post(request, *args, *kwargs)
+            response.delete_cookie('refresh')
+            return response
+        refresh = request.data.get('refresh', None)
+        if refresh:
+            return super().post(request, *args, *kwargs)
+        return Response(InvalidToken(msg_detail='None refresh token'))
 
 
 class TokenObtainSlidingView(_TokenObtainSlidingView):

@@ -19,51 +19,60 @@ from Common.models.project import Project
 from Common.utils.http.exceptions import NotFound
 from Common.utils.http.url import params_dict_to_url_query_string
 from Common.utils.text_handler.hash import encrypt_dict_to_text
-from Common.viewModels.project import generate_report_data_from_project
 from Common.utils.text_handler.hash import encrypt_text
+from Common.viewModels.project import generate_report_data_from_project
 
-def search_project(
+
+def search_projects(
         identification_card_number: str,
         name: str = None,
         user_role: dict = None,
+        project_id: int = None,
         project_name: str = None,
-        finished_time=None):
-    project = Project.objects.filter(
+        finished_time=None,
+):
+    projects = Project.objects.filter(
         user__identification_card_number__endswith=identification_card_number,
     ).select_related('user', 'visual_chart', 'tono_meter', 'bio_meter', 'optometry')
-    if not project.exists():
+    if not projects.exists():
         raise NotFound(msg='no this person', chinese_msg='没有找到该用户，身份证号错误')
     if user_role:
         if user_role['role_name'] == 'student':
-            project = project.filter(
+            projects = projects.filter(
                 user__student_role__student_number=user_role['student_number']).prefetch_related(
                 'user__student_role')
         elif user_role['role_name'] == 'teacher':
-            project = project.filter(
+            projects = projects.filter(
                 user__teacher_role__teacher_number=user_role['teacher_number']).prefetch_related(
                 'user__teacher_role')
-    if not project.exists():
+    if not projects.exists():
         raise NotFound(msg='user role error ', chinese_msg='用户身份信息错误')
     if name:
-        project = project.filter(user__name=name)
-    if not project.exists():
+        projects = projects.filter(user__name=name)
+    if not projects.exists():
         raise NotFound(msg='user name error ', chinese_msg='用户名称错误')
+    if project_id:
+        projects = projects.filter(id=project_id)
     if project_name:
-        project = project.filter(name=project_name)
+        projects = projects.filter(name=project_name)
     if finished_time:
-        project = project.filter(finished_time__gt=finished_time)
-    if not project.exists():
-        raise NotFound(msg='project info error', chinese_msg='项目信息错误')
-    return project.first()
+        projects = projects.filter(finished_time__gt=finished_time)
+    if not projects.exists():
+        raise NotFound(msg='project info error', chinese_msg='无相关数据')
+    return projects
 
 
 def generate_user_report_data(
         identification_card_number: str,
         name: str = None,
         user_role: dict = None,
+        project_id: int = None,
         project_name: str = None,
         finished_time=None):
-    project = search_project(identification_card_number, name, user_role, project_name, finished_time)
+    projects = search_projects(identification_card_number, name, user_role, project_id, project_name, finished_time)
+    project = projects.first()
+    if not project:
+        raise NotFound(msg='no this project', chinese_msg='没有找到该项目')
     if not project.report_file_url:
         report_file_url = reverse(
             'UserService:api:mina:get_user_report_pdf_file') + '?' + params_dict_to_url_query_string({
@@ -84,7 +93,8 @@ def generate_user_report_data(
     return {
         **generate_report_data_from_project(project),
         # 使用文件而不是图片是因为可能以后使用PDF存储
-        'informed_consent_file_url': reverse('Common:api:download_file',args=(encrypt_text(project.informed_consent.file_path),))
+        'informed_consent_file_url': reverse('Common:api:download_file',
+                                             args=(encrypt_text(project.informed_consent.file_path),))
         if project.has_informed_consent else None,
         'report_file_url': project.report_file_url,
         'report_file_full': project.remarks_json.get('report_file_full', False),
