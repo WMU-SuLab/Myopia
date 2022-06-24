@@ -25,11 +25,12 @@ from .user import User
 class Project(Base):
     progress_choices = (
         (-1, '未知'),
-        (1, '采样中'),
-        (2, '已收样'),
-        (3, '分析中'),
-        (4, '出报告'),
-        (5, '已完成'),
+        (1, '已登记'),
+        (2, '采样中'),
+        (3, '已收样'),
+        (4, '分析中'),
+        (5, '出报告'),
+        (6, '已完成'),
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='projects', verbose_name='用户')
     name = models.CharField(max_length=63, null=True, blank=True, default=None, verbose_name='项目名称')
@@ -72,7 +73,7 @@ class Project(Base):
         self.name = f'{year}-{city}-{city_region}-{user_role}'
 
     def has_equipment(self, equipment_type):
-        return getattr(self, 'has_'+equipment_type)
+        return getattr(self, 'has_' + equipment_type)
 
     @property
     @handle_object_does_not_exist
