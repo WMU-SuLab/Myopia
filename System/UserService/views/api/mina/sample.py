@@ -185,6 +185,7 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
                 'optometry_left']
             project.remarks_json['optometry_right'] = sample_form.cleaned_data['optometry_right'] or \
                                                       project.remarks_json['optometry_right']
+            project.save()
             self.set_user_info(user, sample_form.cleaned_data)
             return Response(Success(chinese_msg='更新成功'))
         else:

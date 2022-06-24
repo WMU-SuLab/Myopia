@@ -13,15 +13,22 @@
 """
 __auth__ = 'diklios'
 
-from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
 
-from Common.utils.http.successes import EmailSendSuccess
+from Common.utils.auth.views.api import AllowAnyAPIView
+from Common.utils.http.successes import Success, EmailSendSuccess
 from UserService.viewModels.feedback import handle_user_feedback
 
 
-@api_view(['POST'])
-@authentication_classes([])
-def user_feedback(request):
-    data = request.data
-    return Response(EmailSendSuccess(handle_user_feedback(data)))
+class UserFeedbackToAPIView(AllowAnyAPIView):
+    def get(self, request, *args, **kwargs):
+        return Response(Success(data={
+            'phone': '15996335768',
+            'email': '1061995104@qq.com'
+        }))
+
+
+class UserFeedbackToEmailAPIView(AllowAnyAPIView):
+    def post(self, request, *args, **kwargs):
+        data = request.data
+        return Response(EmailSendSuccess(handle_user_feedback(data)))

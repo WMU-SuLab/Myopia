@@ -27,9 +27,9 @@ class HTTPJSONStructureModel(BaseModel):
     code: int
     status_code: int
     msg: str
-    msg_detail: str
-    chinese_msg: str
-    data: JSON
+    msg_detail: str = ''
+    chinese_msg: str = ''
+    data: JSON = None
     extra: JSON = {}
 
 
