@@ -36,13 +36,16 @@ from Common.utils.http.successes import Success
         200: inline_serializer(name='success', fields={'code': serializers.IntegerField()}),
     }
 )
-@api_view(['GET', 'POST'])
+@api_view(['GET','HEAD', 'POST','PATCH','PUT','DELETE','OPTIONS'])
 @permission_classes([AllowAny])
 @authentication_classes([])
 def test(request):
     return Response(Success(data={
         'headers':request.headers,
         'query': request.GET.dict(),
+        'method':request.method,
+        'cookies':request.COOKIES,
+        'encoding':request.encoding,
         'form_data':request.POST.dict(),
         'json': request.data,
         'env': settings.DJANGO_ENV,

@@ -1,8 +1,11 @@
 # 运维文档
 
+**注意**
+
 - 项目根文件夹使用**ProjectRoot**代替
 - 一般用于测试环境和生产环境，开发环境只需要创建Python虚拟环境即可
 - 文档不会面面俱到，事无巨细，建议学习过相关知识后再使用
+- 所有的软连接推荐使用绝对路径，如果实在想用相对路径，要使用`ln -rs`
 
 ## 环境
 
@@ -139,23 +142,12 @@ REDIS_URL='redis://127.0.0.1:6379'
     - 拷贝数据文件到服务器
     - `python3 manage.py init_data -i`
         - 请详细看完代码之后再使用，根据当前的情况，可能需要修改命令参数，比如不需要创建用户、文件夹等等
-- 创建日志文件夹，使用`mkdir`命令一个一个创建，或者使用`python manage.py init_data -d`
-    - django
-        - 只需要创建文件夹：`ProjectRoot/System/logs/django`
-        - 不需要自己创建文件
-    - gunicorn
-        - 创建gunicorn的日志文件夹，路径为：`ProjectRoot/System/logs/gunicorn`
-        - 创建日志文件
-            - `touch ProjectRoot/System/logs/gunicorn/access.log`
-            - `touch ProjectRoot/System/logs/gunicorn/error.log`
-    - supervisor
-        - 创建supervisor的日志文件夹，路径为：`ProjectRoot/System/logs/supervisor`
-        - 创建日志文件
-            - `touch ProjectRoot/System/logs/supervisor/access.log`
-            - `touch ProjectRoot/System/logs/supervisor/error.log`
-    - NGINX一般放在`/var/log/nginx`文件夹下，剩下具体根据自己的配置文件决定
-        - 创建文件夹：`mkdir -p /var/log/nginx`
-        - 不需要创建文件，配置文件里写好后NGINX自动创建文件
+- 创建日志文件夹:使用`mkdir -p 路径`命令一个一个创建，或者使用`python manage.py init_data -d`
+    - django:`/../ProjectRoot/System/logs/django`
+    - gunicorn:`/../ProjectRoot/System/logs/gunicorn`
+    - supervisor:`/../ProjectRoot/System/logs/supervisor`
+    - NGINX:`/var/log/nginx`
+    - 不需要创建对应的文件，配置文件里写好后这些都会自动创建文件
 - 配置用户数据文件夹
     - 使用软连接：`ln -s /.../ProjectRoot/System/data/user 某个存放用户数据的文件夹`
         - 因为用户有很多数据无法存入数据库

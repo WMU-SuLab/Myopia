@@ -41,6 +41,7 @@ class BaseHTTPJSONStructure:
     msg_detail = ''
     chinese_msg = ''
     data = None
+    extra = {}
 
     @property
     def error_code(self):
@@ -49,14 +50,14 @@ class BaseHTTPJSONStructure:
     def __init__(
             self, data: dict or list = None, success: bool = None, code: int = None, status_code: int = None,
             msg: str = None, msg_detail: str = None, chinese_msg: str = None, **kwargs):
-        self.data = data if data is not None else {}
-        self.success = success if success is not None else self.success
-        self.code = code if code is not None else self.code
-        self.status_code = status_code if status_code is not None else self.status_code
-        self.msg = msg if msg is not None else self.msg
-        self.msg_detail = msg_detail if msg_detail is not None else self.msg_detail
-        self.chinese_msg = chinese_msg if chinese_msg is not None else self.chinese_msg
-        self.extra = kwargs if kwargs is not None else {}
+        self.data = data or self.data
+        self.success = success or self.success
+        self.code = code or self.code
+        self.status_code = status_code or self.status_code
+        self.msg = msg or self.msg
+        self.msg_detail = msg_detail or self.msg_detail
+        self.chinese_msg = chinese_msg or self.chinese_msg
+        self.extra = kwargs or self.extra
 
     def to_dict(self):
         return {
@@ -86,18 +87,19 @@ class JsonResponse(_JsonResponse):
     msg_detail = ''
     chinese_msg = '成功'
     data = None
+    extra = {}
 
     def __init__(
             self, data=None, success: bool = True, code: int = 100, status_code: int = 200,
             msg: str = 'success', msg_detail: str = '', chinese_msg: str = '成功', **kwargs):
-        self.data = data if data is not None else {}
-        self.success = success if success is not None else self.success
-        self.code = code if code is not None else self.code
-        self.status_code = status_code if status_code is not None else self.status_code
-        self.msg = msg if msg is not None else self.msg
-        self.msg_detail = msg_detail if msg_detail is not None else self.msg_detail
-        self.chinese_msg = chinese_msg if chinese_msg is not None else self.chinese_msg
-        self.extra = kwargs if kwargs is not None else {}
+        self.data = data or self.data
+        self.success = success or self.success
+        self.code = code or self.code
+        self.status_code = status_code or self.status_code
+        self.msg = msg or self.msg
+        self.msg_detail = msg_detail or self.msg_detail
+        self.chinese_msg = chinese_msg or self.chinese_msg
+        self.extra = kwargs or self.extra
 
         data = {
             'success': self.success,

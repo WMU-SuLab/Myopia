@@ -31,15 +31,24 @@
             - 编辑字体配置文件：`vim /etc/fonts/fonts.conf`
             - 增加中文字体目录，就是刚刚创建的目录：`<dir>/usr/share/fonts/chinese</dir>`
 
+## 服务器
+
 ### Supervisor
 
+- 务必使用绝对路径
+    - 如果使用相对路径，只有在相对路径下的文件夹下启动supervisor的时候有效，而更新、重载是无效的
+    - 而且多个配置文件如果使用相同的相对路径，会全部定向到一个日志文件，这是错误的
 - BACKOFF Exited too quickly (process log may have details)
     - 根目录出错
-    - 日志文件或者其目录不存在
+    - 日志文件目录不存在
 - 无法使用source等终端命令：使用bash -c "command"
 - 不断exit status 0; not expected
     - supervisor无法处理不在前台的程序，如nohup、gunicorn设置了守护进程等
     - 多次出现是因为没有监测到前台程序不断重启
+
+### NGINX
+
+- **巨坑**：配置文件不能使用`;`作为注释，一定要是`#`
 
 ## 数据库
 

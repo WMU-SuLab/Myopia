@@ -81,16 +81,16 @@ class SerialNumberRetrieve(IsAuthenticatedAPIView):
 
 class SubmitSampleForm(IsAuthenticatedAPIView):
     def set_user_info(self, user, data):
-        user.name = data['name']
-        user.gender = get_choices_key(User.gender_choices, data['gender'])
-        user.age = data['age']
-        user.birthday = data['birthday']
-        user.native_place = data['native_place']
-        user.nationality = Nationality.objects.get(name=data['nationality'])
-        user.education = data['education']
+        user.name = data['name'] or user.name
+        user.gender = get_choices_key(User.gender_choices, data['gender']) or user.gender
+        user.age = data['age'] or user.age
+        user.birthday = data['birthday'] or user.birthday
+        user.native_place = data['native_place'] or user.native_place
+        user.nationality = Nationality.objects.get(name=data['nationality']) or user.nationality
+        user.education = data['education'] or user.education
         user.save()
 
-    def post(self, request, *args, **kwargs):
+    def create(self, request, *args, **kwargs):
         sample_form = SampleForm(request.POST, request.FILES)
         if sample_form.is_valid():
             serial_number = sample_form.cleaned_data['serial_number']
@@ -141,6 +141,14 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
         else:
             return Response(ParameterError(msg_detail=str(sample_form.errors)))
 
+    def post(self, request, *args, **kwargs):
+        update_type = request.POST.get('update_type', None)
+        if update_type in ['pat', 'patch', 'PAT', 'PATCH']:
+            request.method = 'PATCH'
+            return self.patch(request, *args, **kwargs)
+        else:
+            return self.create(request, *args, **kwargs)
+
     def patch(self, request, *args, **kwargs):
         sample_form = SampleForm(request.POST, request.FILES)
         if sample_form.is_valid():
@@ -167,11 +175,16 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
                 else:
                     remove_file(informed_consent_file_path)
                     return Response(ParameterError(chinese_msg='上传的不是图片文件'))
-            project.remarks_json['contact_phone'] = sample_form.cleaned_data['contact_phone']
-            project.remarks_json['wear_glasses_first_time'] = sample_form.cleaned_data['wear_glasses_first_time']
-            project.remarks_json['family_history'] = sample_form.cleaned_data['family_history']
-            project.remarks_json['optometry_left'] = sample_form.cleaned_data['optometry_left']
-            project.remarks_json['optometry_right'] = sample_form.cleaned_data['optometry_right']
+            project.remarks_json['contact_phone'] = sample_form.cleaned_data['contact_phone'] or project.remarks_json[
+                'contact_phone']
+            project.remarks_json['wear_glasses_first_time'] = sample_form.cleaned_data['wear_glasses_first_time'] or \
+                                                              project.remarks_json['wear_glasses_first_time']
+            project.remarks_json['family_history'] = sample_form.cleaned_data['family_history'] or project.remarks_json[
+                'family_history']
+            project.remarks_json['optometry_left'] = sample_form.cleaned_data['optometry_left'] or project.remarks_json[
+                'optometry_left']
+            project.remarks_json['optometry_right'] = sample_form.cleaned_data['optometry_right'] or \
+                                                      project.remarks_json['optometry_right']
             self.set_user_info(user, sample_form.cleaned_data)
             return Response(Success(chinese_msg='更新成功'))
         else:
