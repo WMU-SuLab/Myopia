@@ -26,7 +26,7 @@ phone_validator = [
 
 password_validators = [
     # 不需要大写
-    RegexValidator(r'^(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{6,32}$')
+    RegexValidator(r'^(?=.*[a-z])(?=.*\d)[a-zA-Z\d]{6,32}$', '密码格式不正确', 'invalid password'),
     # 强制需要大小写
     # RegexValidator(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,32}$')
 ]

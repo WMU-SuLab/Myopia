@@ -14,13 +14,16 @@
 __auth__ = 'diklios'
 
 from django import forms
+from django.core.validators import RegexValidator
 
 from Common.models.user import User, Nationality
 from Common.utils.text_handler.validator import validate_phone
 
 
 class SampleForm(forms.Form):
-    serial_number = forms.CharField(min_length=9)
+    serial_number = forms.CharField(min_length=9, validators=[
+        RegexValidator(regex=r'\d{2}[A-Z]{2}\d{5}', message='序列号规则验证错误，不是合法的序列号', code='invalid serial_number'),
+    ])
     # person info
     name = forms.CharField(max_length=32)
     gender = forms.CharField()
