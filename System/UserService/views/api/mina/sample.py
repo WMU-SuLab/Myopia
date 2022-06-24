@@ -18,7 +18,7 @@ import os
 from django.conf import settings
 from django.urls import reverse
 from rest_framework.response import Response
-
+from django.core.exceptions import ValidationError
 from Common.models.equipments import Sequence, InformedConsent
 from Common.models.project import Project
 from Common.models.user import User, Nationality
@@ -88,6 +88,10 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
         user.native_place = data['native_place'] or user.native_place
         user.nationality = Nationality.objects.get(name=data['nationality']) or user.nationality
         user.education = data['education'] or user.education
+        try:
+            user.full_clean(exclude=None,validate_unique=True)
+        except ValidationError as e:
+            raise ParameterError(msg_detail=str(e))
         user.save()
 
     def create(self, request, *args, **kwargs):
@@ -185,6 +189,10 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
                 'optometry_left']
             project.remarks_json['optometry_right'] = sample_form.cleaned_data['optometry_right'] or \
                                                       project.remarks_json['optometry_right']
+            try:
+                project.full_clean(exclude=None,validate_unique=True)
+            except ValidationError as e:
+                raise ParameterError(msg_detail=str(e))
             project.save()
             self.set_user_info(user, sample_form.cleaned_data)
             return Response(Success(chinese_msg='更新成功'))

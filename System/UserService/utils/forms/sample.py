@@ -38,7 +38,7 @@ class SampleForm(forms.Form):
     optometry_left = forms.CharField()
     optometry_right = forms.CharField()
 
-    family_history = forms.CharField(max_length=1024)
+    family_history = forms.CharField(max_length=1024, required=False)
     # 知情同意书
     informed_consent_file = forms.FileField()
 
@@ -56,5 +56,4 @@ class SampleForm(forms.Form):
 
 
 class SampleFormUpdate(SampleForm):
-    family_history = forms.CharField(max_length=1024, required=False)
     informed_consent_file = forms.FileField(required=False)
