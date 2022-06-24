@@ -37,16 +37,21 @@ class SampleForm(forms.Form):
 
     family_history = forms.CharField(max_length=1024)
     # 知情同意书
-    informed_consent_file = forms.FileField(required=False)
+    informed_consent_file = forms.FileField()
 
     def clean_education(self):
         education = self.cleaned_data['education']
-        if education not in [education[0] for education in User.education_choices]:
+        if education and education not in [education[0] for education in User.education_choices]:
             raise forms.ValidationError('教育程度不合法')
         return education
 
     def clean_nationality(self):
         nationality = self.cleaned_data.get('nationality', Nationality)
-        if not Nationality.objects.filter(name=nationality).exists():
+        if nationality and not Nationality.objects.filter(name=nationality).exists():
             raise forms.ValidationError('民族输入错误')
         return nationality
+
+
+class SampleFormUpdate(SampleForm):
+    family_history = forms.CharField(max_length=1024, required=False)
+    informed_consent_file = forms.FileField(required=False)

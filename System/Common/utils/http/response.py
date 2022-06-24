@@ -49,7 +49,9 @@ class BaseHTTPJSONStructure:
 
     def __init__(
             self, data: dict or list = None, success: bool = None, code: int = None, status_code: int = None,
-            msg: str = None, msg_detail: str = None, chinese_msg: str = None, **kwargs):
+            msg: str = None, msg_detail: str = None, chinese_msg: str = None, extra: dict = None, **kwargs):
+        if extra is None:
+            extra = {}
         self.data = data or self.data
         self.success = success or self.success
         self.code = code or self.code
@@ -57,7 +59,7 @@ class BaseHTTPJSONStructure:
         self.msg = msg or self.msg
         self.msg_detail = msg_detail or self.msg_detail
         self.chinese_msg = chinese_msg or self.chinese_msg
-        self.extra = kwargs or self.extra
+        self.extra = {**extra, **kwargs} or self.extra
 
     def to_dict(self):
         return {
@@ -91,7 +93,7 @@ class JsonResponse(_JsonResponse):
 
     def __init__(
             self, data=None, success: bool = True, code: int = 100, status_code: int = 200,
-            msg: str = 'success', msg_detail: str = '', chinese_msg: str = '成功', **kwargs):
+            msg: str = 'success', msg_detail: str = '', chinese_msg: str = '成功',extra: dict = None, **kwargs):
         self.data = data or self.data
         self.success = success or self.success
         self.code = code or self.code
@@ -99,7 +101,7 @@ class JsonResponse(_JsonResponse):
         self.msg = msg or self.msg
         self.msg_detail = msg_detail or self.msg_detail
         self.chinese_msg = chinese_msg or self.chinese_msg
-        self.extra = kwargs or self.extra
+        self.extra = {**extra, **kwargs} or self.extra
 
         data = {
             'success': self.success,

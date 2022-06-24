@@ -30,7 +30,7 @@ from Common.utils.http.successes import Success
 from Common.utils.text_handler.hash import encrypt_text
 from Common.viewModels import get_choices_key
 from Common.viewModels.equipments.informed_consent import generate_project_informed_consent_file_name
-from UserService.utils.forms.sample import SampleForm
+from UserService.utils.forms.sample import SampleForm,SampleFormUpdate
 
 
 class SerialNumberList(IsAuthenticatedAPIView):
@@ -150,7 +150,7 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
             return self.create(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
-        sample_form = SampleForm(request.POST, request.FILES)
+        sample_form = SampleFormUpdate(request.POST, request.FILES)
         if sample_form.is_valid():
             sequence = Sequence.objects.filter(serial_number=sample_form.cleaned_data['serial_number'])
             if not sequence.exists():

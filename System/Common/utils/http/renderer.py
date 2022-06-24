@@ -35,6 +35,6 @@ class JSONRenderer(_JSONRenderer):
                 try:
                     data = HTTPJSONStructureModel(**data).dict()
                 except ValidationError as e:
-                    data = Success(data=data).to_dict()
+                    data = Success(data=data, error=str(e)).to_dict()
         # 返回JSON数据
         return super().render(data, accepted_media_type, renderer_context)

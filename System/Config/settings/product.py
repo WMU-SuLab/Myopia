@@ -122,3 +122,8 @@ SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_SECONDS = 60
 # 防止浏览器猜测资产的内容类型
 SECURE_CONTENT_TYPE_NOSNIFF = True
+
+MANAGERS = (
+    *MANAGERS,
+    ('psi-gene', 'dzl@psi-gene.com'),
+)

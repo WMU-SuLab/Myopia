@@ -23,8 +23,9 @@ from UserService.viewModels.feedback import handle_user_feedback
 class UserFeedbackToAPIView(AllowAnyAPIView):
     def get(self, request, *args, **kwargs):
         return Response(Success(data={
-            'phone': '15996335768',
-            'email': '1061995104@qq.com'
+            'phone': '021-52188588',
+            'email': 'dzl@psi-gene.com',
+            'msg':'',
         }))
 
 
