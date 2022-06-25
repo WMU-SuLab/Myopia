@@ -16,9 +16,11 @@ __auth__ = 'diklios'
 import os
 
 from django.conf import settings
-from django.urls import reverse
-from rest_framework.response import Response
 from django.core.exceptions import ValidationError
+from django.urls import reverse
+from django.utils.timezone import localtime, get_current_timezone_name
+from rest_framework.response import Response
+
 from Common.models.equipments import Sequence, InformedConsent
 from Common.models.project import Project
 from Common.models.user import User, Nationality
@@ -30,7 +32,7 @@ from Common.utils.http.successes import Success
 from Common.utils.text_handler.hash import encrypt_text
 from Common.viewModels import get_choices_key
 from Common.viewModels.equipments.informed_consent import generate_project_informed_consent_file_name
-from UserService.utils.forms.sample import SampleForm,SampleFormUpdate
+from UserService.utils.forms.sample import SampleForm, SampleFormUpdate
 
 
 class SerialNumberList(IsAuthenticatedAPIView):
@@ -39,8 +41,12 @@ class SerialNumberList(IsAuthenticatedAPIView):
         获取自采样的序列号列表
         """
         sequences = [{
-            'serial_number':sequence.serial_number,
-            'created_time':sequence.created_time,
+            'serial_number': sequence.serial_number,
+            # 数据库中取出来的是UTC时间
+            'created_time': localtime(sequence.created_time).strftime('%Y-%m-%d %H:%M:%S'),
+            # 但是不知道为什么timestamp是本地时间
+            'created_time_timestamp': sequence.created_time.timestamp(),
+            'tzname': get_current_timezone_name(),
         } for sequence in Sequence.objects.filter(project__user=request.user)]
         return Response(Success(data=sequences))
 
@@ -92,7 +98,7 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
         user.nationality = Nationality.objects.get(name=data['nationality']) or user.nationality
         user.education = data['education'] or user.education
         try:
-            user.full_clean(exclude=None,validate_unique=True)
+            user.full_clean(exclude=None, validate_unique=True)
         except ValidationError as e:
             raise ParameterError(msg_detail=str(e))
         user.save()
@@ -193,7 +199,7 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
             project.remarks_json['optometry_right'] = sample_form.cleaned_data['optometry_right'] or \
                                                       project.remarks_json['optometry_right']
             try:
-                project.full_clean(exclude=None,validate_unique=True)
+                project.full_clean(exclude=None, validate_unique=True)
             except ValidationError as e:
                 raise ParameterError(msg_detail=str(e))
             project.save()
