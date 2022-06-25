@@ -38,7 +38,10 @@ class SerialNumberList(IsAuthenticatedAPIView):
         """
         获取自采样的序列号列表
         """
-        sequences = [sequence.serial_number for sequence in Sequence.objects.filter(project__user=request.user)]
+        sequences = [{
+            'serial_number':sequence.serial_number,
+            'created_time':sequence.created_time,
+        } for sequence in Sequence.objects.filter(project__user=request.user)]
         return Response(Success(data=sequences))
 
 
