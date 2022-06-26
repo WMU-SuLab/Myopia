@@ -23,7 +23,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView as _TokenObtainPa
 
 from Common.serializers.token import TokenObtainPairSerializer, TokenRefreshSerializer, TokenVerifySerializer, \
     TokenBlacklistSerializer, TokenObtainSlidingSerializer, TokenRefreshSlidingSerializer
-from Common.utils.http.exceptions import AuthenticationFailed, InvalidToken
+from Common.utils.http.exceptions import TokenNotExist
 
 
 # 全部改造为 HTTP Only 的方式，如果需要切换回来，将所有的 get 和 post 方法注释即可
@@ -49,7 +49,7 @@ class TokenRefreshView(_TokenRefreshView):
             request.data['refresh'] = refresh
             return super().post(request, *args, **kwargs)
         else:
-            return Response(InvalidToken(msg_detail='None token'))
+            return Response(TokenNotExist())
 
 
 class TokenVerifyView(_TokenVerifyView):
@@ -66,7 +66,7 @@ class TokenVerifyView(_TokenVerifyView):
         if token:
             request.data['token'] = token
             return super().post(request, *args, **kwargs)
-        return Response(InvalidToken(msg_detail='None token'))
+        return Response(TokenNotExist())
 
 
 class TokenBlacklistView(_TokenBlacklistView):
@@ -82,7 +82,7 @@ class TokenBlacklistView(_TokenBlacklistView):
         refresh = request.data.get('refresh', None)
         if refresh:
             return super().post(request, *args, *kwargs)
-        return Response(InvalidToken(msg_detail='None refresh token'))
+        return Response(TokenNotExist(msg_detail='None refresh token'))
 
 
 class TokenObtainSlidingView(_TokenObtainSlidingView):

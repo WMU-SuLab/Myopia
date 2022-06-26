@@ -12,6 +12,7 @@
 @Motto          :   All our science, measured against reality, is primitive and childlike - and yet it is the most precious thing we have.
 """
 __auth__ = 'diklios'
+
 from django.core.exceptions import ObjectDoesNotExist
 from pydantic import ValidationError as PydanticValidationError
 from rest_framework.exceptions import APIException as RestFrameWorkAPIException
@@ -35,7 +36,7 @@ def exception_handler(exc, context):
             msg_detail=msg_detail
         ).to_dict())
     elif isinstance(exc, ObjectDoesNotExist):
-        return Response(NotFound(msg=str(exc),chinese_msg='数据库对象未找到').to_dict())
+        return Response(NotFound(msg=str(exc), chinese_msg='数据库对象未找到').to_dict())
     else:
         return _exception_handler(exc, context)
 
@@ -96,6 +97,12 @@ class ParseError(APIException):
     chinese_msg = '解析错误'
 
 
+class UserNotExist(APIException):
+    status_code = 404
+    msg = 'user not exist'
+    chinese_msg = '用户不存在'
+
+
 class AuthenticationFailed(APIException):
     status_code = 401
     msg = 'authentication failed'
@@ -112,6 +119,18 @@ class InvalidToken(APIException):
     status_code = 401
     msg = 'Token is invalid or expired'
     chinese_msg = 'token不合法或过期'
+
+
+class TokenNotExist(APIException):
+    status_code = 401
+    msg = 'token not exist'
+    chinese_msg = 'token不存在'
+
+
+class TokenExpired(APIException):
+    status_code = 401
+    msg = 'token expired'
+    chinese_msg = 'token过期'
 
 
 class NotActive(APIException):

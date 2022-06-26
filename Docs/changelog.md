@@ -178,6 +178,8 @@
     - 优化response代码
     - 优化supervisor.ini配置
     - 修复http json render的data不能为空的bug
+- 0.2.2:2022-06-26
+    - 为用户token验证增加了确认用户是否存在的验证，防止用户不存在的情况还在操作
 
 ## Screening
 

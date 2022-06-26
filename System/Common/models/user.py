@@ -167,7 +167,7 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
         self.gender = sex
 
     education_choices = (
-        (-1, '未知'),
+        (-1, '其他'),
         (0, '未受过教育'),
         (1, '幼儿园'),
         (2, '小学'),

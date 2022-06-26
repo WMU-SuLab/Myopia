@@ -20,6 +20,10 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as _T
     TokenBlacklistSerializer as _TokenBlacklistSerializer, \
     TokenObtainSlidingSerializer as _TokenObtainSlidingSerializer, \
     TokenRefreshSlidingSerializer as _TokenRefreshSlidingSerializer
+from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
+
+from Common.models.user import User
+from Common.utils.http.exceptions import UserNotExist, TokenNotExist
 
 
 class TokenObtainPairSerializer(_TokenObtainPairSerializer):
@@ -55,23 +59,59 @@ class TokenObtainPairSerializer(_TokenObtainPairSerializer):
         return data
 
 
-class TokenRefreshSerializer(_TokenRefreshSerializer):
+class ExistMixin:
+    def refresh_token_exist(self, token):
+        """
+        检查token是否存在
+        :param token: token
+        :return: True/False
+        """
+        if not OutstandingToken.objects.filter(token=token).exists():
+            raise TokenNotExist('Token不存在')
+        return True
+
+    def user_exist(self, user_id, username):
+        """
+        检查用户是否存在
+        :param user_id:
+        :param username:
+        :return: True/False
+        """
+        if not User.objects.filter(id=user_id, username=username).exists():
+            raise UserNotExist('用户不存在')
+        return True
+
+    def refresh_is_validate(self, attrs):
+        refresh = attrs["refresh"]
+        decoded_data = jwt_decode(refresh, settings.SECRET_KEY, algorithms=["HS256"])
+        self.user_exist(decoded_data['user_id'], decoded_data['username'])
+        return True
+
+    def token_is_validate(self, attrs):
+        token = attrs["token"]
+        decoded_data = jwt_decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        self.user_exist(decoded_data['user_id'], decoded_data['username'])
+        return decoded_data
+
+
+class TokenRefreshSerializer(ExistMixin, _TokenRefreshSerializer):
     def validate(self, attrs):
+        self.refresh_is_validate(attrs)
         data = super().validate(attrs)
         return data
 
 
-class TokenVerifySerializer(_TokenVerifySerializer):
+class TokenVerifySerializer(ExistMixin, _TokenVerifySerializer):
     def validate(self, attrs):
+        decoded_data = self.token_is_validate(attrs)
         data = super().validate(attrs)
-        decoded_data = jwt_decode(attrs['token'], settings.SECRET_KEY, algorithms=["HS256"])
         return {**data, **decoded_data}
 
 
-class TokenBlacklistSerializer(_TokenBlacklistSerializer):
+class TokenBlacklistSerializer(ExistMixin, _TokenBlacklistSerializer):
     def validate(self, attrs):
+        self.refresh_is_validate(attrs)
         data = super().validate(attrs)
-
         return data
 
 
@@ -85,5 +125,4 @@ class TokenObtainSlidingSerializer(_TokenObtainSlidingSerializer):
 class TokenRefreshSlidingSerializer(_TokenRefreshSlidingSerializer):
     def validate(self, attrs):
         data = super().validate(attrs)
-
         return data

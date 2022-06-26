@@ -5,7 +5,7 @@
 **注意，本文档请从头到尾全部看完，不要跳过任何部分，很多错误也许是跳步骤做导致的！！！**
 
 - 项目根文件夹使用**ProjectRoot**代替
-- 一般用于测试环境和生产环境，开发环境只需要创建Python虚拟环境即可
+
 - 文档不会面面俱到，事无巨细，建议学习过相关知识后再使用
 - 所有的软连接推荐使用绝对路径，如果实在想用相对路径，要使用`ln -rs`
 
@@ -13,20 +13,23 @@
 
 ### 环境安装
 
-- 基础环境（基础环境安装请自行搜索，不同操作系统有不同安装方法，开发环境暂时只需要一个Python即可）
-    - Python(3.9+)或者Conda(4.10+)
-        - 本项目有部分命令使用了conda，可以替换为相应激活环境和安装包的方式
-    - NGINX(1.20+)
-    - MySQL(8.0+)
-    - Supervisor(3.1+)
-        - supervisor在不同的服务器的最新版本不同，但是使用Python安装的一定是最新的
-    - Redis(4.0+)
-    - Memcached(1.5+)
-    - pango(1.40+)/gtk3(3.24.31+)
-        - pango是Unix/Linux/MacOS环境
-        - gtk3是Windows环境，直接官网下载安装即可
-        - 用于Python的 weasyprint 模块
-            - 需要根据自己的系统和 pango 版本手动使用 pip 指定版本进行安装，详见[issue文档](issues.md)
+- 基础环境
+    - 基础环境安装请自行搜索，不同操作系统有不同安装方法
+    - 开发环境只需要创建Python虚拟环境即可，其他一般用于测试环境和生产环境
+    - 包括
+        - Python(3.9+)或者Conda(4.10+)
+            - 本项目有部分命令使用了conda，可以替换为相应激活环境和安装包的方式
+        - NGINX(1.20+)
+        - MySQL(8.0+)
+        - Supervisor(3.1+)
+            - supervisor在不同的服务器的最新版本不同，但是使用Python安装的一定是最新的
+        - Redis(4.0+)
+        - Memcached(1.5+)
+        - pango(1.40+)/gtk3(3.24.31+)
+            - pango是Unix/Linux/MacOS环境
+            - gtk3是Windows环境，直接官网下载安装即可
+            - 用于Python的 weasyprint 模块
+                - 需要根据自己的系统和 pango 版本手动使用 pip 指定版本进行安装，详见[issue文档](issues.md)
 - Python虚拟环境
     - Python环境依赖文件位置
         - poetry:`ProjectRoot/pyproject.toml`
@@ -44,7 +47,7 @@
         - pipenv(推荐)
             - 安装 pipenv：`pip install pipenv`
             - 安装依赖：`pipenv install`
-            - 不可在conda环境下使用
+            - **不可在conda环境下使用**
         - conda
             - 使用导出的环境文件重建虚拟环境：`conda env create -f Dependencies/conda.yaml`
             - 单独创建
@@ -52,10 +55,15 @@
                 - 激活虚拟环境：`conda activate django`
                 - 安装依赖：`pip install -r requirements-conda.txt`
                     - 此处也可以直接使用`Dependencies/requirements-pip.txt`安装依赖
+            - 以上方法安装基本都会遇到各种各样的问题而失败，不如直接对照`Pipfile`文件一个一个手动安装
         - 原生虚拟环境
             - 创建虚拟环境：`virtualenv -p python3.10 venv`
             - 激活虚拟环境：`source venv/bin/activate`
             - 安装依赖：`pip install -r Dependencies/requirements-pip.txt`
+    - 一些难以使用poetry和pdm安装的包（但是pipenv一定可以），具体可以查看[issue文档](issues.md#python)
+        - [weasyprint](issues.md#weasyprint)
+        - scanpy
+        - numba
 
 ### Python环境导出
 
