@@ -23,14 +23,12 @@ from rest_framework.response import Response
 
 from Common.models.equipments import Sequence, InformedConsent
 from Common.models.project import Project
-from Common.models.user import User, Nationality
 from Common.utils.auth.views.api import IsAuthenticatedAPIView
 from Common.utils.file_handler import handle_uploaded_file, remove_file, rename_file
 from Common.utils.file_handler.image_handler import is_image_file
 from Common.utils.http.exceptions import NotFound, ParameterError, MethodNotAllowed, Conflict
 from Common.utils.http.successes import Success
 from Common.utils.text_handler.hash import encrypt_text
-from Common.viewModels import get_choices_key
 from Common.viewModels.equipments.informed_consent import generate_project_informed_consent_file_name
 from UserService.utils.forms.sample import SampleForm, SampleFormUpdate
 
@@ -42,6 +40,8 @@ class SerialNumberList(IsAuthenticatedAPIView):
         """
         sequences = [{
             'serial_number': sequence.serial_number,
+            'name': sequence.project.remarks_json['name'],
+            'project_progress': sequence.project.get_progress_display(),
             # 数据库中取出来的是UTC时间
             'created_time': localtime(sequence.created_time).strftime('%Y-%m-%d %H:%M:%S'),
             # 但是不知道为什么timestamp是本地时间
@@ -57,20 +57,18 @@ class SerialNumberRetrieve(IsAuthenticatedAPIView):
         if sequence.exists():
             sequence = sequence.first()
             project = sequence.project
-            user = project.user
-
             data = {
                 'serial_number': serial_number,
                 'project_process': project.get_progress_display(),
                 'user': {
-                    'name': user.name,
-                    'gender': user.get_gender_display(),
-                    'age': user.age,
-                    'birthday': user.birthday.strftime('%Y-%m-%d'),
-                    'native_place': user.native_place,
+                    'name': project.remarks_json.get('name', None),
+                    'gender': project.remarks_json.get('gender', None),
+                    'age': project.remarks_json.get('age', None),
+                    'birthday': project.remarks_json.get('birthday', None),
+                    'native_place': project.remarks_json.get('native_place', None),
                     'contact_phone': project.remarks_json.get('contact_phone', ''),
-                    'nationality': user.nationality.name,
-                    'education': user.get_education_display(),
+                    'nationality': project.remarks_json.get('nationality', None),
+                    'education': project.remarks_json.get('education', None)
                 },
                 'eye': {
                     'wear_glasses_first_time': project.remarks_json.get('wear_glasses_first_time', None),
@@ -89,35 +87,24 @@ class SerialNumberRetrieve(IsAuthenticatedAPIView):
 
 
 class SubmitSampleForm(IsAuthenticatedAPIView):
-    def set_user_info(self, user, data):
-        user.name = data['name'] or user.name
-        user.gender = get_choices_key(User.gender_choices, data['gender']) or user.gender
-        user.age = data['age'] or user.age
-        user.birthday = data['birthday'] or user.birthday
-        user.native_place = data['native_place'] or user.native_place
-        user.nationality = Nationality.objects.get(name=data['nationality']) or user.nationality
-        user.education = data['education'] or user.education
-        try:
-            user.full_clean(exclude=None, validate_unique=True)
-        except ValidationError as e:
-            raise ParameterError(msg_detail=str(e))
-        user.save()
-
     def create(self, request, *args, **kwargs):
         sample_form = SampleForm(request.POST, request.FILES)
         if sample_form.is_valid():
             serial_number = sample_form.cleaned_data['serial_number']
             if Sequence.objects.filter(serial_number=serial_number).exists():
                 return Response(MethodNotAllowed(chinese_msg='序列号已存在，不允许使用此方法'))
-
-            user: User = request.user
-            self.set_user_info(user, sample_form.cleaned_data)
-
             project = Project.objects.create(
                 user=request.user,
                 name='用户自采样',
                 progress=1,
                 remarks_json={
+                    'name': sample_form.cleaned_data['name'],
+                    'gender': sample_form.cleaned_data['gender'],
+                    'age': sample_form.cleaned_data['age'],
+                    'birthday': sample_form.cleaned_data['birthday'].strftime('%Y-%m-%d'),
+                    'native_place': sample_form.cleaned_data['native_place'],
+                    'nationality': sample_form.cleaned_data['nationality'],
+                    'education': sample_form.cleaned_data['education'],
                     'contact_phone': sample_form.cleaned_data['contact_phone'],
                     'wear_glasses_first_time': sample_form.cleaned_data['wear_glasses_first_time'],
                     'optometry_left': sample_form.cleaned_data['optometry_left'],
@@ -170,9 +157,8 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
                 return Response(ParameterError(chinese_msg='序列号不存在'))
             sequence = sequence.first()
             project = sequence.project
-            user = project.user
             # 判断用户
-            if user.username != request.user.username:
+            if project.user.username != request.user.username:
                 return Response(ParameterError(chinese_msg='该序列号不属于当前用户'))
             # 判断是否更新图片
             informed_consent_file = sample_form.cleaned_data['informed_consent_file']
@@ -188,6 +174,17 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
                 else:
                     remove_file(informed_consent_file_path)
                     return Response(ParameterError(chinese_msg='上传的不是图片文件'))
+            project.remarks_json['name'] = sample_form.cleaned_data['name'] or project.remarks_json['name']
+            project.remarks_json['gender'] = sample_form.cleaned_data['gender'] or project.remarks_json['gender']
+            project.remarks_json['age'] = sample_form.cleaned_data['age'] or project.remarks_json['age']
+            project.remarks_json['birthday'] = sample_form.cleaned_data['birthday'].strftime('%Y-%m-%d') or \
+                                               project.remarks_json['birthday']
+            project.remarks_json['native_place'] = sample_form.cleaned_data['native_place'] or project.remarks_json[
+                'native_place']
+            project.remarks_json['nationality'] = sample_form.cleaned_data['nationality'] or project.remarks_json[
+                'nationality']
+            project.remarks_json['education'] = sample_form.cleaned_data['education'] or project.remarks_json[
+                'education']
             project.remarks_json['contact_phone'] = sample_form.cleaned_data['contact_phone'] or project.remarks_json[
                 'contact_phone']
             project.remarks_json['wear_glasses_first_time'] = sample_form.cleaned_data['wear_glasses_first_time'] or \
@@ -203,7 +200,6 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
             except ValidationError as e:
                 raise ParameterError(msg_detail=str(e))
             project.save()
-            self.set_user_info(user, sample_form.cleaned_data)
             return Response(Success(chinese_msg='更新成功'))
         else:
             return Response(ParameterError(msg_detail=str(sample_form.errors)))

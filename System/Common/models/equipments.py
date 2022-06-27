@@ -35,7 +35,7 @@ class VisualChart(BaseEquipment):
     """
     project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='visual_chart', verbose_name='项目')
 
-    distance_validators=[MinValueValidator(0), MaxValueValidator(10)]
+    distance_validators = [MinValueValidator(0), MaxValueValidator(10)]
     distance = models.FloatField(max_length=2, validators=distance_validators, default=5,
                                  verbose_name='测量距离，单位：米(m)')
 
@@ -221,13 +221,6 @@ class Sequence(BaseEquipment):
 
     project = models.OneToOneField(Project, on_delete=models.CASCADE, related_name='sequence', verbose_name='项目')
     serial_number = models.CharField(max_length=32, null=True, blank=True, default=None, verbose_name='测序编号')
-
-    process_choices = (
-        (0, '正在寄送'),
-        (1, '正在分析'),
-        (2, '分析完成'),
-    )
-    process = models.IntegerField(choices=process_choices, null=True, blank=True, default=0, verbose_name='分析进度')
 
     file_path = models.CharField(max_length=512, null=True, blank=True, default=None, verbose_name='测序文件路径')
     file_url = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='测序文件远程URL')

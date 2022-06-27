@@ -34,7 +34,7 @@ class Project(Base):
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='projects', verbose_name='用户')
     name = models.CharField(max_length=63, null=True, blank=True, default=None, verbose_name='项目名称')
-    progress = models.IntegerField(choices=progress_choices, null=True, blank=True, default=-1, verbose_name='是否完成')
+    progress = models.IntegerField(choices=progress_choices, null=True, blank=True, default=-1, verbose_name='当前进度')
     finished_time = models.DateTimeField(null=True, blank=True, default=None, verbose_name='完成时间')
     report_data = models.JSONField(null=True, blank=True, default=dict, verbose_name='报告数据')
     report_file_url = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='报告文件url')
