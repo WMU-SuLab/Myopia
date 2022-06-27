@@ -41,7 +41,7 @@ class SerialNumberList(IsAuthenticatedAPIView):
         sequences = [{
             'serial_number': sequence.serial_number,
             'name': sequence.project.remarks_json.get('name',None),
-            'project_progress': sequence.project.get_progress_display(),
+            'progress': sequence.project.get_progress_display(),
             # 数据库中取出来的是UTC时间
             'created_time': localtime(sequence.created_time).strftime('%Y-%m-%d %H:%M:%S'),
             # 但是不知道为什么timestamp是本地时间
@@ -59,7 +59,7 @@ class SerialNumberRetrieve(IsAuthenticatedAPIView):
             project = sequence.project
             data = {
                 'serial_number': serial_number,
-                'project_process': project.get_progress_display(),
+                'progress': project.get_progress_display(),
                 'user': {
                     'name': project.remarks_json.get('name', None),
                     'gender': project.remarks_json.get('gender', None),
