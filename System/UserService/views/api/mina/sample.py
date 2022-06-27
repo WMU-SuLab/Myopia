@@ -40,7 +40,7 @@ class SerialNumberList(IsAuthenticatedAPIView):
         """
         sequences = [{
             'serial_number': sequence.serial_number,
-            'name': sequence.project.remarks_json['name'],
+            'name': sequence.project.remarks_json.get('name',None),
             'project_progress': sequence.project.get_progress_display(),
             # 数据库中取出来的是UTC时间
             'created_time': localtime(sequence.created_time).strftime('%Y-%m-%d %H:%M:%S'),

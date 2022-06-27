@@ -32,7 +32,7 @@ class SampleForm(forms.Form):
     native_place = forms.CharField(max_length=32)
     contact_phone = forms.CharField(validators=[validate_phone])
     nationality = forms.CharField(max_length=20)
-    education = forms.IntegerField()
+    education = forms.CharField()
     # eye info
     wear_glasses_first_time = forms.CharField()
     optometry_left = forms.CharField()
@@ -44,7 +44,7 @@ class SampleForm(forms.Form):
 
     def clean_education(self):
         education = self.cleaned_data['education']
-        if education and education not in [education[0] for education in User.education_choices]:
+        if education and education not in [education[1] for education in User.education_choices]:
             raise forms.ValidationError('教育程度不合法')
         return education
 
