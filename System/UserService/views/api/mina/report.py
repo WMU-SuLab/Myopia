@@ -18,6 +18,7 @@ import os
 from django.conf import settings
 from django.http.response import FileResponse
 from django.template.loader import render_to_string
+from django.utils.timezone import localtime, get_current_timezone_name
 from rest_framework.decorators import api_view, authentication_classes
 from rest_framework.response import Response
 from weasyprint import HTML
@@ -43,9 +44,11 @@ class ReportProjectsAPIView(AllowAnyAPIView):
         projects = search_projects(**user_info.dict())
         return Response(Success(data=[{
             'project_id': project.id,
-            'project_name': project.name,
-            'project_finished_time': project.finished_time,
-            'project_informed_consent': project.has_informed_consent,
+            'name': project.name,
+            'finished_time': localtime(project.finished_time).strftime('%Y-%m-%d %H:%M:%S'),
+            'tzname': get_current_timezone_name(),
+            'finished_timestamp': project.finished_time.timestamp(),
+            'informed_consent': project.has_informed_consent,
             'report_file_full': project.remarks_json.get('report_file_full', False),
         } for project in projects]))
 

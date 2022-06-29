@@ -44,9 +44,9 @@ class SerialNumberList(IsAuthenticatedAPIView):
             'progress': sequence.project.get_progress_display(),
             # 数据库中取出来的是UTC时间
             'created_time': localtime(sequence.created_time).strftime('%Y-%m-%d %H:%M:%S'),
+            'tzname': get_current_timezone_name(),
             # 但是不知道为什么timestamp是本地时间
             'created_time_timestamp': sequence.created_time.timestamp(),
-            'tzname': get_current_timezone_name(),
         } for sequence in Sequence.objects.filter(project__user=request.user)]
         return Response(Success(data=sequences))
 
