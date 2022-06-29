@@ -152,11 +152,13 @@ REDIS_URL='redis://127.0.0.1:6379'
     - 拷贝数据文件到服务器
     - `python3 manage.py init_data -i`
         - 请详细看完代码之后再使用，根据当前的情况，可能需要修改命令参数，比如不需要创建用户、文件夹等等
-- 创建日志文件夹:使用`mkdir -p 路径`命令一个一个创建，或者使用`python manage.py init_data -d`
-    - django:`/../ProjectRoot/System/logs/django`
-    - gunicorn:`/../ProjectRoot/System/logs/gunicorn`
-    - supervisor:`/../ProjectRoot/System/logs/supervisor`
-    - NGINX:`/var/log/nginx`
+- 创建日志文件夹
+    - 使用`mkdir -p 路径`
+        - django:`/../ProjectRoot/System/logs/django`
+    - 使用`python manage.py init_data -d`代替
+        - gunicorn:`/../ProjectRoot/System/logs/gunicorn`
+        - supervisor:`/../ProjectRoot/System/logs/supervisor`
+        - NGINX:`/var/log/nginx`
     - 不需要创建对应的文件，配置文件里写好后这些都会自动创建文件
 - 配置用户数据文件夹
     - 使用软连接：`ln -s /.../ProjectRoot/System/data/user 某个存放用户数据的文件夹`

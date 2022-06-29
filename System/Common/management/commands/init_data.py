@@ -93,8 +93,10 @@ def init_group():
 @print_accurate_execute_time
 def init_user():
     # 超级用户账号
+    if not User.objects.filter(username='superuser').exists():
+        superuser = User.objects.create_superuser(username='superuser', password='wmu-myopia-superuser')
     if not User.objects.filter(username='diklios').exists():
-        superuser = User.objects.create_superuser(username='diklios', password='laobatai981218')
+        diklios = User.objects.create_superuser(username='diklios', password='laobatai981218')
     # 拥有者账号
     if not User.objects.filter(username='admin').exists():
         admin_user = User.objects.create_admin_user(username='admin', password='wmu-admin')
@@ -247,46 +249,6 @@ def supply_student_info(file_path: str):
     pass
 
 
-@print_accurate_execute_time
-def import_teacher_sampling_data(file_path: str):
-    if not validate_file_path(file_path):
-        return False
-    df = pd.read_excel(file_path, sheet_name='Teachers', engine='openpyxl', dtype={"教工号": str})
-    df = df.astype(object).where(pd.notnull(df), None)
-    for index, row in df.iterrows():
-        print(index)
-        try:
-            user = User.objects.get(username=row['教工号'])
-        except User.DoesNotExist:
-            user = User.objects.create_user(
-                username=row['教工号'],
-                name=row['教师名称']
-            )
-        normal_user_group = Group.objects.get(name='user')
-        user.groups.add(normal_user_group)
-        Teacher.objects.update_or_create(
-            user=user,
-            defaults={
-                'teacher_number': row['教工号']
-            }
-        )
-        project, project_created = Project.objects.update_or_create(
-            user=user,
-            defaults={
-                'name': '2022-温医大-茶山校区-教职工',
-                'progress': 5,
-                'finished_time': create_tz_time(datetime.strptime(str(row['创建时间']), '%Y-%m-%d %H:%M:%S'))
-                if row['创建时间'] is not pd.NaT and row['创建时间'] is not None else None,
-            }
-        )
-        update_or_create_project_data(project, row)
-
-
-@print_accurate_execute_time
-def supply_teacher_info(file_path: str):
-    pass
-
-
 class Command(BaseCommand, metaclass=ABCMeta):
     def add_arguments(self, parser):
         parser.add_argument('-i', '--init', action='store_true', help='init data')
@@ -297,9 +259,7 @@ class Command(BaseCommand, metaclass=ABCMeta):
         parser.add_argument('-r', '--regions', action='store_true', help='init regions data')
         parser.add_argument('-I', '--info', action='store_true', help='init info data')
         parser.add_argument('-S', '--student_sampling', action='store_true', help='import students\' sampling data')
-        parser.add_argument('-T', '--teacher_sampling', action='store_true', help='import teachers\' sampling data')
         parser.add_argument('-SS', '--student_supplement', action='store_true', help='supply students\' data')
-        parser.add_argument('-ST', '--teacher_supplement', action='store_true', help='supply teachers\' data')
         parser.add_argument('-f', '--file_path', type=str, help='import data file path')
 
     def handle(self, *args, **options):
@@ -320,11 +280,7 @@ class Command(BaseCommand, metaclass=ABCMeta):
             init_info()
         elif options.get('student_sampling', None):
             import_student_sampling_data(file_path)
-        elif options.get('teacher_sampling', None):
-            import_teacher_sampling_data(file_path)
         elif options.get('student_supplement', None):
             supply_student_info(file_path)
-        elif options.get('teacher_supplement', None):
-            supply_teacher_info(file_path)
         else:
             print('-u or -g or -p or -s is required')

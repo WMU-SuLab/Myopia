@@ -93,8 +93,8 @@ def generate_user_report_data(
     return {
         **generate_report_data_from_project(project),
         # 使用文件而不是图片是因为可能以后使用PDF存储
-        'informed_consent_file_url': reverse('Common:api:download_file',
-                                             args=(encrypt_text(project.informed_consent.file_path),))
+        'informed_consent_file_url': reverse(
+            'Common:api:download_file',args=(encrypt_text(project.informed_consent.file_path),))
         if project.has_informed_consent else None,
         'report_file_url': project.report_file_url,
         'report_file_full': project.remarks_json.get('report_file_full', False),

@@ -45,6 +45,8 @@ class ReportProjectsAPIView(AllowAnyAPIView):
             'project_id': project.id,
             'project_name': project.name,
             'project_finished_time': project.finished_time,
+            'project_informed_consent': project.has_informed_consent,
+            'report_file_full': project.remarks_json.get('report_file_full', False),
         } for project in projects]))
 
 

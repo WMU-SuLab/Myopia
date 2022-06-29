@@ -16,6 +16,7 @@ __auth__ = 'diklios'
 import os
 from datetime import timedelta
 from zoneinfo import ZoneInfo
+
 from django.core.management.utils import get_random_secret_key
 
 from . import BASE_DIR
@@ -179,11 +180,11 @@ USE_L10N = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, 'Common', 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # 引用位于 STATIC_ROOT 中的静态文件时要使用的 URL
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
-    'Common/static_dev',
+    'Common/static',
     'Screening/static',
     'UserService/static',
 ]
@@ -242,7 +243,7 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         # 原始的设置
         'anon': '10/min',
-        'user':'60/min',
+        'user': '60/min',
         # 用户
         'anon_second': '1/second',
         'anon_minute': '10/minute',
