@@ -28,16 +28,25 @@ from Common.viewModels.project import generate_project_report_filename, generate
 
 
 def generate_user_reports(divide=False, file_path=None, dir_path=None):
+    """
+    示例：python manage.py handle_report -g -d --dir_path=/data/Myopia/System/data/user/pdf
+    :param divide:
+    :param file_path:
+    :param dir_path:
+    :return:
+    """
     projects = Project.objects.all().prefetch_related(
         'user', 'user__student_role', 'visual_chart', 'tono_meter', 'bio_meter', 'optometry')
     if divide:
         for project in projects:
             report_str = render_to_string(
-                template_name='UserService/report/single.html', context=generate_report_data_from_project(project))
+                template_name='UserService/report/single.html',
+                context={"user": generate_report_data_from_project(project)})
             HTML(string=report_str).write_pdf(os.path.join(dir_path, generate_project_report_filename(project)))
     else:
         users_report_data = [generate_report_data_from_project(project) for project in projects]
-        report_str = render_to_string(template_name='UserService/report/multiple.html', context=users_report_data)
+        report_str = render_to_string(template_name='UserService/report/multiple.html',
+                                      context={"users": users_report_data})
         HTML(string=report_str).write_pdf(file_path)
 
 
@@ -60,6 +69,7 @@ def merge_pdf(dir_path):
             project.report_file_path = file_path1
             project.remarks_json['report_file_full'] = False
             project.save()
+        print(f'{file_path1} finished')
 
 
 class Command(BaseCommand, metaclass=ABCMeta):
@@ -77,21 +87,21 @@ class Command(BaseCommand, metaclass=ABCMeta):
                 Q(report_data__isnull=False) | Q(report_file_url__isnull=False) | Q(report_file_path__isnull=False)) \
                 .update(report_data=None, report_file_url=None, report_file_path=None)
         elif options['generate']:
-            file_path = options['file_path']
             divide = options['divide']
+            file_path = options['file_path']
             dir_path = options['dir_path']
             if divide:
+                if not dir_path:
+                    dir_path = os.path.join(settings.BASE_DIR, 'data', 'user', 'pdf')
+                    generate_user_reports(divide=True, dir_path=dir_path)
+                else:
+                    generate_user_reports(divide=True, dir_path=dir_path)
+            else:
                 if not file_path:
                     file_path = './reports.pdf'
                     generate_user_reports(divide=False, file_path=file_path)
                 else:
-                    generate_user_reports(divide=options['divide'], file_path=file_path)
-            else:
-                if not dir_path:
-                    dir_path = os.path.join(settings.BASE_DIR, 'Common', 'libs', 'pdf')
-                    generate_user_reports(divide=True, dir_path=dir_path)
-                else:
-                    generate_user_reports(divide=True, dir_path=dir_path)
+                    generate_user_reports(divide=False, file_path=file_path)
         elif options['merge']:
             dir_path = options['dir_path']
             if not dir_path:

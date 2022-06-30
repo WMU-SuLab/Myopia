@@ -284,11 +284,18 @@ def generate_report_suggestions(eye_data: dict) -> list:
         if abs(eye_data['corrected_visual_acuity_right'] - eye_data['corrected_visual_acuity_left']) >= 0.2:
             suggestions.append(Suggestion(issue='双眼矫正视力相差过大，有弱视可能').dict())
     suggestions = [suggestion for suggestion in suggestions if suggestion]
+    correct_eye=False
+    for suggestion in suggestions:
+        if suggestion and '矫正' in suggestion['issue']:
+            correct_eye = True
+            break
     # 正常
     if len(suggestions) == 0:
         suggestions.append(Suggestion(issue='双眼全部正常，请继续保持，注意日常生活健康用眼').dict())
     else:
-        suggestions.append(Suggestion(issue='斜视弱视问题建议去医院斜视弱视专科检查，其他问题建议进一步去医院视光学专科检查').dict())
+        if not correct_eye:
+            suggestions.append(Suggestion(issue='您的矫正视力异常，请检查被测时是否配带眼镜，如果佩戴，请考虑更换眼镜').dict())
+        suggestions.append(Suggestion(issue='斜视弱视问题建议去医院斜视弱视专科检查，其他问题建议去医院视光学专科检查').dict())
     return suggestions
 
 

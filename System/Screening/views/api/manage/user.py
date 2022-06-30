@@ -25,8 +25,8 @@ from Screening.views.manage.index import redirect_field_name
 
 @api_view(['POST'])
 def user_login(request):
-    username = request.POST.get('username', 'admin')
-    password = request.POST.get('password', 'admin')
+    username = request.POST.get('username', '')
+    password = request.POST.get('password', '')
     next_url = request.POST.get(redirect_field_name, 'Screening:manage:index')
     if not username or not password:
         return Response(ParameterError())

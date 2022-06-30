@@ -16,13 +16,14 @@ __auth__ = 'diklios'
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 
-login_view_name = 'UserService:sample_login'
-login_api_view_name = 'UserService:api:sample_login'
+sample_manager_login_view_name = 'UserService:web:sample_manager_login'
+sample_manager_login_api_view_name = 'UserService:api:sample_manager_login'
+sample_manager_redirect_field_name = 'next_url'
 
 
 class SampleManagerLoginRequiredMixin(LoginRequiredMixin):
-    loin_url = login_view_name
-    redirect_field_name = 'next_url'
+    login_url = sample_manager_login_view_name
+    redirect_field_name = sample_manager_redirect_field_name
     permission_denied_message = 'You are not allowed to access this page.'
 
 

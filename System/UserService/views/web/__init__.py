@@ -18,6 +18,6 @@ from django.urls import path
 from .sample import SampleManagerLoginView, SampleManagerIndexView
 
 urlpatterns = [
-    path('sample/index/', SampleManagerIndexView.as_view(), name='sample_index'),
-    path('sample/login/', SampleManagerLoginView.as_view(), name='sample_login'),
+    path('sample/manager_login', SampleManagerLoginView.as_view(), name='sample_manager_login'),
+    path('sample/index', SampleManagerIndexView.as_view(), name='sample_manager_index'),
 ]
