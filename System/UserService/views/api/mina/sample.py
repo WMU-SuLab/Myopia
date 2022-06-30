@@ -34,7 +34,7 @@ from UserService.utils.forms.sample import SampleForm, SampleFormUpdate
 
 
 class SerialNumberList(IsAuthenticatedAPIView):
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         """
         获取自采样的序列号列表
         """

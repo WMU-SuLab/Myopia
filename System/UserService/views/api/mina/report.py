@@ -52,6 +52,9 @@ class ReportProjectsAPIView(AllowAnyAPIView):
             'report_file_full': project.remarks_json.get('report_file_full', False),
         } for project in projects]))
 
+    def post(self, request, *args, **kwargs):
+        return self.get(request, *args, **kwargs)
+
 
 @api_view(['GET'])
 @authentication_classes([])

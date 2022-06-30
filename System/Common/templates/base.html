@@ -29,18 +29,16 @@
         {% endblock %}
     {% endblock head %}
 </head>
-{% block body %}
-    <body>
-    {% block root %}
-        <div id="root">
-            {% block content %}
-            {% endblock %}
-        </div>
-    {% endblock %}
-    {% block scripts %}
-    {% endblock scripts %}
-    {% block sub-scripts %}
-    {% endblock %}
-    </body>
-{% endblock body %}
+<body {% block body-attr %} {% endblock %}>
+{% block root %}
+    <div id="root">
+        {% block content %}
+        {% endblock %}
+    </div>
+{% endblock %}
+{% block scripts %}
+{% endblock scripts %}
+{% block sub-scripts %}
+{% endblock %}
+</body>
 </html>
