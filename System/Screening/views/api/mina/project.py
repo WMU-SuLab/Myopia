@@ -17,7 +17,7 @@ from rest_framework.generics import RetrieveAPIView
 
 from Common.models.project import Project
 from Common.serializers.project import ProjectEquipmentsBaseSerializer
-from Screening.utils.auth.views.api import InsiderIsAuthenticatedGenericAPIView
+from Common.utils.auth.views.api import InsiderIsAuthenticatedGenericAPIView
 
 
 class ProjectRetrieveAPIView(InsiderIsAuthenticatedGenericAPIView, RetrieveAPIView):

@@ -15,24 +15,32 @@
 <head>
     {% block head %}
         <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block meta %}
+        {% endblock %}
         {% block title %}
             <title>Base</title>
         {% endblock title %}
-        {% block meta %}
-        {% endblock %}
         {% block styles %}
             <link href="{% static 'css/common/index.css' %}" rel="stylesheet"/>
         {% endblock styles %}
+        {% block sub-styles %}
+        {% endblock %}
     {% endblock head %}
 </head>
 {% block body %}
     <body>
     {% block root %}
         <div id="root">
+            {% block content %}
+            {% endblock %}
         </div>
     {% endblock %}
     {% block scripts %}
     {% endblock scripts %}
+    {% block sub-scripts %}
+    {% endblock %}
     </body>
 {% endblock body %}
 </html>

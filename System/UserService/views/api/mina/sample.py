@@ -17,7 +17,7 @@ import os
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
-from django.urls import reverse
+from django.shortcuts import reverse
 from django.utils.timezone import localtime, get_current_timezone_name
 from rest_framework.response import Response
 
@@ -40,13 +40,15 @@ class SerialNumberList(IsAuthenticatedAPIView):
         """
         sequences = [{
             'serial_number': sequence.serial_number,
-            'name': sequence.project.remarks_json.get('name',None),
+            'name': sequence.project.remarks_json.get('name', None),
             'progress': sequence.project.get_progress_display(),
             # 数据库中取出来的是UTC时间
             'created_time': localtime(sequence.created_time).strftime('%Y-%m-%d %H:%M:%S'),
             'tzname': get_current_timezone_name(),
             # 但是不知道为什么timestamp是本地时间
             'created_time_timestamp': sequence.created_time.timestamp(),
+            'report_file_url': sequence.project.report_file_url or reverse('Common:api:download_file', args=(
+                encrypt_text(sequence.project.report_file_path),)) or None,
         } for sequence in Sequence.objects.filter(project__user=request.user)]
         return Response(Success(data=sequences))
 

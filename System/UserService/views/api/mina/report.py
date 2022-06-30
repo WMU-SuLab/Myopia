@@ -47,7 +47,7 @@ class ReportProjectsAPIView(AllowAnyAPIView):
             'name': project.name,
             'finished_time': localtime(project.finished_time).strftime('%Y-%m-%d %H:%M:%S'),
             'tzname': get_current_timezone_name(),
-            'finished_timestamp': project.finished_time.timestamp(),
+            'finished_time_timestamp': project.finished_time.timestamp(),
             'informed_consent': project.has_informed_consent,
             'report_file_full': project.remarks_json.get('report_file_full', False),
         } for project in projects]))

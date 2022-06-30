@@ -20,7 +20,7 @@ title = '眼健康筛查管理系统'
 login_view_name = 'Screening:manage:login'
 login_api_view_name = 'Screening:api:manage:login'
 redirect_field_name = 'next_url'
-screening_manage_login_required = login_required(login_url=login_view_name, redirect_field_name=redirect_field_name)
+screening_manage_login_required = login_required(redirect_field_name=redirect_field_name, login_url=login_view_name)
 
 
 @screening_manage_login_required

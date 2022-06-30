@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   __init__.py.py    
-@Create Time    :   2022/4/9 9:57
+@File Name      :   user.py    
+@Create Time    :   2022/6/30 10:54
 @Description    :   
 @Version        :   
 @License        :   MIT
@@ -13,11 +13,9 @@
 """
 __auth__ = 'diklios'
 
-from django.urls import path
+from rest_framework.permissions import BasePermission
 
-from .sample import SampleManagerLoginView, SampleManagerIndexView
 
-urlpatterns = [
-    path('sample/index/', SampleManagerIndexView.as_view(), name='sample_index'),
-    path('sample/login/', SampleManagerLoginView.as_view(), name='sample_login'),
-]
+class IsSampleMangerUser(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.is_authenticated and request.user.groups.filter(name='sample_manager').exists()

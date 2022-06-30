@@ -62,7 +62,16 @@ def init_group():
         ).values()
         permissions = Permission.objects.filter(content_type__in=content_types).exclude(codename__icontains='delete')
         manager_group.permissions.add(*permissions)
-
+    sample_manager_group, sample_manager_group_created = Group.objects.get_or_create(name='sample_manager')
+    if sample_manager_group_created:
+        content_types = ContentType.objects.get_for_models(
+            User,
+            Project,  Sequence, InformedConsent,
+            Feedback
+        ).values()
+        permissions = Permission.objects.filter(content_type__in=content_types).exclude(codename__icontains='delete')
+        sample_manager_group.permissions.add(*permissions)
+    print('初始化管理员组完毕')
     employee_group, employee_group_created = Group.objects.get_or_create(name='employee')
     if employee_group_created:
         project_content_types = ContentType.objects.get_for_models(
@@ -76,6 +85,7 @@ def init_group():
         user_role_permissions = Permission.objects.filter(content_type__in=user_role_content_types).filter(
             codename__icontains='view')
         employee_group.permissions.add(*user_role_permissions)
+    print('初始化员工组完毕')
     normal_user_group, normal_user_group_created = Group.objects.get_or_create(name='user')
     if normal_user_group_created:
         project_content_types = ContentType.objects.get_for_models(

@@ -16,9 +16,9 @@ __auth__ = 'diklios'
 from rest_framework.response import Response
 
 from Common.utils.http.successes import Success
-from Screening.utils.auth.views.api import EmployeeIsAuthenticatedAPIView
+from Common.utils.auth.views.api import EmployeeIsAuthenticatedAPIView
 
 
-class UserPermissionsAPIView(EmployeeIsAuthenticatedAPIView):
+class EmployeePermissionsAPIView(EmployeeIsAuthenticatedAPIView):
     def get(self, request, *args, **kwargs):
         return Response(Success(data=request.user.get_all_permissions()))

@@ -23,13 +23,13 @@ from Common.serializers.base.equipments import VisualChartBaseSerializer, BioMet
     OptometryBaseSerializer, \
     TonoMeterBaseSerializer, EyeGroundBaseSerializer, SequenceBaseSerializer, InformedConsentBaseSerializer, \
     QuestionnaireBaseSerializer
+from Common.utils.auth.views.api import EmployeeIsAuthenticatedGenericAPIView
 from Common.utils.http.exceptions import ParameterError, NotFound, MethodNotAllowed, InsufficientPreconditions
 from Common.utils.http.successes import Success
 from Common.utils.text_handler.hash import encrypt_text
 from Common.viewModels.base import retrieve_model
 from Common.viewModels.equipments.informed_consent import handle_upload_informed_consent
 from Common.viewModels.equipments.sequence import handle_upload_sequence
-from Screening.utils.auth.views.api import EmployeeIsAuthenticatedGenericAPIView
 
 
 class EquipmentGenericAPIView(EmployeeIsAuthenticatedGenericAPIView):
@@ -44,9 +44,9 @@ class EquipmentGenericAPIView(EmployeeIsAuthenticatedGenericAPIView):
         project_id = data.get('project_id', None)
         if not project_id:
             raise ParameterError(chinese_msg='项目id不能为空')
-        project=retrieve_model(Project, model_id=project_id)
+        project = retrieve_model(Project, model_id=project_id)
         self.project_id = project_id
-        self.project=project
+        self.project = project
         return project
 
     def precondition(self, data):

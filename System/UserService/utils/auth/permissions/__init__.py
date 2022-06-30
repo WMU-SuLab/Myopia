@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 """
 @File Name      :   __init__.py.py    
-@Create Time    :   2022/4/9 9:57
+@Create Time    :   2022/6/29 18:56
 @Description    :   
 @Version        :   
 @License        :   MIT
@@ -12,12 +12,3 @@
 @Motto          :   All our science, measured against reality, is primitive and childlike - and yet it is the most precious thing we have.
 """
 __auth__ = 'diklios'
-
-from django.urls import path
-
-from .sample import SampleManagerLoginView, SampleManagerIndexView
-
-urlpatterns = [
-    path('sample/index/', SampleManagerIndexView.as_view(), name='sample_index'),
-    path('sample/login/', SampleManagerLoginView.as_view(), name='sample_login'),
-]

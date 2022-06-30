@@ -106,7 +106,7 @@ DATABASES = {
 # 和代理服务器配合，保证这是安全的HTTPS连接
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # 将所有非SSL(http)请求永久重定向到SSL(https), 与Nginx的301重定向设置选其一即可
-SECURE_SSL_REDIRECT = True
+# SECURE_SSL_REDIRECT = True
 # 如果一个 URL 路径与这个列表中的正则表达式相匹配，那么请求将不会被重定向到 HTTPS
 # SECURE_REDIRECT_EXEMPT = []
 # 仅通过https传输cookie

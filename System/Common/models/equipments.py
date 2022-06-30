@@ -188,7 +188,7 @@ class TonoMeter(BaseEquipment):
         return f'Belong to project {self.project_id}'
 
 
-class EyeGround(Base):
+class EyeGround(BaseEquipment):
     """
     眼底照
     """

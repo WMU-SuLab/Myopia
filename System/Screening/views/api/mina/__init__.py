@@ -20,11 +20,11 @@ from .equipments import VisualChartCreateRetrieveUpdateGenericAPIView, BioMeterC
     EyeGroundCreateRetrieveUpdateGenericAPIView, SequenceCreateRetrieveUpdateGenericAPIView, \
     InformedConsentCreateRetrieveUpdateGenericAPIView, QuestionnaireCreateRetrieveUpdateGenericAPIView
 from .project import ProjectRetrieveAPIView
-from .user import UserPermissionsAPIView
+from .user import EmployeePermissionsAPIView
 
 urlpatterns = [
     # employee user
-    path('employee/permissions', UserPermissionsAPIView.as_view(), name='employee_permissions'),
+    path('employee/permissions', EmployeePermissionsAPIView.as_view(), name='employee_permissions'),
     # project
     path('projects/<int:project_id>', ProjectRetrieveAPIView.as_view(), name='get_project'),
     # equipments
@@ -39,5 +39,4 @@ urlpatterns = [
     path('equipments/tono_meter', TonoMeterCreateRetrieveUpdateGenericAPIView.as_view(), name='equipments_tono_meter'),
     path('equipments/eye_ground', EyeGroundCreateRetrieveUpdateGenericAPIView.as_view(), name='equipments_eye_ground'),
     path('equipments/sequence', SequenceCreateRetrieveUpdateGenericAPIView.as_view(), name='equipments_sequence'),
-
 ]
