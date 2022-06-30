@@ -53,14 +53,14 @@ class Employee(Base):
 
 class Student(Base):
     student_type_choices = (
-        (0, '未知'),
-        (1, '幼儿园'),
-        (2, '小学'),
-        (3, '初中'),
-        (4, '高中'),
-        (5, '大学'),
-        (6, '研究生'),
-        (7, '博士'),
+        (-1, '未知'),
+        (1, '学龄前儿童'),
+        (2, '小学生'),
+        (3, '初中生'),
+        (4, '高中生'),
+        (5, '大学生'),
+        (6, '硕士研究生'),
+        (7, '博士研究生'),
         (8, '博士后'),
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_role', verbose_name='用户')

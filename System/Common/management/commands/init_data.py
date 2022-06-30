@@ -32,6 +32,7 @@ from Common.utils.file_handler.dir import make_dir
 from Common.utils.time import print_accurate_execute_time, create_tz_time
 from Common.viewModels.project import update_or_create_project_data
 from UserService.models.user import Feedback
+from Common.viewModels import reverse_choices_to_dict
 
 
 @print_accurate_execute_time
@@ -236,7 +237,7 @@ def import_student_sampling_data(file_path: str):
             user=user,
             defaults={
                 'student_number': row['学籍号'],
-                'student_type': row.get('学生类型', 5),
+                'student_type': reverse_choices_to_dict(Student.student_type_choices)['大学生'],
                 'grade': str(row['学籍号'])[:2] + '级',
                 'PE_classname': row['班级名称']
             })
@@ -244,7 +245,7 @@ def import_student_sampling_data(file_path: str):
             user=user,
             defaults={
                 'name': row['项目名称'],
-                'progress': 5,
+                'progress': reverse_choices_to_dict(Project.progress_choices)['已完成'],
                 # 没法用isnull()或者isna()方法来判断
                 'finished_time': create_tz_time(datetime.strptime(str(row['创建时间']), '%Y-%m-%d %H:%M:%S'))
                 if row['创建时间'] is not pd.NaT and row['创建时间'] is not None else None,

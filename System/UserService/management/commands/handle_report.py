@@ -56,7 +56,7 @@ def merge_pdf(dir_path):
     :param dir_path:
     :return:
     """
-    for project in Project.objects.filter(is_finished=True):
+    for project in Project.objects.filter(progress=6):
         merger = PdfFileMerger()
         file_path1 = os.path.join(dir_path, generate_project_report_filename(project))
         file_path2 = os.path.join(dir_path, f'{project.user.name}-{project.user.username}.pdf')
