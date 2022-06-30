@@ -30,9 +30,9 @@ from Common.models.user import User, Nationality
 from Common.utils.file_handler import validate_file_path
 from Common.utils.file_handler.dir import make_dir
 from Common.utils.time import print_accurate_execute_time, create_tz_time
+from Common.viewModels import reverse_choices_to_dict
 from Common.viewModels.project import update_or_create_project_data
 from UserService.models.user import Feedback
-from Common.viewModels import reverse_choices_to_dict
 
 
 @print_accurate_execute_time
@@ -67,7 +67,7 @@ def init_group():
     if sample_manager_group_created:
         content_types = ContentType.objects.get_for_models(
             User,
-            Project,  Sequence, InformedConsent,
+            Project, Sequence, InformedConsent,
             Feedback
         ).values()
         permissions = Permission.objects.filter(content_type__in=content_types).exclude(codename__icontains='delete')
@@ -219,6 +219,8 @@ def import_student_sampling_data(file_path: str):
     df = pd.read_excel(file_path, sheet_name='Students', engine='openpyxl', dtype={"学籍号": str})
     # 解决MySQL数据库nan提交不了的问题
     df = df.astype(object).where(pd.notnull(df), None)
+    student_type = reverse_choices_to_dict(Student.student_type_choices)['大学生']
+    finished_progress = reverse_choices_to_dict(Project.progress_choices)['已完成']
     for index, row in df.iterrows():
         print(index)
         try:
@@ -237,7 +239,7 @@ def import_student_sampling_data(file_path: str):
             user=user,
             defaults={
                 'student_number': row['学籍号'],
-                'student_type': reverse_choices_to_dict(Student.student_type_choices)['大学生'],
+                'student_type': student_type,
                 'grade': str(row['学籍号'])[:2] + '级',
                 'PE_classname': row['班级名称']
             })
@@ -245,7 +247,7 @@ def import_student_sampling_data(file_path: str):
             user=user,
             defaults={
                 'name': row['项目名称'],
-                'progress': reverse_choices_to_dict(Project.progress_choices)['已完成'],
+                'progress': finished_progress,
                 # 没法用isnull()或者isna()方法来判断
                 'finished_time': create_tz_time(datetime.strptime(str(row['创建时间']), '%Y-%m-%d %H:%M:%S'))
                 if row['创建时间'] is not pd.NaT and row['创建时间'] is not None else None,

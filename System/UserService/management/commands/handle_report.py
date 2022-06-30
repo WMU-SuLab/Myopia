@@ -24,6 +24,7 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 
 from Common.models.project import Project
+from Common.viewModels import reverse_choices_to_dict
 from Common.viewModels.project import generate_project_report_filename, generate_report_data_from_project
 
 
@@ -56,7 +57,8 @@ def merge_pdf(dir_path):
     :param dir_path:
     :return:
     """
-    for project in Project.objects.filter(progress=6):
+    finished_progress = reverse_choices_to_dict(Project.progress_choices)['已完成']
+    for project in Project.objects.filter(progress=finished_progress):
         merger = PdfFileMerger()
         file_path1 = os.path.join(dir_path, generate_project_report_filename(project))
         file_path2 = os.path.join(dir_path, f'{project.user.name}-{project.user.username}.pdf')
