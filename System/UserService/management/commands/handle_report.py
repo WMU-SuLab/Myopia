@@ -51,6 +51,11 @@ def generate_user_reports(divide=False, file_path=None, dir_path=None):
 
 
 def merge_pdf(dir_path):
+    """
+    示例：python manage.py handle_report -m --dir_path=/data/Myopia/System/data/user/pdf
+    :param dir_path:
+    :return:
+    """
     for project in Project.objects.filter(is_finished=True):
         merger = PdfFileMerger()
         file_path1 = os.path.join(dir_path, generate_project_report_filename(project))
@@ -105,5 +110,5 @@ class Command(BaseCommand, metaclass=ABCMeta):
         elif options['merge']:
             dir_path = options['dir_path']
             if not dir_path:
-                dir_path = os.path.join(settings.BASE_DIR, 'Common', 'libs', 'pdf')
+                dir_path = os.path.join(settings.BASE_DIR, 'data', 'user', 'pdf')
             merge_pdf(dir_path=dir_path)
