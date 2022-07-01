@@ -244,6 +244,16 @@ REDIS_URL='redis://127.0.0.1:6379'
     - 上传文件：`scp -i 密钥文件 文件路径 root@wmu-bio-data.top:目标文件夹`
     - 上传整个目录：`scp -i 密钥文件 -r 目录 root@wmubio-data.top:目标文件夹`
 
+### uWSGI
+
+- 常用命令
+    - 启动：uwsgi --ini uwsgi.ini
+    - 查看uwsgi的pid号：cat uwsgi/uwsgi.pid
+    - 查看一下uwsgi的进程：ps aux | grep uwsgi
+    - 重启uwsgi：uwsgi --reload uwsgi/uwsgi.pid
+    - 停止uwsgi：uwsgi --stop uwsgi/uwsgi.pid
+    - 查看uwsgi的版本：uwsgi --version
+
 ### Gunicorn
 
 - 常用命令
@@ -257,12 +267,14 @@ REDIS_URL='redis://127.0.0.1:6379'
 
 - 常用命令
     - 启动：service nginx start
+        - nginx -c /path/to/nginx.conf
     - 快速停止或关闭：nginx -s stop
     - 正常停止或关闭：nginx -s quit
     - 重启：service nginx restart
     - 重载：nginx -s reload
 - 当不知道NGINX配置文件位置的时候
     - 通过测试配置文件查看NGINX配置文件位置：nginx -t
+        - 可以测试配置文件是否有语法错误
     - 其余配置文件需要查看主配置文件最后有`include`语句的那一行
 
 ### Supervisor
