@@ -20,7 +20,7 @@ from rest_framework.views import Response
 
 from Common.models.user import User
 from Common.utils.http.exceptions import AuthenticationFailed, PermissionDenied, ParameterError
-from Screening.views.manage.index import redirect_field_name
+from Screening.utils.auth.views.manage import redirect_field_name
 
 
 @api_view(['POST'])

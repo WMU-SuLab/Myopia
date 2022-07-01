@@ -15,7 +15,7 @@ __auth__ = 'diklios'
 
 from django.shortcuts import render, reverse
 
-from .index import title, login_api_view_name, screening_manage_login_required
+from Screening.utils.auth.views.manage import title, login_api_view_name, screening_manage_login_required
 
 
 def login(request):

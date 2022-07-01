@@ -56,7 +56,7 @@ class ReportProjectsAPIView(AllowAnyAPIView):
         return self.get(request, *args, **kwargs)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 @authentication_classes([])
 def get_user_report_data(request):
     data = request.data

@@ -13,14 +13,9 @@
 """
 __auth__ = 'diklios'
 
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-title = '眼健康筛查管理系统'
-login_view_name = 'Screening:manage:login'
-login_api_view_name = 'Screening:api:manage:login'
-redirect_field_name = 'next_url'
-screening_manage_login_required = login_required(redirect_field_name=redirect_field_name, login_url=login_view_name)
+from Screening.utils.auth.views.manage import title, screening_manage_login_required
 
 
 @screening_manage_login_required
