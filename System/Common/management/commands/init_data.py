@@ -132,7 +132,7 @@ def init_user():
         sample_manager_user = User.objects.get(username='psi-gene-du')
     if not sample_manager_user.groups.filter(name='sample_manager').exists():
         sample_manager_group = Group.objects.get(name='sample_manager')
-        manager_user.groups.add(sample_manager_group)
+        sample_manager_user.groups.add(sample_manager_group)
     # 员工账号
     if not User.objects.filter(username='employee-test').exists():
         employee_user = User.objects.create_user(username='employee-test', password='wmu-employee-test')
