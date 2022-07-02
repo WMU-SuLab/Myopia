@@ -146,7 +146,7 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
 
     def post(self, request, *args, **kwargs):
         update_type = request.POST.get('update_type', None)
-        if update_type in ['pat', 'patch', 'PAT', 'PATCH']:
+        if update_type and update_type in ['pat', 'patch', 'PAT', 'PATCH']:
             request.method = 'PATCH'
             return self.patch(request, *args, **kwargs)
         else:

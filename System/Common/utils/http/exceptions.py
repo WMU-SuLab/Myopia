@@ -31,11 +31,15 @@ def exception_handler(exc, context):
     elif isinstance(exc, PydanticValidationError):
         return Response(ParameterError(msg=str(exc)).to_dict())
     elif isinstance(exc, RestFrameWorkAPIException):
-        msg_detail = str(exc.default_detail)
+        default_detail = str(exc.default_detail)
         return Response(BaseError(
             status_code=exc.status_code,
             msg=exc.default_code,
-            msg_detail=msg_detail
+            msg_detail=default_detail,
+            extra={
+                'exception': 'rest_framework.exceptions.APIException',
+                'full_details':exc.get_full_details(),
+            },
         ).to_dict())
     elif isinstance(exc, ObjectDoesNotExist):
         return Response(NotFound(msg=str(exc), chinese_msg='数据库对象未找到').to_dict())
