@@ -55,7 +55,7 @@ class TokenObtainPairSerializer(_TokenObtainPairSerializer):
         # 令牌到期时间
         data['refresh_expire_at'] = refresh.payload['exp']
         data['access_expire_at'] = refresh.access_token.payload['exp']
-        data['username'] = self.user.username
+        data['username'] = refresh.payload['username']
         return data
 
 
@@ -98,7 +98,9 @@ class TokenRefreshSerializer(ExistMixin, _TokenRefreshSerializer):
     def validate(self, attrs):
         self.refresh_is_validate(attrs)
         data = super().validate(attrs)
-        return data
+        access = data.get('access', None)
+        decoded_data = jwt_decode(access, settings.SECRET_KEY, algorithms=["HS256"])
+        return {**data, 'exp': decoded_data['exp']}
 
 
 class TokenVerifySerializer(ExistMixin, _TokenVerifySerializer):
