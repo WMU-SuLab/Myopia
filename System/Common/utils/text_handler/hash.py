@@ -15,16 +15,20 @@ __auth__ = 'diklios'
 
 import json
 
-from cryptography.fernet import Fernet,InvalidToken, InvalidSignature
+from cryptography.fernet import Fernet, InvalidToken, InvalidSignature
 from django.conf import settings
 
 
 def encrypt_by_cryptography(raw_str: str, secret_key: bytes or str) -> str:
+    if not raw_str:
+        return ''
     f = Fernet(secret_key)
     return f.encrypt(raw_str.encode(encoding='utf8')).decode('utf8')
 
 
 def decrypt_by_cryptography(encrypt_str: str, secret_key: bytes or str) -> str:
+    if not encrypt_str:
+        return ''
     try:
         f = Fernet(secret_key)
         encrypt_bytes = bytes(encrypt_str, encoding='utf8')
@@ -32,17 +36,26 @@ def decrypt_by_cryptography(encrypt_str: str, secret_key: bytes or str) -> str:
     except InvalidToken or InvalidSignature:
         return ''
 
+
 def encrypt_text(text: str) -> str:
+    if not text:
+        return ''
     return encrypt_by_cryptography(text, settings.CRYPTOGRAPHY_SECRET_KEY)
 
 
 def decrypt_text(text: str) -> str:
+    if not text:
+        return ''
     return decrypt_by_cryptography(text, settings.CRYPTOGRAPHY_SECRET_KEY)
 
 
 def encrypt_dict_to_text(data: dict) -> str:
+    if not data:
+        return ''
     return encrypt_by_cryptography(json.dumps(data), settings.CRYPTOGRAPHY_SECRET_KEY)
 
 
 def decrypt_text_to_dict(text: str) -> dict:
+    if not text:
+        return {}
     return json.loads(decrypt_by_cryptography(text, settings.CRYPTOGRAPHY_SECRET_KEY))

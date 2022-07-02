@@ -25,6 +25,8 @@ from .response import BaseHTTPJSONStructure
 # 将仅针对由引发的异常生成的响应调用异常处理程序，它不会用于视图直接返回的任何响应
 def exception_handler(exc, context):
     if isinstance(exc, APIException):
+        if isinstance(exc, UserNotExist):
+            return Response(exc.to_dict()).delete_cookie('refresh')
         return Response(exc.to_dict())
     elif isinstance(exc, PydanticValidationError):
         return Response(ParameterError(msg=str(exc)).to_dict())
