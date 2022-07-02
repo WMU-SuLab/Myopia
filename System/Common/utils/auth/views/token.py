@@ -46,8 +46,9 @@ class TokenRefreshView(_TokenRefreshView):
     def get(self, request, *args, **kwargs):
         refresh = request.COOKIES.get('refresh', None)
         if refresh:
-            request.data['refresh'] = refresh
-            return super().post(request, *args, **kwargs)
+            new_request = request.copy()
+            new_request.data['refresh'] = refresh
+            return super().post(new_request, *args, **kwargs)
         else:
             return Response(TokenNotExist())
 
@@ -64,8 +65,9 @@ class TokenVerifyView(_TokenVerifyView):
             return super().post(request, *args, **kwargs)
         token = request.COOKIES.get('refresh', None)
         if token:
-            request.data['token'] = token
-            return super().post(request, *args, **kwargs)
+            new_request = request.copy()
+            new_request.data['token'] = token
+            return super().post(new_request, *args, **kwargs)
         return Response(TokenNotExist())
 
 
@@ -75,8 +77,9 @@ class TokenBlacklistView(_TokenBlacklistView):
     def get(self, request, *args, **kwargs):
         refresh = request.COOKIES.get('refresh', None)
         if refresh:
-            request.data['refresh'] = refresh
-            response = super().post(request, *args, *kwargs)
+            new_request = request.copy()
+            new_request.data['refresh'] = refresh
+            response = super().post(new_request, *args, *kwargs)
             response.delete_cookie('refresh')
             return response
         refresh = request.data.get('refresh', None)
