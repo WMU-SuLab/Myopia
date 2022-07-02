@@ -26,8 +26,17 @@ from Common.serializers.token import TokenObtainPairSerializer, TokenRefreshSeri
 from Common.utils.http.exceptions import TokenNotExist
 
 
+class RequestMutableMixin:
+    def set_mutable_request_data(self, request):
+        if type(request.data) == dict:
+            pass
+        else:
+            setattr(request.data, '_mutable', True)
+        return request
+
+
 # 全部改造为 HTTP Only 的方式，如果需要切换回来，将所有的 get 和 post 方法注释即可
-class TokenObtainPairView(_TokenObtainPairView):
+class TokenObtainPairView(RequestMutableMixin, _TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
 
     def post(self, request, *args, **kwargs):
@@ -40,20 +49,20 @@ class TokenObtainPairView(_TokenObtainPairView):
         return response
 
 
-class TokenRefreshView(_TokenRefreshView):
+class TokenRefreshView(RequestMutableMixin, _TokenRefreshView):
     serializer_class = TokenRefreshSerializer
 
     def get(self, request, *args, **kwargs):
         refresh = request.COOKIES.get('refresh', None)
         if refresh:
-            new_request = request.copy()
-            new_request.data['refresh'] = refresh
-            return super().post(new_request, *args, **kwargs)
+            request = self.set_mutable_request_data(request)
+            request.data['refresh'] = refresh
+            return super().post(request, *args, **kwargs)
         else:
             return Response(TokenNotExist())
 
 
-class TokenVerifyView(_TokenVerifyView):
+class TokenVerifyView(RequestMutableMixin, _TokenVerifyView):
     serializer_class = TokenVerifySerializer
 
     def get(self, request, *args, **kwargs):
@@ -65,21 +74,21 @@ class TokenVerifyView(_TokenVerifyView):
             return super().post(request, *args, **kwargs)
         token = request.COOKIES.get('refresh', None)
         if token:
-            new_request = request.copy()
-            new_request.data['token'] = token
-            return super().post(new_request, *args, **kwargs)
+            request = self.set_mutable_request_data(request)
+            request.data['token'] = token
+            return super().post(request, *args, **kwargs)
         return Response(TokenNotExist())
 
 
-class TokenBlacklistView(_TokenBlacklistView):
+class TokenBlacklistView(RequestMutableMixin, _TokenBlacklistView):
     serializer_class = TokenBlacklistSerializer
 
     def get(self, request, *args, **kwargs):
         refresh = request.COOKIES.get('refresh', None)
         if refresh:
-            new_request = request.copy()
-            new_request.data['refresh'] = refresh
-            response = super().post(new_request, *args, *kwargs)
+            request = self.set_mutable_request_data(request)
+            request.data['refresh'] = refresh
+            response = super().post(request, *args, *kwargs)
             response.delete_cookie('refresh')
             return response
         refresh = request.data.get('refresh', None)
@@ -88,9 +97,9 @@ class TokenBlacklistView(_TokenBlacklistView):
         return Response(TokenNotExist(msg_detail='None refresh token'))
 
 
-class TokenObtainSlidingView(_TokenObtainSlidingView):
+class TokenObtainSlidingView(RequestMutableMixin, _TokenObtainSlidingView):
     serializer_class = TokenObtainSlidingSerializer
 
 
-class TokenRefreshSlidingView(_TokenRefreshSlidingView):
+class TokenRefreshSlidingView(RequestMutableMixin, _TokenRefreshSlidingView):
     serializer_class = TokenRefreshSlidingSerializer
