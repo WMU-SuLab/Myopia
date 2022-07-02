@@ -125,6 +125,14 @@ def init_user():
     if not manager_user.groups.filter(name='manager').exists():
         manager_group = Group.objects.get(name='manager')
         manager_user.groups.add(manager_group)
+    # 采样管理员账号
+    if not User.objects.filter(username='psi-gene-du').exists():
+        sample_manager_user = User.objects.create_user(username='psi-gene-du', password='psi-gene-du')
+    else:
+        sample_manager_user = User.objects.get(username='psi-gene-du')
+    if not sample_manager_user.groups.filter(name='sample_manager').exists():
+        sample_manager_group = Group.objects.get(name='sample_manager')
+        manager_user.groups.add(sample_manager_group)
     # 员工账号
     if not User.objects.filter(username='employee-test').exists():
         employee_user = User.objects.create_user(username='employee-test', password='wmu-employee-test')
