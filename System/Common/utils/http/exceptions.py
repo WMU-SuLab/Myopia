@@ -39,6 +39,7 @@ def exception_handler(exc, context):
             extra={
                 'exception': 'rest_framework.exceptions.APIException',
                 'full_details':exc.get_full_details(),
+                # 'full_details': str(exc),
             },
         ).to_dict())
     elif isinstance(exc, ObjectDoesNotExist):
