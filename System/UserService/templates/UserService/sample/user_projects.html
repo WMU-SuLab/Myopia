@@ -1,0 +1,232 @@
+{% extends 'UserService/sample/index.html' %}
+{% block sub-styles %}
+    <style>
+    </style>
+{% endblock %}
+{% block main %}
+    <div>
+        <fieldset class="table-search-fieldset">
+            <legend>搜索信息</legend>
+            <div style="margin: 10px 10px 10px 10px" id="searchForm">
+                <form class="layui-form layui-form-pane">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label" for="searchFormSerialNumber">序列号</label>
+                            <div class="layui-input-inline">
+                                <!--注意此处input标签里的id-->
+                                <input class="layui-input" name="serialNumber" id="searchFormSerialNumber"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" for="searchFormName">姓名</label>
+                            <div class="layui-input-inline">
+                                <!--注意此处input标签里的id-->
+                                <input class="layui-input" name="name" id="searchFormName" autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <!--注意此处button标签里的type属性-->
+                            <button type="button" class="layui-btn layui-btn-primary" data-type="reload"
+                                    lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </fieldset>
+        <table id="sampleProjectTable" class="layui-hide" lay-filter="sampleProject" style="width: 100%"></table>
+    </div>
+
+{% endblock %}
+
+{% block sub-scripts %}
+    <script type="text/html" id="operation">
+        {#        <a class="layui-btn layui-btn-xs" lay-event="detail">查看</a>#}
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-xs" lay-event="upload">上传</a>
+        {#<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>#}
+    </script>
+    <script>
+        var sample_project_update_api = '{% url 'UserService:api:sample_project_update' %}';
+        var sample_user_projects_api = '{% url 'UserService:api:sample_user_projects' %}';
+        var sample_project_upload_report_file_api = '{% url 'UserService:api:sample_project_upload_report_file' 1 %}'.slice(0, -1);
+        var progress_choices ={{ progress_choices|safe }};
+        layui.use(['table', 'form', 'upload'], function () {
+            var editLayerIndex = null;
+            var table = layui.table;
+            var form = layui.form;
+            var upload = layui.upload;
+            //渲染表格
+            table.render({
+                elem: '#sampleProjectTable',
+                id: 'sampleProjectTable',
+                //行边框风格
+                //skin: 'line',
+                even: true,
+                //width: '100%',
+                //size: 'sm',
+                //数据接口
+                url: sample_user_projects_api,
+                method: 'get',
+                dataType: 'json',
+                //开启分页
+                //page: true,
+                page: { //支持传入 laypage 组件的所有参数（某些参数除外，如：jump/elem） - 详见文档
+                    layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip']//自定义分页布局
+                    , limits: [6, 10, 15]
+                    , first: false //不显示首页
+                    , last: false //不显示尾页
+                },
+                //统计
+                //totalRow: true,
+                parseData: function (res) {
+                    return {
+                        "code": res.code, //解析接口状态
+                        "msg": res.msg, //解析提示文本
+                        "count": res.data.count, //解析数据长度
+                        "data": res.data.rows //解析数据列表
+                    };
+                },
+                defaultToolbar: ['filter', 'exports', 'print', {
+                    title: '提示',
+                    layEvent: 'LAYTABLE_TIPS',
+                    icon: 'layui-icon-tips'
+                }],
+                cols: [[ //表头
+                    {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'},
+                    {field: 'serial_number', title: '序列号', sort: true, width: 120},
+                    {field: 'name', title: '采样者名称', sort: true, width: 120},
+                    {field: 'gender', title: '性别', sort: true, width: 100},
+                    {field: 'age', title: '年龄', sort: true, width: 100},
+                    {field: 'birthday', title: '出生日期', sort: true,},
+                    {field: 'native_place', title: '籍贯'},
+                    {field: 'contact_phone', title: '联系方式'},
+                    {field: 'nationality', title: '民族', width: 150},
+                    {field: 'education', title: '受教育程度', sort: true,},
+                    {field: 'progress', title: '进度', sort: true, width: 150},
+                    {field: 'report_file_name', title: '报告文件名称'},
+                    {fixed: 'right', title: '操作', width: 125, minWidth: 125, toolbar: '#operation'}
+                ]]
+            });
+            //操作
+            table.on('tool(sampleProject)', function (obj) { // 双击 toolDouble
+                //获得当前行数据
+                //var data = obj.data;
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+                if (layEvent === 'detail') { //查看
+                } else if (layEvent === 'del') { //删除
+                    layer.confirm('真的删除行么', function (index) {
+                        obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+                        layer.close(index);
+                        //向服务端发送删除指令
+                    });
+                } else if (layEvent === 'edit') {//编辑
+                    let options = '';
+                    for (var item in progress_choices) {
+                        var selected = obj.data.progress === item ? 'selected' : '';
+                        options += '<option value="' + progress_choices[item] + '"' + selected + '>' + item + '</option>';
+                    }
+                    editLayerIndex = layer.open({
+                        title: '编辑',
+                        type: 1,
+                        shade: 0.8,
+                        shadeClose: true,
+                        area: ['50%', '50%'],
+                        offset: 'auto',
+                        content: '<div style="padding: 16px; display: flex;justify-content: center">' +
+                            `<form id="sampleProjectUpdateForm" action="" class="layui-form layui-form-pane" lay-filter="sampleProjectUpdateForm">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label" for="progress">选择框</label>
+                                    <div class="layui-input-block">
+                                        <select name="progress" lay-verify="required" lay-search="default">`
+                            + options +
+                            `</select>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn" lay-submit lay-filter="sampleProjectUpdateSubmit">立即提交</button>
+                                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                    </div>
+                                </div>
+                            </form>` +
+                            '</div>',
+                        success: function (layero, index) {
+                            form.render(null, 'sampleProjectUpdateForm');
+                            form.on('submit(sampleProjectUpdateSubmit)', function (data) {
+                                var formData = new FormData(data.form);
+                                formData.append('project_id', obj.data.id);
+                                axios.post(sample_project_update_api, formData).then(function (response) {
+                                    layer.close(editLayerIndex);
+                                    table.reload('sampleProjectTable');
+                                    console.log(response);
+                                }).catch(function (error) {
+                                    console.log(error);
+                                });
+                                return false;
+                            });
+                        }
+                    });
+                } else if (layEvent === 'upload') { //上传报告
+                    editLayerIndex = layer.open({
+                        title: '上传',
+                        type: 1,
+                        shade: 0.8,
+                        shadeClose: true,
+                        area: ['200px', '100px'],
+                        offset: 'auto',
+                        content: `<div style="display: flex;justify-content: center;align-items: center"><button type="button" class="layui-btn" id="uploadReportFile${obj.data.id}"><i class="layui-icon">&#xe67c;</i>上传报告</button></div>`,
+                        success: function (layero, index) {
+                            upload.render({
+                                elem: '#uploadReportFile' + obj.data.id,
+                                url: sample_project_upload_report_file_api + obj.data.id,
+                                //auto: false,
+                                accept: 'file',
+                                data: {
+                                    'project_id': obj.data.id,
+                                },
+                                done: function (res, index, upload) {//上传完毕回调
+                                    if (res.success) {
+                                        layer.msg('上传成功', {icon: 1, time: 1000});
+                                        layer.close(editLayerIndex);
+                                        table.reload('sampleProjectTable');
+                                    } else {
+                                        layer.msg('上传失败', {icon: 5});
+                                    }
+                                },
+                                error: function () {
+                                    //请求异常回调
+                                    layer.msg('上传失败', {icon: 5});
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+
+            //搜索
+            var $ = layui.$, active = {
+                reload: function () {
+                    var searchFormSerialNumber = $('#searchFormSerialNumber');
+                    var searchFormName = $('#searchFormName');
+                    //执行重载
+                    table.reload('sampleProjectTable', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }, where: {//条件
+                            serial_number: searchFormSerialNumber.val(),
+                            name: searchFormName.val()
+                        }
+                    });
+                }
+            };
+            $('#searchForm .layui-btn').on('click', function () {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+        });
+    </script>
+{% endblock %}

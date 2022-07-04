@@ -16,6 +16,7 @@ __auth__ = 'diklios'
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 
+sample_manage_title = '用户自采样管理后台'
 sample_manager_login_view_name = 'UserService:web:sample_manager_login'
 sample_manager_login_api_view_name = 'UserService:api:sample_manager_login'
 sample_manager_redirect_field_name = 'next_url'

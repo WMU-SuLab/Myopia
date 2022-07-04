@@ -15,9 +15,10 @@ __auth__ = 'diklios'
 
 from django.urls import path
 
-from .sample import SampleManagerLoginView, SampleManagerIndexView
+from .sample import SampleManagerLoginView, SampleManagerIndexView, SampleUserManageView
 
 urlpatterns = [
     path('sample/manager_login', SampleManagerLoginView.as_view(), name='sample_manager_login'),
     path('sample/index', SampleManagerIndexView.as_view(), name='sample_manager_index'),
+    path('sample/user', SampleUserManageView.as_view(), name='sample_user_manage'),
 ]

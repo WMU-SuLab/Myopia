@@ -57,3 +57,8 @@ class SampleForm(forms.Form):
 
 class SampleFormUpdate(SampleForm):
     informed_consent_file = forms.FileField(required=False)
+
+
+class SampleManageForm(forms.Form):
+    project_id = forms.IntegerField()
+    progress = forms.IntegerField()

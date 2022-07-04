@@ -83,7 +83,10 @@ def get_user_report_pdf_file(request):
     if not Project.objects.filter(id=project_id).exists():
         return Response(NotFound(msg='project not exist', chinese_msg='项目不存在'))
     project = Project.objects.get(id=project_id)
-    if not project.report_file_path:
+    if project.report_file_path and os.path.exists(project.report_file_path):
+        return FileResponse(open(project.report_file_path, 'rb'), as_attachment=True,
+                            filename=project.report_file_path.split('/')[-1])
+    else:
         user_info_json = decrypt_text_to_dict(data['user_info_json'])
         user_info = UserReportSearchForm(**user_info_json)
         # 创建文件
@@ -99,6 +102,3 @@ def get_user_report_pdf_file(request):
             project.report_file_path = file_path
             project.save()
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)
-    else:
-        return FileResponse(open(project.report_file_path, 'rb'), as_attachment=True,
-                            filename=project.report_file_path.split('/')[-1])

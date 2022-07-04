@@ -47,9 +47,8 @@ class SerialNumberList(IsAuthenticatedAPIView):
             'tzname': get_current_timezone_name(),
             # 但是不知道为什么timestamp是本地时间
             'created_time_timestamp': sequence.created_time.timestamp(),
-            'report_file_url': sequence.project.report_file_url or reverse('Common:api:download_file', args=(
-                encrypt_text(
-                    sequence.project.report_file_path),)) if sequence.project.report_file_path else None or None,
+            'report_file_url': sequence.project.report_file_url or (reverse('Common:api:download_file', args=(
+                encrypt_text(sequence.project.report_file_path),)) if sequence.project.report_file_path else None),
         } for sequence in Sequence.objects.filter(project__user=request.user)]
         return Response(Success(data=sequences))
 
