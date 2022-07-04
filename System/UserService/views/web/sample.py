@@ -42,5 +42,5 @@ class SampleUserManageView(SampleManagerLoginRequiredView):
             'user': {
                 'username': request.user.username,
             },
-            'progress_choices': reverse_choices_to_dict(Project.progress_choices),
+            'progress_choices': reverse_choices_to_dict(Project.progress_choices[1:]),
         })

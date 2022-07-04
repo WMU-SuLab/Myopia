@@ -17,6 +17,7 @@ import os
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
+from django.db.models import F
 from django.shortcuts import redirect
 from rest_framework.response import Response
 
@@ -67,8 +68,8 @@ class SampleUserProjectsAPIView(SampleManagerIsAuthenticatedAPIView):
             projects = projects.filter(sequence__serial_number__contains=serial_number)
         name = request.GET.get('name', '')
         if name:
-            # projects = projects.annotate(remarks_json_name=JSONExtract('remarks_json', '$.name')).filter(remarks_json_name__contains=name)
-            projects = projects.filter(remarks_json__name=name)
+            projects = projects.annotate(remarks_json_name=F('remarks_json__name')).filter(
+                remarks_json_name__icontains=name)
         page = request.GET.get('page', 1)
         limit = request.GET.get('limit', 10)
         projects = projects.order_by('-id')[(int(page) - 1) * int(limit):int(page) * int(limit)]
