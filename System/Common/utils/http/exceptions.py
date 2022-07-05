@@ -38,7 +38,7 @@ def exception_handler(exc, context):
             msg_detail=default_detail,
             extra={
                 'exception': 'rest_framework.exceptions.APIException',
-                'full_details':exc.get_full_details(),
+                'full_details': exc.get_full_details(),
                 # 'full_details': str(exc),
             },
         ).to_dict())
@@ -71,6 +71,16 @@ class ServerError(APIException):
     chinese_msg = '服务器错误'
 
 
+class PhoneError(BaseError):
+    msg = 'phone error'
+    chinese_msg = '手机相关错误'
+
+
+class PhoneSendSMSError(PhoneError):
+    msg = 'phone send sms error'
+    chinese_msg = '手机短信发送错误'
+
+
 class EmailError(BaseError):
     msg = 'email related error'
     chinese_msg = '邮箱相关错误'
@@ -98,6 +108,12 @@ class ValidationError(APIException):
     chinese_msg = '验证错误'
 
 
+class VerificationCodeError(APIException):
+    status_code = 400
+    msg = 'verification code error'
+    chinese_msg = '验证码错误'
+
+
 class ParseError(APIException):
     status_code = 400
     msg = 'parse error'
@@ -108,6 +124,12 @@ class UserNotExist(APIException):
     status_code = 404
     msg = 'user not exist'
     chinese_msg = '用户不存在'
+
+
+class UserExist(APIException):
+    status_code = 400
+    msg = 'user exist'
+    chinese_msg = '用户已存在'
 
 
 class AuthenticationFailed(APIException):

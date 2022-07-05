@@ -17,7 +17,7 @@ from django import forms
 from django.core.validators import RegexValidator
 
 from Common.models.user import User, Nationality
-from Common.utils.text_handler.validator import validate_phone
+from Common.utils.text_handler.validator import validate_phone_number
 
 
 class SampleForm(forms.Form):
@@ -30,7 +30,7 @@ class SampleForm(forms.Form):
     age = forms.IntegerField(required=False)
     birthday = forms.DateField()
     native_place = forms.CharField(max_length=32)
-    contact_phone = forms.CharField(validators=[validate_phone])
+    contact_phone = forms.CharField(validators=[validate_phone_number])
     nationality = forms.CharField(max_length=20)
     education = forms.CharField()
     # eye info

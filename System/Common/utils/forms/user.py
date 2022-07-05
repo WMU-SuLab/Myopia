@@ -16,23 +16,16 @@ __auth__ = 'diklios'
 from secrets import compare_digest
 
 from django import forms
+from django.conf import settings
+from django.db.models import Q
 
 from Common.models.user import User
-from .validators import phone_validator, password_validators
+from .validators import phone_number_validator, password_validators
 
 
-class PhoneUserForm(forms.Form):
-    phone = forms.CharField(validators=phone_validator)
+class PasswordForm(forms.Form):
     password = forms.CharField(validators=password_validators)
     confirm_password = forms.CharField(validators=password_validators)
-
-    def clean_phone(self):
-        phone = self.cleaned_data.get('phone', None)
-        if not phone:
-            raise forms.ValidationError('手机号码不能为空')
-        if User.objects.filter(phone=phone).exists():
-            raise forms.ValidationError('手机号已被注册')
-        return phone
 
     def clean_confirm_password(self):
         data = self.cleaned_data
@@ -41,6 +34,18 @@ class PhoneUserForm(forms.Form):
         if not compare_digest(password, confirm_password):
             raise forms.ValidationError('两次输入的密码不一致，请修改!')
         return password
+
+
+class RegisterByUsernameForm(PasswordForm):
+    username = forms.CharField()
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username', None)
+        if not username:
+            raise forms.ValidationError('用户名不能为空')
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError('用户名已被注册')
+        return username
 
 
 class ResetPasswordForm(forms.Form):
@@ -63,3 +68,46 @@ class ResetPasswordForm(forms.Form):
         if not compare_digest(new_password, confirm_password):
             raise forms.ValidationError('两次输入的密码不一致，请修改!')
         return confirm_password
+
+
+class RegisterByPhoneSMSForm(PasswordForm):
+    phone_number = forms.CharField(validators=phone_number_validator)
+    verification_code = forms.CharField(min_length=settings.VERIFICATION_CODE_LENGTH,
+                                        max_length=settings.VERIFICATION_CODE_LENGTH)
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data['phone_number']
+        if not phone_number:
+            raise forms.ValidationError('手机号码不能为空')
+        if User.objects.filter(Q(phone_number=phone_number) | Q(username=phone_number)).exists():
+            raise forms.ValidationError('手机号已被注册')
+        return phone_number
+
+
+class ResetPasswordByPhoneSMSForm(RegisterByPhoneSMSForm):
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data['phone_number']
+        if not phone_number:
+            raise forms.ValidationError('手机号码不能为空')
+        return phone_number
+
+
+class RegisterByEmailForm(PasswordForm):
+    email = forms.EmailField()
+    verification_code = forms.CharField()
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', None)
+        if not email:
+            raise forms.ValidationError('邮箱不能为空')
+        if User.objects.filter(Q(email=email) | Q(username=email)).exists():
+            raise forms.ValidationError('邮箱已被注册')
+        return email
+
+
+class ResetPasswordByEmailForm(RegisterByEmailForm):
+    def clean_email(self):
+        email = self.cleaned_data.get('email', None)
+        if not email:
+            raise forms.ValidationError('邮箱不能为空')
+        return email

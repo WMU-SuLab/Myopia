@@ -18,9 +18,9 @@ from django.utils.translation import gettext_lazy as _
 
 
 def handle_object_does_not_exist(func):
-    def wrapper(*args, **kargs):
+    def wrapper(*args, **kwargs):
         try:
-            return func(*args, **kargs)
+            return func(*args, **kwargs)
         except models.ObjectDoesNotExist:
             return False
 

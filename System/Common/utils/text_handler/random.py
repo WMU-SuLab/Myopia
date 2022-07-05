@@ -41,3 +41,7 @@ def random_content(length=16, random_type='number'):
         for i in range(length):
             pwd.join(random.sample(password, random.randint(2, 7)))
         return pwd
+
+
+def generate_verification_code(length=6):
+    return random_content(length=length, random_type='number')

@@ -15,12 +15,12 @@ __auth__ = 'diklios'
 
 from django.core.validators import RegexValidator
 
-from Common.utils.text_handler.validator import validate_phone
+from Common.utils.text_handler.validator import validate_phone_number
 
 # form表单需要的验证器
 
-phone_validator = [
-    validate_phone,
+phone_number_validator = [
+    validate_phone_number,
     # RegexValidator(r'^1[3-9]\d{9}$', '手机号码格式不正确')
 ]
 

@@ -31,9 +31,8 @@ class JWTAuthentication(_JWTAuthentication):
             user_id = validated_token['user_id']
         except KeyError:
             raise InvalidToken(_('Token contained no recognizable user identification'))
-
         try:
-            user = User.objects.get(**{'id': user_id})
+            user = User.objects.get(pk=user_id)
         except User.DoesNotExist:
             raise AuthenticationFailed(_('User not found'), code='user_not_found')
 

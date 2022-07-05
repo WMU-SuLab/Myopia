@@ -149,7 +149,7 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
         max_length=255, blank=True, null=True, default=None, db_index=True, verbose_name='给第三方用的openid')
     email = models.EmailField(max_length=32, blank=True, null=True, default=None, unique=True, verbose_name='邮箱')
 
-    phone = models.CharField(max_length=32, blank=True, null=True, default=None, unique=True, verbose_name='手机号')
+    phone_number = models.CharField(max_length=32, blank=True, null=True, default=None, unique=True, verbose_name='手机号')
     name = models.CharField(max_length=64, blank=True, null=True, default=None, db_index=True, verbose_name='姓名')
     identification_card_type = models.IntegerField(
         choices=identification_card_type_choices, blank=True, null=True, default=1, verbose_name='证件类型')

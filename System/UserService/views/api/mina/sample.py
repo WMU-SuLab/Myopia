@@ -23,14 +23,25 @@ from rest_framework.response import Response
 
 from Common.models.equipments import Sequence, InformedConsent
 from Common.models.project import Project
+from Common.utils.alibabacloud.sms.verification import send_verification_sms
 from Common.utils.auth.views.api import IsAuthenticatedAPIView
 from Common.utils.file_handler import handle_uploaded_file, remove_file, rename_file
 from Common.utils.file_handler.image_handler import is_image_file
-from Common.utils.http.exceptions import NotFound, ParameterError, MethodNotAllowed, Conflict
-from Common.utils.http.successes import Success
+from Common.utils.http.exceptions import NotFound, ParameterError, MethodNotAllowed, Conflict, PhoneSendSMSError
+from Common.utils.http.successes import Success, PhoneSMSSendSuccess
 from Common.utils.text_handler.hash import encrypt_text
 from Common.viewModels.equipments.informed_consent import generate_project_informed_consent_file_name
+from Common.views.api.user import SendPhoneSMSAPIView as _SendPhoneSMSAPIView
 from UserService.utils.forms.sample import SampleForm, SampleFormUpdate
+
+
+class SendPhoneSMSAPIView(_SendPhoneSMSAPIView):
+    def post(self, request):
+        usage = request.GET.get('usage', None)
+        if not usage:
+            raise ParameterError(msg_detail='usage field is required')
+        data = send_verification_sms(self.validate(request), '谱希基因', 'SMS_244615604', usage)
+        return Response(PhoneSMSSendSuccess(data=data))
 
 
 class SerialNumberList(IsAuthenticatedAPIView):

@@ -16,6 +16,7 @@ __auth__ = 'diklios'
 import functools
 from smtplib import SMTPException
 
+from django.conf import settings
 from django.core.mail import BadHeaderError, send_mail as _send_mail, send_mass_mail as _send_mass_mail, \
     mail_admins as _mail_admins, mail_managers as _mail_managers
 
@@ -53,9 +54,31 @@ def send_mail(
         auth_password=auth_password, connection=connection, html_message=html_message)
 
 
+def server_send_mail(
+        subject,
+        message,
+        recipient_list,
+        fail_silently=False,
+        connection=None,
+        html_message=None, ):
+    auth_user = settings.EMAIL_HOST_USER,
+    from_email=auth_user
+    auth_password = settings.EMAIL_HOST_PASSWORD,
+    return send_mail(
+        subject, message, from_email, recipient_list, fail_silently=fail_silently, auth_user=auth_user,
+        auth_password=auth_password, connection=connection, html_message=html_message)
+
+
 @handle_send_mail
 def send_mass_mail(datatuple, fail_silently=False, auth_user=None, auth_password=None, connection=None):
     return _send_mass_mail(
+        datatuple, fail_silently=fail_silently, auth_user=auth_user, auth_password=auth_password, connection=connection)
+
+
+def server_send_mass_mail(datatuple, fail_silently=False, connection=None):
+    auth_user = settings.EMAIL_HOST_USER,
+    auth_password = settings.EMAIL_HOST_PASSWORD,
+    return send_mass_mail(
         datatuple, fail_silently=fail_silently, auth_user=auth_user, auth_password=auth_password, connection=connection)
 
 

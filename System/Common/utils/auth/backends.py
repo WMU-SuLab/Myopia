@@ -15,10 +15,12 @@ __auth__ = 'diklios'
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
+from django.core.validators import validate_email
 from django.db.models import Q
 
-from Common.utils.auth.validator import validate_verification_code
+from Common.utils.auth.verification import verify_verification_code
 from Common.utils.http.exceptions import ValidationError, ParameterError
+from Common.utils.text_handler.validator import validate_phone_number
 
 UserModel = get_user_model()
 
@@ -27,7 +29,7 @@ UserModel = get_user_model()
 class UserBackend(ModelBackend):
     def authenticate(self, request, username: str = None, password: str = None, **kwargs):
         email = kwargs.get('email', None)
-        phone = kwargs.get('phone', None)
+        phone_number = kwargs.get('phone_number', None)
         open_id = kwargs.get('open_id', None)
         union_id = kwargs.get('union_id', None)
         verification_code = kwargs.get('verification_code', None)
@@ -36,19 +38,19 @@ class UserBackend(ModelBackend):
             username = kwargs.get(UserModel.USERNAME_FIELD, '')
         if username:
             user = UserModel.objects.filter(
-                Q(username__iexact=username) | Q(email__iexact=username) | Q(phone__iexact=username) |
+                Q(username__iexact=username) | Q(email__iexact=username) | Q(phone_number__iexact=username) |
                 Q(wechat_role__open_id__iexact=username) | Q(wechat_role__union_id__iexact=username)
             )
         elif email:
             user = UserModel.objects.filter(email=email)
-        elif phone:
-            user = UserModel.objects.filter(phone=phone)
+        elif phone_number:
+            user = UserModel.objects.filter(phone_number=phone_number)
         elif open_id:
             user = UserModel.objects.filter(wechat_role__open_id=open_id)
         elif union_id:
             user = UserModel.objects.filter(wechat_role__union_id=union_id)
         else:
-            raise ParameterError('username or email or phone or open_id or union_id is required')
+            raise ParameterError('username or email or phone_number or open_id or union_id is required')
         # 验证用户是否存在
         if user.exists():
             user = user.first()
@@ -65,12 +67,9 @@ class UserBackend(ModelBackend):
                 # UserModel().set_password(password)
                 raise ValidationError(msg='Password is incorrect.', chinese_msg='密码错误')
         elif verification_code:
-            if validate_verification_code(
-                    verification_code=verification_code,
-                    username=username,
-                    email=email,
-                    phone=phone):
-                # 使用验证码验证
+            if (email and validate_email(email) and verify_verification_code(email, verification_code, 'login')) or \
+                    (phone_number and validate_phone_number(phone_number)
+                    and verify_verification_code(phone_number,verification_code,'login')):
                 return user if self.user_can_authenticate(user) else None
             else:
                 raise ValidationError(msg='Verification_code is incorrect.', chinese_msg='验证码错误')

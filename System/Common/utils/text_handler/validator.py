@@ -72,21 +72,21 @@ def validate_password(pwd):
     return True, None
 
 
-def validate_phone(phone: str) -> bool:
+def validate_phone_number(phone_number: str) -> bool:
     """
     验证手机号码
-    :param phone:
+    :param phone_number:
     :return:
     """
-    if 11 <= len(phone) <= 20:
-        if len(phone) == 11 and phone.isdigit():
+    if 11 <= len(phone_number) <= 20:
+        if len(phone_number) == 11 and phone_number.isdigit():
             return True
         else:
-            region_match = re.match(r'\+\d{1,3} ', phone)
+            region_match = re.match(r'\+\d{1,3} ', phone_number)
             if region_match:
                 region = region_match.group(0)
-                phone_number = phone.replace(region, '')
-                if region and phone_number.isdigit():
+                phone_number_number = phone_number.replace(region, '')
+                if region and phone_number_number.isdigit():
                     return True
                 else:
                     return False

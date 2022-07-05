@@ -145,6 +145,17 @@ DATABASE_DEFAULT_PASSWORD=''
 
 #Redis
 REDIS_URL='redis://127.0.0.1:6379'
+
+# 阿里云API配置
+ALIBABACLOUD_ACCESS_KEY_ID=''
+ALIBABACLOUD_ACCESS_KEY_SECRET=''
+
+# 短信过期时间
+SMS_EXPIRED_TIME='600'
+
+# 验证码长度
+VERIFICATION_CODE_LENGTH=4
+
 ```
 
 - 初始化项目
@@ -231,6 +242,13 @@ REDIS_URL='redis://127.0.0.1:6379'
     - 登录：mysql -uroot -p
 
 ### Redis
+
+- 常用命令
+    - 启动：service redis start
+    - 停止：service redis stop
+    - 重启：service redis restart
+    - 登录：redis-cli
+    - 退出：quit 或者 exit
 
 ### Memcached
 

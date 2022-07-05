@@ -20,13 +20,19 @@ from .file import DownloadFileAPIView, DownloadImageAPIView
 from .info import GenderAPIView, EducationAPIView, NationalityAPIView
 from .regions import CountryListAPIView, ProvinceListAPIView, CityListAPIView, AreaListAPIView, StreetListAPIView
 from .test import test
-from .user import register, RestPasswordAPIView
+from .user import RegisterByUsernameAPIView, RestPasswordByLoginAPIView, RegisterByPhoneNumberAPIView, \
+    ResetPasswordByPhoneNumberAPIView, RegisterByEmailAPIView, ResetPasswordByEmailAPIView
 
 urlpatterns = [
     path('test', test, name='test'),
     # 用户
-    path('user/register', register, name='user_register'),
-    path('user/reset_password', RestPasswordAPIView.as_view(), name='user_rest_password'),
+    path('user/register_by_username', RegisterByUsernameAPIView.as_view(), name='user_register_by_username'),
+    path('user/reset_password_by_login', RestPasswordByLoginAPIView.as_view(), name='user_rest_password_by_login'),
+    path('user/register_by_phone_number', RegisterByPhoneNumberAPIView.as_view(), name='user_register_by_phone_number'),
+    path('user/reset_password_by_phone_number', ResetPasswordByPhoneNumberAPIView.as_view(),
+         name='user_reset_password_by_phone_number'),
+    path('user/register_by_email', RegisterByEmailAPIView.as_view(), name='user_register_by_email'),
+    path('user/reset_password_by_email', ResetPasswordByEmailAPIView.as_view(), name='user_reset_password_by_email'),
     path('user/login', TokenObtainPairView.as_view(), name='user_login'),
     path('user/logout', TokenBlacklistView.as_view(), name='user_logout'),
     path('user/token/refresh', TokenRefreshView.as_view(), name='user_token_refresh'),

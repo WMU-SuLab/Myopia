@@ -29,6 +29,11 @@ class EmailSendSuccess(Success):
     chinese_msg = '邮件发送成功'
 
 
+class PhoneSMSSendSuccess(Success):
+    msg = 'phone sms send success'
+    chinese_msg = '短信发送成功'
+
+
 # 用户管理部分
 class UserRegisterSuccess(Success):
     msg = 'user register success'
