@@ -67,7 +67,7 @@ class ExistMixin:
         :return: True/False
         """
         if not OutstandingToken.objects.filter(token=token).exists():
-            raise TokenNotExist('Token不存在')
+            raise TokenNotExist(msg_detail='Token不存在')
         return True
 
     def user_exist(self, user_id, username):
@@ -78,7 +78,7 @@ class ExistMixin:
         :return: True/False
         """
         if not User.objects.filter(id=user_id, username=username).exists():
-            raise UserNotExist('用户不存在')
+            raise UserNotExist(msg_detail=f'{user_id}-{username}:用户不存在')
         return True
 
     def refresh_is_validate(self, attrs):
@@ -96,8 +96,8 @@ class ExistMixin:
 
 class TokenRefreshSerializer(ExistMixin, _TokenRefreshSerializer):
     def validate(self, attrs):
-        self.refresh_is_validate(attrs)
         data = super().validate(attrs)
+        self.refresh_is_validate(attrs)
         access = data.get('access', None)
         decoded_data = jwt_decode(access, settings.SECRET_KEY, algorithms=["HS256"])
         return {**data, 'exp': decoded_data['exp']}
@@ -105,15 +105,15 @@ class TokenRefreshSerializer(ExistMixin, _TokenRefreshSerializer):
 
 class TokenVerifySerializer(ExistMixin, _TokenVerifySerializer):
     def validate(self, attrs):
-        decoded_data = self.token_is_validate(attrs)
         data = super().validate(attrs)
+        decoded_data = self.token_is_validate(attrs)
         return {**data, **decoded_data}
 
 
 class TokenBlacklistSerializer(ExistMixin, _TokenBlacklistSerializer):
     def validate(self, attrs):
-        self.refresh_is_validate(attrs)
         data = super().validate(attrs)
+        self.refresh_is_validate(attrs)
         return data
 
 

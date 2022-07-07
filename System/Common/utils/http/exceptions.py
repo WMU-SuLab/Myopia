@@ -26,10 +26,14 @@ from .response import BaseHTTPJSONStructure
 def exception_handler(exc, context):
     if isinstance(exc, APIException):
         if isinstance(exc, UserNotExist):
-            return Response(exc.to_dict()).delete_cookie('refresh')
+            print(exc.to_dict())
+            res = Response(exc.to_dict())
+            # 是否需要清除cookies?
+            # res.delete_cookie('refresh')
+            return res
         return Response(exc.to_dict())
     elif isinstance(exc, PydanticValidationError):
-        return Response(ParameterError(msg=str(exc)).to_dict())
+        return Response(ParameterError(msg_detail=str(exc)).to_dict())
     elif isinstance(exc, RestFrameWorkAPIException):
         default_detail = str(exc.default_detail)
         return Response(BaseError(
@@ -37,7 +41,7 @@ def exception_handler(exc, context):
             msg=exc.default_code,
             msg_detail=default_detail,
             extra={
-                'exception': 'rest_framework.exceptions.APIException',
+                'exception': exc.__class__.__name__,
                 'full_details': exc.get_full_details(),
                 # 'full_details': str(exc),
             },
