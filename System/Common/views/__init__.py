@@ -16,7 +16,9 @@ __auth__ = 'diklios'
 from django.urls import path, include
 
 from Common import app_name
+from .index import Index
 
 urlpatterns = [
+    path('', Index.as_view(), name='index'),
     path('api/', include(('Common.views.api', app_name), namespace='api')),
 ]

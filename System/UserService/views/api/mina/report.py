@@ -14,7 +14,7 @@
 __auth__ = 'diklios'
 
 import os
-
+from django.shortcuts import redirect
 from django.conf import settings
 from django.http.response import FileResponse
 from django.template.loader import render_to_string
@@ -83,7 +83,9 @@ def get_user_report_pdf_file(request):
     if not Project.objects.filter(id=project_id).exists():
         return Response(NotFound(msg='project not exist', chinese_msg='项目不存在'))
     project = Project.objects.get(id=project_id)
-    if project.report_file_path and os.path.exists(project.report_file_path):
+    if project.report_file_url:
+        return redirect(project.report_file_url)
+    elif project.report_file_path and os.path.exists(project.report_file_path):
         return FileResponse(open(project.report_file_path, 'rb'), as_attachment=True,
                             filename=project.report_file_path.split('/')[-1])
     else:

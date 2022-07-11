@@ -14,21 +14,30 @@
 
 - 基础环境
     - 基础环境安装请自行搜索，不同操作系统有不同安装方法
-    - 开发环境只需要创建Python虚拟环境即可，其他一般用于测试环境和生产环境
-    - 包括
+    - 开发环境
         - Python(3.9+)或者Conda(4.10+)
             - 本项目有部分命令使用了conda，可以替换为相应激活环境和安装包的方式
+            - 如果不是使用conda**创建**的虚拟环境，可能需要安装sqlite相关的包
+        - Redis(4.0+)
+        - MySQL(8.0+)可选
+    - 测试和生产环境
         - NGINX(1.20+)
         - MySQL(8.0+)
         - Supervisor(3.1+)
             - supervisor在不同的服务器的最新版本不同，但是使用Python安装的一定是最新的
-        - Redis(4.0+)
         - Memcached(1.5+)
         - pango(1.40+)/gtk3(3.24.31+)
             - pango是Unix/Linux/MacOS环境
             - gtk3是Windows环境，直接官网下载安装即可
             - 用于Python的 weasyprint 模块
                 - 需要根据自己的系统和 pango 版本手动使用 pip 指定版本进行安装，详见[issue文档](issues.md)
+        - python-devel
+            - 只有Linux操作系统需要安装
+            - 用于安装阿里云 OSS Python SDK
+            - 详见[阿里云 OSS Python SDK 安装](https://help.aliyun.com/document_detail/85288.html)
+                - 对于CentOS、RHEL、Fedora系统:`yum install python-devel`
+                    - 有可能找不到，可以试试：`yum install python36-devel`
+                - 对于Debian，Ubuntu系统:`apt-get install python-dev`
 - Python虚拟环境
     - Python环境依赖文件位置
         - poetry:`ProjectRoot/pyproject.toml`
@@ -147,8 +156,10 @@ DATABASE_DEFAULT_PASSWORD=''
 REDIS_URL='redis://127.0.0.1:6379'
 
 # 阿里云API配置
-ALIBABACLOUD_ACCESS_KEY_ID=''
-ALIBABACLOUD_ACCESS_KEY_SECRET=''
+ALIBABACLOUD_SMS_ACCESS_KEY_ID=''
+ALIBABACLOUD_SMS_ACCESS_KEY_SECRET=''
+ALIBABACLOUD_OSS_ACCESS_KEY_ID=''
+ALIBABACLOUD_OSS_ACCESS_KEY_SECRET=''
 
 # 短信过期时间
 SMS_EXPIRED_TIME='600'
@@ -207,7 +218,7 @@ VERIFICATION_CODE_LENGTH=4
         - 初始化学生数据:`python manage.py init_data -S -f 文件路径`
 - 启动Memcached:`service memcached start`
     - `memcached -d -u root -l 127.0.0.1 -p 11211 -m 128`
-- 启动Redis:``
+- 启动Redis:`service redis start`
 - 配置gunicorn
     - 可以修改`System/gunicorn.py`文件中的端口等内容，默认不需要进行修改
     - 测试能否启动：`gunicorn Config.wsgi -c gunicorn.py`

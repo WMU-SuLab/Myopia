@@ -64,8 +64,10 @@ django-sslserver = "^0.22"
 gevent = "^21.12.0"
 waitress = { version = "^2.1.1", platform = "win32" }
 gunicorn = { version = "^20.1.0", markers = "sys_platform != 'win32'" }
+#aliyun
 alibabacloud-tea-openapi = "^0.3.3"
 alibabacloud-dysmsapi20170525 = "^2.0.13"
+oss2 = "^2.15.0"
 
 
 

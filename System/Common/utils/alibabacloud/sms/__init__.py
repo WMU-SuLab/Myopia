@@ -13,37 +13,20 @@
 """
 __auth__ = 'diklios'
 
-from Tea.exceptions import UnretryableException
-from alibabacloud_dysmsapi20170525 import models
+from alibabacloud_dysmsapi20170525.client import Client
+from alibabacloud_tea_openapi import models as open_api_models
+from django.conf import settings
 
-from Common.utils.alibabacloud import client
-from Common.utils.http.exceptions import PhoneSendSMSError, ServerError
-from Common.utils.schemes.sms import SendSMSModel
+# SMS配置
+sms_config = open_api_models.Config(
+    # 您的AccessKey ID,
+    access_key_id=settings.ALIBABACLOUD_SMS_ACCESS_KEY_ID,
+    # 您的AccessKey Secret,
+    access_key_secret=settings.ALIBABACLOUD_SMS_ACCESS_KEY_SECRET,
+)
+# 访问的域名
+sms_config.endpoint = 'dysmsapi.aliyuncs.com'
+# config.endpoint='sms@1659548102989549.onaliyun.com'
 
-
-def handle_send_exception(func):
-    def wrapper(*args, **kwargs):
-        try:
-            return func(*args, **kwargs)
-        except UnretryableException as e:
-            print(e.inner_exception)
-            raise PhoneSendSMSError(msg_detail=str(e))
-        except Exception as e:
-            print(e)
-            raise ServerError(msg_detail=str(e))
-
-    return wrapper
-
-
-@handle_send_exception
-def send_sms(phone_number, sign_name, template_code, template_param):
-    SendSMSModel(phone_number=phone_number, sign_name=sign_name, template_code=template_code,
-                 template_param=template_param)
-    req = models.SendSmsRequest(
-        phone_numbers=phone_number,
-        sign_name=sign_name,
-        template_code=template_code,
-        template_param=template_param
-    )
-    res = client.send_sms(req)
-    return res.body.to_map()
+# 创建客户端
+sms_client = Client(sms_config)

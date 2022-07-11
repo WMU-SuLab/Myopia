@@ -23,7 +23,7 @@ admin.site.site_header = '数据库后台管理系统'
 
 
 def index_redirect(request):
-    return redirect(reverse('Screening:manage:index'))
+    return redirect(reverse('Common:index'))
 
 
 urlpatterns = [

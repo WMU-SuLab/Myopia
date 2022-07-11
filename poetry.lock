@@ -193,6 +193,39 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "aliyun-python-sdk-core"
+version = "2.13.36"
+description = "The core module of Aliyun Python SDK."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+cryptography = ">=2.6.0"
+jmespath = ">=0.9.3,<1.0.0"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "aliyun-python-sdk-kms"
+version = "2.15.0"
+description = "The kms module of Aliyun Python sdk."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+aliyun-python-sdk-core = ">=2.11.5"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "asgiref"
 version = "3.5.2"
 description = "ASGI specs, helper code, and adapters"
@@ -339,6 +372,19 @@ description = "Cross-platform colored terminal text."
 category = "dev"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "crcmod"
+version = "1.7"
+description = "CRC Generator"
+category = "main"
+optional = false
+python-versions = "*"
 
 [package.source]
 type = "legacy"
@@ -839,6 +885,19 @@ url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
 reference = "tsinghua"
 
 [[package]]
+name = "jmespath"
+version = "0.10.0"
+description = "JSON Matching Expressions"
+category = "main"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
 name = "jsonschema"
 version = "4.6.0"
 description = "An implementation of JSON Schema validation for Python"
@@ -921,6 +980,27 @@ python-versions = ">=3.6"
 
 [package.dependencies]
 et-xmlfile = "*"
+
+[package.source]
+type = "legacy"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+reference = "tsinghua"
+
+[[package]]
+name = "oss2"
+version = "2.15.0"
+description = "Aliyun OSS (Object Storage Service) SDK"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+aliyun-python-sdk-core = ">=2.13.12"
+aliyun-python-sdk-kms = ">=2.4.1"
+crcmod = ">=1.7"
+pycryptodome = ">=3.4.7"
+requests = "!=2.9.0"
+six = "*"
 
 [package.source]
 type = "legacy"
@@ -1608,7 +1688,7 @@ reference = "tsinghua"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "31ec01386a208bfb75e6065a88ce578656f78cf8d113d5ed89defd0c34381630"
+content-hash = "9aa48f3fedd226c228646bd2d2473b8ee75403813bdbc37aac5b143b15f0b016"
 
 [metadata.files]
 aiohttp = [
@@ -1717,6 +1797,13 @@ alibabacloud-tea-util = [
 alibabacloud-tea-xml = [
     {file = "alibabacloud_tea_xml-0.0.2.tar.gz", hash = "sha256:f0135e8148fd7d9c1f029db161863f37f144f837c280cba16c2edeb2f9c549d8"},
 ]
+aliyun-python-sdk-core = [
+    {file = "aliyun-python-sdk-core-2.13.36.tar.gz", hash = "sha256:20bd54984fa316da700c7f355a51ab0b816690e2a0fcefb7b5ef013fed0da928"},
+]
+aliyun-python-sdk-kms = [
+    {file = "aliyun-python-sdk-kms-2.15.0.tar.gz", hash = "sha256:642a3f4f04dcdba5f8a3a0f1edff04479e76df33017a5b25512490ce5894ab2d"},
+    {file = "aliyun_python_sdk_kms-2.15.0-py2.py3-none-any.whl", hash = "sha256:046ddcde1bc05297a640ca6b6497f7b088e6a437c0b38a9272f7b3bfb9ea1299"},
+]
 asgiref = [
     {file = "asgiref-3.5.2-py3-none-any.whl", hash = "sha256:1d2880b792ae8757289136f1db2b7b99100ce959b2aa57fd69dab783d05afac4"},
     {file = "asgiref-3.5.2.tar.gz", hash = "sha256:4a29362a6acebe09bf1d6640db38c1dc3d9217c68e6f9f6204d72667fc19a424"},
@@ -1804,6 +1891,9 @@ charset-normalizer = [
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
+]
+crcmod = [
+    {file = "crcmod-1.7.tar.gz", hash = "sha256:dc7051a0db5f2bd48665a990d3ec1cc305a466a77358ca4492826f41f283601e"},
 ]
 cryptography = [
     {file = "cryptography-36.0.2-cp36-abi3-macosx_10_10_universal2.whl", hash = "sha256:4e2dddd38a5ba733be6a025a1475a9f45e4e41139d1321f412c6b360b19070b6"},
@@ -2073,6 +2163,10 @@ isort = [
     {file = "isort-5.10.1-py3-none-any.whl", hash = "sha256:6f62d78e2f89b4500b080fe3a81690850cd254227f27f75c3a0c491a1f351ba7"},
     {file = "isort-5.10.1.tar.gz", hash = "sha256:e8443a5e7a020e9d7f97f1d7d9cd17c88bcb3bc7e218bf9cf5095fe550be2951"},
 ]
+jmespath = [
+    {file = "jmespath-0.10.0-py2.py3-none-any.whl", hash = "sha256:cdf6525904cc597730141d61b36f2e4b8ecc257c420fa2f4549bac2c2d0cb72f"},
+    {file = "jmespath-0.10.0.tar.gz", hash = "sha256:b85d0567b8666149a93172712e68920734333c0ce7e89b78b3e987f71e5ed4f9"},
+]
 jsonschema = [
     {file = "jsonschema-4.6.0-py3-none-any.whl", hash = "sha256:1c92d2db1900b668201f1797887d66453ab1fbfea51df8e4b46236689c427baf"},
     {file = "jsonschema-4.6.0.tar.gz", hash = "sha256:9d6397ba4a6c0bf0300736057f649e3e12ecbc07d3e81a0dacb72de4e9801957"},
@@ -2208,6 +2302,9 @@ numpy = [
 openpyxl = [
     {file = "openpyxl-3.0.10-py2.py3-none-any.whl", hash = "sha256:0ab6d25d01799f97a9464630abacbb34aafecdcaa0ef3cba6d6b3499867d0355"},
     {file = "openpyxl-3.0.10.tar.gz", hash = "sha256:e47805627aebcf860edb4edf7987b1309c1b3632f3750538ed962bbcc3bd7449"},
+]
+oss2 = [
+    {file = "oss2-2.15.0.tar.gz", hash = "sha256:d8b5a10ba2291ff4c78246576f243dcec262f1f646344e61f3192dc262e87430"},
 ]
 packaging = [
     {file = "packaging-21.3-py3-none-any.whl", hash = "sha256:ef103e05f519cdc783ae24ea4e2e0f508a9c99b2d4969652eed6a2e1ea5bd522"},

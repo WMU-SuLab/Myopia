@@ -17,7 +17,7 @@ import json
 
 from Common.utils.auth.verification import set_verification_code
 from Common.utils.http.exceptions import PhoneSendSMSError
-from . import send_sms
+from .send import send_sms
 
 
 def send_verification_sms(phone_number, sign_name, template_code, usage='register'):

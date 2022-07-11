@@ -16,6 +16,8 @@ __auth__ = 'diklios'
 import os
 
 from django.http import FileResponse
+from django.utils.decorators import method_decorator
+from django.views.decorators.gzip import gzip_page
 from rest_framework.response import Response
 
 from Common.utils.auth.views.api import AllowAnyAPIView
@@ -24,6 +26,7 @@ from Common.utils.http.exceptions import FileNotFound
 from Common.utils.text_handler.hash import decrypt_text
 
 
+@method_decorator(gzip_page, name="dispatch")
 class DownloadFileAPIView(AllowAnyAPIView):
     def get(self, request, encrypted_file_text, *args, **kwargs):
         file_path = decrypt_text(encrypted_file_text)
@@ -34,6 +37,7 @@ class DownloadFileAPIView(AllowAnyAPIView):
             return Response(FileNotFound())
 
 
+@method_decorator(gzip_page, name="dispatch")
 class DownloadImageAPIView(AllowAnyAPIView):
     def get(self, request, encrypted_file_text, *args, **kwargs):
         file_path = decrypt_text(encrypted_file_text)
