@@ -72,6 +72,12 @@ class Project(Base):
     def set_project_name_city_rule(self, year, city, city_region, user_role):
         self.name = f'{year}-{city}-{city_region}-{user_role}'
 
+    @property
+    def has_report_file(self):
+        if self.report_file_path or self.report_file_url:
+            return True
+        return False
+
     def has_equipment(self, equipment_type):
         return getattr(self, 'has_' + equipment_type)
 

@@ -16,10 +16,10 @@ __auth__ = 'diklios'
 from django.urls import reverse
 
 from Common.models.project import Project
+from Common.utils.alibabacloud.oss.url import generate_image_url, generate_file_url
 from Common.utils.http.exceptions import NotFound
 from Common.utils.http.url import params_dict_to_url_query_string
 from Common.utils.text_handler.hash import encrypt_dict_to_text
-from Common.utils.text_handler.hash import encrypt_text
 from Common.viewModels.project import generate_report_data_from_project
 
 
@@ -33,7 +33,7 @@ def search_projects(
 ):
     projects = Project.objects.filter(
         user__identification_card_number__endswith=identification_card_number,
-    ).select_related('user', 'visual_chart', 'tono_meter', 'bio_meter', 'optometry')
+    )
     if not projects.exists():
         raise NotFound(msg='no this person', chinese_msg='没有找到该用户，身份证号错误')
     if user_role:
@@ -59,7 +59,7 @@ def search_projects(
         projects = projects.filter(finished_time__gt=finished_time)
     if not projects.exists():
         raise NotFound(msg='project info error', chinese_msg='无相关数据')
-    return projects
+    return projects.select_related('user', 'visual_chart', 'tono_meter', 'bio_meter', 'optometry')
 
 
 def generate_user_report_data(
@@ -73,6 +73,9 @@ def generate_user_report_data(
     project = projects.first()
     if not project:
         raise NotFound(msg='no this project', chinese_msg='没有找到该项目')
+    if not project.has_informed_consent or (
+            not project.informed_consent.file_path and not project.informed_consent.file_url):
+        return {'project_id': project.id}
     if not project.report_file_url:
         report_file_url = reverse(
             'UserService:api:mina:get_user_report_pdf_file') + '?' + params_dict_to_url_query_string({
@@ -83,18 +86,16 @@ def generate_user_report_data(
             }),
             'project_id': project.id,
         })
-        project.report_file_url = report_file_url
-        project.remarks_json['report_file_full'] = False
-        project.save()
-    if not project.has_informed_consent:
-        return {'project_id': project.id}
-    if not project.informed_consent.file_path and not project.informed_consent.file_url:
-        return {'project_id': project.id}
+    else:
+        report_file_url = generate_file_url(project.report_file_url, project.report_file_path)
+    project.remarks_json['report_file_full'] = False
+    project.save()
     return {
         **generate_report_data_from_project(project),
         # 使用文件而不是图片是因为可能以后使用PDF存储
-        'informed_consent_file_url': reverse(
-            'Common:api:download_file',args=(encrypt_text(project.informed_consent.file_path),)) or None,
-        'report_file_url': project.report_file_url,
+        'informed_consent_file_url': generate_image_url(
+            project.informed_consent.file_url,
+            project.informed_consent.file_path),
+        'report_file_url': report_file_url,
         'report_file_full': project.remarks_json.get('report_file_full', False),
     }

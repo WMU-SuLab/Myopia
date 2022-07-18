@@ -160,6 +160,8 @@ ALIBABACLOUD_SMS_ACCESS_KEY_ID=''
 ALIBABACLOUD_SMS_ACCESS_KEY_SECRET=''
 ALIBABACLOUD_OSS_ACCESS_KEY_ID=''
 ALIBABACLOUD_OSS_ACCESS_KEY_SECRET=''
+ALIBABACLOUD_OSS_ENDPOINT=''
+ALIBABACLOUD_OSS_BUCKET_NAME=''
 
 # 短信过期时间
 SMS_EXPIRED_TIME='600'
@@ -237,7 +239,11 @@ VERIFICATION_CODE_LENGTH=4
             -
           链接本项目的supervisor配置文件：`sudo ln -s /.../ProjectRoot/System/supervisor.ini /etc/supervisor/supervisord.d/myopia.ini`
             - 启动服务：`supervisord -c /etc/supervisor/supervisord.conf`
-
+- 配置阿里云OSS
+    - 购买，获得AccessKeyId和AccessKeySecret
+    - 创建bucket
+    - **创建文件夹**，这很重要，一定要提交创建好文件夹，否则502
+  
 ## 数据库
 
 ### SQL
@@ -327,3 +333,10 @@ VERIFICATION_CODE_LENGTH=4
     - 查看配置文件是否更新：sudo supervisorctl reread
     - 重载配置文件：sudo supervisorctl update
     - 重新启动服务
+
+### ossutil
+
+- 配置
+- 上传
+- 下载
+- 删除

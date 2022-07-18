@@ -156,7 +156,7 @@ def init_user():
 @print_accurate_execute_time
 def init_regions():
     china, china_created = Country.objects.get_or_create(name='中国')
-    china_regions_dir_path = os.path.join(settings.IMPORT_JSON_DATA_DIR_PATH, 'china', 'regions')
+    china_regions_dir_path = os.path.join(settings.IMPORT_JSON_DIR_PATH, 'china', 'regions')
     china_province_json_path = os.path.join(china_regions_dir_path, 'province.json')
     if not os.path.exists(china_province_json_path):
         print('china_province.json文件不存在')
@@ -200,7 +200,7 @@ def init_regions():
 
 @print_accurate_execute_time
 def init_info():
-    nationalities_json_path = os.path.join(settings.IMPORT_JSON_DATA_DIR_PATH, 'china', 'nationalities.json')
+    nationalities_json_path = os.path.join(settings.IMPORT_JSON_DIR_PATH, 'china', 'nationalities.json')
     with open(nationalities_json_path, 'r', encoding='utf8') as f:
         nationalities_json: list = json.load(f)
         Nationality.objects.bulk_create([Nationality(name=nationality['name'], pinyin=nationality['pinyin'])

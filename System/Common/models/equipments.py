@@ -249,6 +249,12 @@ class InformedConsent(Base):
     def file_location(self):
         return {'file_path': self.file_path, 'file_url': self.file_url}
 
+    @property
+    def has_file(self):
+        if self.file_path or self.file_url:
+            return True
+        return False
+
     class Meta:
         verbose_name = verbose_name_plural = '知情同意书'
 

@@ -18,7 +18,7 @@ import os
 from PIL import Image, UnidentifiedImageError
 
 
-def is_image_file(image_file_path):
+def is_image_file(image_file_path: str = None):
     """
     判断文件是否是图片
     :param image_file_path:

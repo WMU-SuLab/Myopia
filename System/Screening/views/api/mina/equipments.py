@@ -28,7 +28,7 @@ from Common.utils.http.exceptions import ParameterError, NotFound, MethodNotAllo
 from Common.utils.http.successes import Success
 from Common.utils.text_handler.hash import encrypt_text
 from Common.viewModels.base import retrieve_model
-from Common.viewModels.equipments.informed_consent import handle_upload_informed_consent
+from Common.viewModels.equipments.informed_consent import handle_upload_informed_consent_request
 from Common.viewModels.equipments.sequence import handle_upload_sequence
 
 
@@ -99,10 +99,10 @@ class InformedConsentCreateRetrieveUpdateGenericAPIView(EquipmentCreateRetrieveU
             reverse('Common:views:api:download_file', kwargs={'encrypted_file_text': encrypted_file_text}))
 
     def post(self, request, *args, **kwargs):
-        return handle_upload_informed_consent(request, *args, **kwargs)
+        return handle_upload_informed_consent_request(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
-        return handle_upload_informed_consent(request, *args, **kwargs)
+        return handle_upload_informed_consent_request(request, *args, **kwargs)
 
 
 class QuestionnaireCreateRetrieveUpdateGenericAPIView(EquipmentCreateRetrieveUpdateGenericAPIView):

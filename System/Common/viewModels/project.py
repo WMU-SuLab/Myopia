@@ -12,11 +12,16 @@
 @Motto          :   All our science, measured against reality, is primitive and childlike - and yet it is the most precious thing we have.
 """
 __auth__ = 'diklios'
-
+import os
 from typing import Any
+from django.conf import settings
+from Common.utils.alibabacloud.oss.obj import upload_obj, generate_obj_file_path, delete_obj
+from Common.utils.file_handler import handle_upload_file, remove_file
+
 
 from django.db.models import JSONField
 from pydantic import BaseModel
+from django.core.files.uploadedfile import UploadedFile
 
 from Common.models.equipments import *
 from Common.models.user import User
@@ -284,7 +289,7 @@ def generate_report_suggestions(eye_data: dict) -> list:
         if abs(eye_data['corrected_visual_acuity_right'] - eye_data['corrected_visual_acuity_left']) >= 0.2:
             suggestions.append(Suggestion(issue='双眼矫正视力相差过大，有弱视可能').dict())
     suggestions = [suggestion for suggestion in suggestions if suggestion]
-    correct_eye=False
+    correct_eye = False
     for suggestion in suggestions:
         if suggestion and '矫正' in suggestion['issue']:
             correct_eye = True
@@ -347,3 +352,27 @@ def generate_report_data_from_project(project: Project) -> JSONField | dict[str 
     project.report_data = report_data
     project.save()
     return report_data
+
+
+
+def  handle_upload_project_report(project:Project,report_file:UploadedFile):
+    # 暂存原始数据
+    raw_report_file_url = project.report_file_path
+    raw_report_file_path = project.report_file_path
+    # 上传文件
+    report_file_name = generate_project_report_filename(project).replace('.pdf', f'-{report_file.name}')
+    report_file_path = os.path.join(settings.USER_PDF_DIR_PATH, report_file_name)
+    handle_upload_file(report_file, report_file_path)
+    project.report_file_path = report_file_path
+    # 上传文件到阿里云OSS
+    report_file_obj_name = os.path.join(settings.RELATIVE_USER_PDF_DIR_PATH, report_file_name)
+    upload_obj(report_file_obj_name, report_file_path)
+    project.report_file_url = generate_obj_file_path(report_file_obj_name)
+    # 删除原本的文件
+    if raw_report_file_url and raw_report_file_path != report_file_obj_name:
+        delete_obj(raw_report_file_url)
+    if raw_report_file_path and raw_report_file_path != report_file_path and os.path.exists(raw_report_file_path):
+        remove_file(raw_report_file_path)
+    # 保存项目
+    project.full_clean(exclude=['report_file_url'], validate_unique=True)
+    project.save()

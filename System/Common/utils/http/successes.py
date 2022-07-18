@@ -63,3 +63,9 @@ class UserPasswordUpdateSuccess(Success):
 class UserDeleteSuccess(Success):
     msg = 'user delete success'
     chinese_msg = '用户注销成功'
+
+
+class FileUploadSuccess(Success):
+    status_code = 200
+    msg = 'file upload success'
+    chinese_msg = '文件上传成功'

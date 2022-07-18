@@ -16,6 +16,8 @@ __auth__ = 'diklios'
 import os
 from shutil import move, copy2
 
+from Common.utils.http.exceptions import FileUploadError, FileDeleteError
+
 
 def validate_file_path(file_path):
     """
@@ -30,7 +32,19 @@ def validate_file_path(file_path):
         return False
 
 
-def handle_uploaded_file(f, file_path):
+def upload_file(f, file_path):
+    """
+    上传文件
+    """
+    if os.path.isfile(file_path):
+        os.remove(file_path)
+    with open(file_path, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+    return True
+
+
+def handle_upload_file(f, file_path):
     """
     处理上传文件
     :param f:
@@ -38,13 +52,10 @@ def handle_uploaded_file(f, file_path):
     :return:
     """
     try:
-        with open(file_path, 'wb+') as destination:
-            for chunk in f.chunks():
-                destination.write(chunk)
-        return True
+        upload_file(f, file_path)
     except Exception as e:
-        print(e)
-        return False
+        handle_remove_file(file_path)
+        raise FileUploadError(msg_detail=str(e))
 
 
 def copy_file(source_file_path, target_path):
@@ -78,6 +89,13 @@ def remove_file(file_path):
         return True
     else:
         return False
+
+
+def handle_remove_file(file_path):
+    try:
+        remove_file(file_path)
+    except Exception as e:
+        raise FileDeleteError(msg_detail=str(e))
 
 
 def rename_file(file_path, new_file_path):

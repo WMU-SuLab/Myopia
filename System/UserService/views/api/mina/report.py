@@ -14,9 +14,10 @@
 __auth__ = 'diklios'
 
 import os
-from django.shortcuts import redirect
+
 from django.conf import settings
 from django.http.response import FileResponse
+from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.utils.timezone import localtime, get_current_timezone_name
 from rest_framework.decorators import api_view, authentication_classes
@@ -24,11 +25,12 @@ from rest_framework.response import Response
 from weasyprint import HTML
 
 from Common.models.project import Project
+from Common.utils.alibabacloud.oss.obj import is_obj_file_path, obj_sign_url, upload_obj, generate_obj_file_path
 from Common.utils.auth.views.api import AllowAnyAPIView
-from Common.utils.http.exceptions import InsufficientPreconditions, NotFound
+from Common.utils.http.exceptions import InsufficientPreconditions, NotFound, Conflict
 from Common.utils.http.successes import Success
 from Common.utils.text_handler.hash import decrypt_text_to_dict
-from Common.viewModels.equipments.informed_consent import handle_upload_informed_consent
+from Common.viewModels.equipments.informed_consent import handle_upload_informed_consent_request
 from Common.viewModels.project import generate_project_report_filename
 from UserService.utils.schemes.report import UserReportSearchForm
 from UserService.viewModels.project import search_projects, generate_user_report_data
@@ -48,7 +50,7 @@ class ReportProjectsAPIView(AllowAnyAPIView):
             'finished_time': localtime(project.finished_time).strftime('%Y-%m-%d %H:%M:%S'),
             'tzname': get_current_timezone_name(),
             'finished_time_timestamp': project.finished_time.timestamp(),
-            'informed_consent': project.has_informed_consent,
+            'informed_consent': project.has_informed_consent and project.informed_consent.has_file,
             'report_file_full': project.remarks_json.get('report_file_full', False),
         } for project in projects]))
 
@@ -69,10 +71,10 @@ def get_user_report_data(request):
 
 class UploadInformedConsentAPIView(AllowAnyAPIView):
     def post(self, request, *args, **kwargs):
-        return handle_upload_informed_consent(request, *args, **kwargs)
+        return handle_upload_informed_consent_request(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
-        return handle_upload_informed_consent(request, *args, **kwargs)
+        return handle_upload_informed_consent_request(request, *args, **kwargs)
 
 
 @api_view(['GET'])
@@ -84,23 +86,32 @@ def get_user_report_pdf_file(request):
         return Response(NotFound(msg='project not exist', chinese_msg='项目不存在'))
     project = Project.objects.get(id=project_id)
     if project.report_file_url:
-        return redirect(project.report_file_url)
+        if is_obj_file_path(project.report_file_url):
+            return redirect(obj_sign_url(project.report_file_url))
+        if request.get_full_path() != project.report_file_url:
+            return redirect(project.report_file_url)
+        return Conflict(chinese_msg='URL不合法')
     elif project.report_file_path and os.path.exists(project.report_file_path):
-        return FileResponse(open(project.report_file_path, 'rb'), as_attachment=True,
-                            filename=project.report_file_path.split('/')[-1])
+        return FileResponse(
+            open(project.report_file_path, 'rb'),
+            as_attachment=True,
+            filename=project.report_file_path.split('/')[-1])
     else:
         user_info_json = decrypt_text_to_dict(data['user_info_json'])
         user_info = UserReportSearchForm(**user_info_json)
         # 创建文件
-        dir_path = settings.USER_PDF_DATA_DIR_PATH
+        dir_path = settings.USER_PDF_DIR_PATH
         file_name = generate_project_report_filename(project)
         file_path = os.path.join(dir_path, file_name)
-        if not os.path.exists(file_path):
-            report_str = render_to_string(
-                template_name='UserService/report/single.html',
-                context={'user': generate_user_report_data(**user_info.dict())}
-            )
-            HTML(string=report_str).write_pdf(file_path)
-            project.report_file_path = file_path
-            project.save()
+        report_str = render_to_string(
+            template_name='UserService/report/single.html',
+            context={'user': generate_user_report_data(**user_info.dict())}
+        )
+        HTML(string=report_str).write_pdf(file_path)
+        project.report_file_path = file_path
+        # 上传OSS
+        file_obj_name = os.path.join(settings.RELATIVE_USER_PDF_DIR_PATH, file_name)
+        upload_obj(file_obj_name, file_path)
+        project.report_file_url = generate_obj_file_path(file_obj_name)
+        project.save()
         return FileResponse(open(file_path, 'rb'), as_attachment=True, filename=file_name)

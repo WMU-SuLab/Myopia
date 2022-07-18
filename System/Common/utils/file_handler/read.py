@@ -17,15 +17,16 @@ from itertools import islice
 from typing import List, Iterable
 
 
-def read_n_lines_each_time_yield(file_path: str, per: int = 1000, skip_rows: int = 0) -> Iterable[List[str]]:
+def read_n_lines_each_time_yield(file_path: str, per: int = 1000, skip_rows: int = 0, encoding: str = 'utf-8') -> \
+        Iterable[List[str]]:
     """
     每次读取文件n行，返回迭代器
     """
     count = 0
-    with open(file_path, 'r') as f:
+    with open(file_path, 'r', encoding=encoding) as f:
         stop = False
         if skip_rows:
-            rows=[f.readline() for i in range(skip_rows)]
+            rows = [f.readline() for i in range(skip_rows)]
         while not stop:
             count += 1
             lines = list(islice(f, per))

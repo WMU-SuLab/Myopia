@@ -13,7 +13,8 @@
 """
 __auth__ = 'diklios'
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist as DjangoObjectDoesNotExist, \
+    ValidationError as DjangoValidationError
 from pydantic import ValidationError as PydanticValidationError
 from rest_framework.exceptions import APIException as RestFrameWorkAPIException
 from rest_framework.views import Response
@@ -46,8 +47,11 @@ def exception_handler(exc, context):
                 # 'full_details': str(exc),
             },
         ).to_dict())
-    elif isinstance(exc, ObjectDoesNotExist):
+    # 处理常见的django自带的exceptions
+    elif isinstance(exc, DjangoObjectDoesNotExist):
         return Response(NotFound(msg=str(exc), chinese_msg='数据库对象未找到').to_dict())
+    elif isinstance(exc, DjangoValidationError):
+        return Response(ValidationError(msg='database not valid', msg_detail=str(exc)).to_dict())
     else:
         return _exception_handler(exc, context)
 
@@ -242,3 +246,27 @@ class FileNotFound(APIException):
     status_code = 404
     msg = 'file not found'
     chinese_msg = '文件未找到'
+
+
+class FileExist(APIException):
+    status_code = 400
+    msg = 'file exist'
+    chinese_msg = '文件已存在'
+
+
+class FileUploadError(APIException):
+    status_code = 400
+    msg = 'file upload error'
+    chinese_msg = '文件上传错误'
+
+
+class FileDeleteError(APIException):
+    status_code = 400
+    msg = 'file delete error'
+    chinese_msg = '文件删除错误'
+
+
+class FileDownloadError(APIException):
+    status_code = 400
+    msg = 'file download error'
+    chinese_msg = '文件下载错误'

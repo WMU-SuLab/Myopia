@@ -15,7 +15,6 @@ __auth__ = 'diklios'
 
 import os
 
-from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import F
 from django.shortcuts import redirect
@@ -24,10 +23,9 @@ from rest_framework.response import Response
 from Common.models.project import Project
 from Common.models.user import User
 from Common.utils.auth.views.api import AllowAnyAPIView
-from Common.utils.file_handler import handle_uploaded_file, remove_file
-from Common.utils.http.exceptions import AuthenticationFailed, PermissionDenied, ParameterError, ServerError
-from Common.utils.http.successes import Success
-from Common.viewModels.project import generate_project_report_filename
+from Common.utils.http.exceptions import AuthenticationFailed, PermissionDenied, ParameterError
+from Common.utils.http.successes import Success, FileUploadSuccess
+from Common.viewModels.project import handle_upload_project_report
 from UserService.utils.auth.views import sample_manager_redirect_field_name
 from UserService.utils.auth.views.api import SampleManagerIsAuthenticatedAPIView
 from UserService.utils.forms.sample import SampleManageForm
@@ -110,19 +108,9 @@ class SampleProjectUploadReportFileAPIView(SampleManagerIsAuthenticatedAPIView):
         project_id = request.POST.get('project_id', project_id)
         if not project_id:
             return Response(ParameterError(chinese_msg='项目id不能为空'))
-        project = Project.objects.get(id=project_id)
         report_file = request.FILES.get('file', None)
-        if report_file:
-            if project.report_file_path and os.path.exists(project.report_file_path):
-                remove_file(project.report_file_path)
-            report_filename = generate_project_report_filename(project).replace('.pdf', f'-{report_file.name}')
-            report_file_path = os.path.join(settings.USER_PDF_DATA_DIR_PATH, report_filename)
-            if handle_uploaded_file(report_file, report_file_path):
-                project.report_file_path = report_file_path
-            else:
-                remove_file(report_file_path)
-                return Response(ServerError(chinese_msg='上传文件失败'))
-            project.save()
-            return Response(Success(chinese_msg='上传文件成功'))
-        else:
+        if not report_file:
             return Response(ParameterError(chinese_msg='上传文件为空'))
+        project = Project.objects.get(id=project_id)
+        handle_upload_project_report(project, report_file)
+        return Response(FileUploadSuccess(chinese_msg='上传文件成功'))

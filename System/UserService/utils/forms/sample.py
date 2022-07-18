@@ -54,6 +54,9 @@ class SampleForm(forms.Form):
             raise forms.ValidationError('民族输入错误')
         return nationality
 
+    def clean_birthday(self):
+        return self.cleaned_data['birthday'].strftime('%Y-%m-%d'),
+
 
 class SampleFormUpdate(SampleForm):
     informed_consent_file = forms.FileField(required=False)

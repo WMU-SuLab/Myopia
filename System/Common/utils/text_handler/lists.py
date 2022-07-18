@@ -13,6 +13,8 @@
 """
 __auth__ = 'diklios'
 
+from collections import Counter
+
 
 # 每n个分组
 def group_by_step(list_to_group: list, step: int = 10) -> list:
@@ -48,3 +50,7 @@ def list_to_n_group_yield(list_to_group: list, n: int = 3) -> list:
 
 def add_index(list_obj: list[dict]) -> list:
     return [{'index': i, **obj} for i, obj in enumerate(list_obj)]
+
+
+def count_list(list_obj: list) -> dict:
+    return Counter(list_obj)
