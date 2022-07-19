@@ -31,7 +31,7 @@ def upload_to_oss():
     for project in projects:
         obj_name_index = project.report_file_path.find(settings.RELATIVE_USER_PDF_DIR_PATH)
         project.report_file_url = generate_obj_file_path(project.report_file_path[obj_name_index:])
-    projects.save()
+    Project.objects.bulk_update(projects, ['report_file_url'])
 
 
 @print_accurate_execute_time
@@ -42,7 +42,7 @@ def download_from_oss():
         relative_file_path = parsing_obj_file_path(project.report_file_url)
         file_name = os.path.basename(relative_file_path)
         project.report_file_path = os.path.join(settings.USER_PDF_DIR_PATH, file_name)
-    projects.save()
+    Project.objects.bulk_update(projects, ['report_file_url'])
 
 
 @print_accurate_execute_time
@@ -51,7 +51,7 @@ def delete_local_files():
     projects = Project.objects.filter(report_file_url__isnull=False, report_file_path__isnull=False)
     for project in projects:
         project.report_file_path = None
-    projects.save()
+    Project.objects.bulk_update(projects, ['report_file_url'])
 
 
 @print_accurate_execute_time
@@ -60,7 +60,7 @@ def delete_oss_files():
     projects = Project.objects.filter(report_file_url__isnull=False, report_file_path__isnull=False)
     for project in projects:
         project.report_file_url = None
-    projects.save()
+    Project.objects.bulk_update(projects, ['report_file_url'])
 
 
 class Command(BaseCommand, metaclass=ABCMeta):

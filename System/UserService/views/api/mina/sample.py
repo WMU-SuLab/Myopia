@@ -106,6 +106,10 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
         serial_number = sample_form.cleaned_data['serial_number']
         if Sequence.objects.filter(serial_number=serial_number).exists():
             return Response(MethodNotAllowed(chinese_msg='序列号已存在，不允许使用此方法'))
+        # 处理知情同意书
+        informed_consent_file = sample_form.cleaned_data.pop('informed_consent_file')
+        if not informed_consent_file:
+            return Response(ParameterError(chinese_msg='请上传同意书'))
         project = Project.objects.create(
             user=request.user,
             name='用户自采样',
@@ -113,16 +117,12 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
             remarks_json=sample_form.cleaned_data,
         )
         Sequence.objects.create(project=project, serial_number=serial_number)
-        # 处理知情同意书
-        informed_consent_file = sample_form.cleaned_data['informed_consent_file']
-        if not informed_consent_file:
-            return Response(ParameterError(chinese_msg='请上传同意书'))
         # 上传到本地文件
         informed_consent_dir_path = settings.INFORMED_CONSENT_DIR_PATH
         informed_consent_file_path = os.path.join(informed_consent_dir_path, informed_consent_file.name)
+        handle_upload_file(informed_consent_file, informed_consent_file_path)
         if not is_image_file(informed_consent_file_path):
             return Response(ParameterError(chinese_msg='上传的不是图片文件'))
-        handle_upload_file(informed_consent_file, informed_consent_file_path)
         # 重命名为规范的文件名
         informed_consent = InformedConsent.objects.create(project=project)
         informed_consent_new_file_name = generate_project_informed_consent_file_name(
@@ -160,11 +160,11 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
         if project.user.username != request.user.username:
             return Response(ParameterError(chinese_msg='该序列号不属于当前用户'))
         # 判断是否更新图片
-        informed_consent_file = sample_form.cleaned_data['informed_consent_file']
+        informed_consent_file = sample_form.cleaned_data.pop('informed_consent_file')
         if informed_consent_file:
             handle_upload_informed_consent(project, informed_consent_file)
         # 简便写法
-        project.remarks_json = {**sample_form.cleaned_data, **project.remarks_json}
+        project.remarks_json = {**project.remarks_json,**sample_form.cleaned_data }
         project.full_clean(exclude=['report_file_url'], validate_unique=True)
         project.save()
         return Response(Success(chinese_msg='更新成功'))

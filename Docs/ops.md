@@ -243,7 +243,7 @@ VERIFICATION_CODE_LENGTH=4
     - 购买，获得AccessKeyId和AccessKeySecret
     - 创建bucket
     - **创建文件夹**，这很重要，一定要提交创建好文件夹，否则502
-  
+
 ## 数据库
 
 ### SQL
@@ -336,7 +336,18 @@ VERIFICATION_CODE_LENGTH=4
 
 ### ossutil
 
+- 安装:<https://help.aliyun.com/document_detail/120075.htm?spm=a2c4g.11186623.0.0.52613e06vcHGQ1#concept-303829>
 - 配置
+    - 修改文件执行权限:`chmod 755 ossutil64`
+    - 使用交互式配置生成配置文件:`ossutil64 config`
 - 上传
+    - 简单上传
+        - 文件:`ossutil64 cp 本地文件路径 oss://bucket_name/文件路径`
+            - 通过设置上传路径可以重命名文件
+        - 文件夹：`ossutil64 cp -r 本地文件夹路径 oss://bucket_name/文件夹路径`
+            - 通过设置上传路径可以重命名文件夹
 - 下载
+    - 简单下载
+        - 文件:`ossutil64 cp oss://bucket_name/文件路径 本地文件路径`
 - 删除
+    - 一般建议使用客户端或者网页删除
