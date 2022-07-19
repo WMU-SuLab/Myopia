@@ -70,8 +70,13 @@
             - 安装依赖：`pip install -r Dependencies/requirements-pip.txt`
     - 一些难以使用poetry和pdm安装的包（但是pipenv一定可以），具体可以查看[issue文档](issues.md#python)
         - [weasyprint](issues.md#weasyprint)
-        - scanpy
-        - numba
+        - [PEP 440](https://python-poetry.org/docs/master/faq/#why-is-poetry-telling-me-that-the-current-projects-python-requirement-is-not-compatible-with-one-or-more-packages-python-requirements):
+          主要原因是这些包只支持到某个版本，不保证向后兼容，而poetry他们很坑的地方在于自动设置的Python版本是^3.x，要求项目内所有包需要保证能够一直向后兼容到4.0，导致了冲突，不给安装，文档写的不是很明确，坑了很多人。
+            - scanpy
+            - numba
+            - scipy
+    - [阿里云OSS相关安装过程](https://help.aliyun.com/document_detail/85288.html)
+        - 主要保证python-devel安装成功
 
 ### Python环境导出
 
@@ -160,6 +165,7 @@ ALIBABACLOUD_SMS_ACCESS_KEY_ID=''
 ALIBABACLOUD_SMS_ACCESS_KEY_SECRET=''
 ALIBABACLOUD_OSS_ACCESS_KEY_ID=''
 ALIBABACLOUD_OSS_ACCESS_KEY_SECRET=''
+# 域名前面要加上https://，否则微信小程序禁止访问
 ALIBABACLOUD_OSS_ENDPOINT=''
 ALIBABACLOUD_OSS_BUCKET_NAME=''
 

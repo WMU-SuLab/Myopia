@@ -56,9 +56,9 @@ def handle_upload_informed_consent(project: Project, informed_consent_file: Uplo
     upload_obj(file_obj_name, file_path)
     informed_consent.file_url = generate_obj_file_path(file_obj_name)
     # 删除旧文件
-    if raw_file_url and raw_file_url != file_obj_name:
+    if raw_file_url and raw_file_url != informed_consent.file_url:
         delete_obj(raw_file_url)
-    if raw_file_path and raw_file_path != file_path and os.path.exists(raw_file_path):
+    if raw_file_path and raw_file_path != informed_consent.file_path and os.path.exists(raw_file_path):
         remove_file(raw_file_path)
     informed_consent.full_clean(exclude=['file_url'], validate_unique=True)
     informed_consent.save()

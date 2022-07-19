@@ -135,7 +135,7 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
                                                       informed_consent_new_file_name)
         upload_obj(informed_consent_file_obj_name, informed_consent_new_file_path)
         informed_consent.file_url = generate_obj_file_path(informed_consent_file_obj_name)
-        informed_consent.full_clean(exclude=['file_url'],validate_unique=True)
+        informed_consent.full_clean(exclude=['file_url'], validate_unique=True)
         informed_consent.save()
         return Response(Success(chinese_msg='提交成功'))
 
@@ -164,7 +164,7 @@ class SubmitSampleForm(IsAuthenticatedAPIView):
         if informed_consent_file:
             handle_upload_informed_consent(project, informed_consent_file)
         # 简便写法
-        project.remarks_json = {**project.remarks_json,**sample_form.cleaned_data }
+        project.remarks_json = {**project.remarks_json, **sample_form.cleaned_data}
         project.full_clean(exclude=['report_file_url'], validate_unique=True)
         project.save()
         return Response(Success(chinese_msg='更新成功'))

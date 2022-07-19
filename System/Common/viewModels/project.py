@@ -369,9 +369,9 @@ def  handle_upload_project_report(project:Project,report_file:UploadedFile):
     upload_obj(report_file_obj_name, report_file_path)
     project.report_file_url = generate_obj_file_path(report_file_obj_name)
     # 删除原本的文件
-    if raw_report_file_url and raw_report_file_path != report_file_obj_name:
+    if raw_report_file_url and raw_report_file_path != project.report_file_url:
         delete_obj(raw_report_file_url)
-    if raw_report_file_path and raw_report_file_path != report_file_path and os.path.exists(raw_report_file_path):
+    if raw_report_file_path and raw_report_file_path != project.report_file_path and os.path.exists(raw_report_file_path):
         remove_file(raw_report_file_path)
     # 保存项目
     project.full_clean(exclude=['report_file_url'], validate_unique=True)
