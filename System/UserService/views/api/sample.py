@@ -87,6 +87,10 @@ class SampleUserProjectsAPIView(SampleManagerIsAuthenticatedAPIView):
             'nationality': project.remarks_json.get('nationality', None),
             'education': project.remarks_json.get('education', None),
             'progress': project.get_progress_display(),
+            'wear_glasses_first_time': project.remarks_json.get('wear_glasses_first_time', None),
+            'optometry_left': project.remarks_json.get('optometry_left', None),
+            'optometry_right': project.remarks_json.get('optometry_right', None),
+            'family_history': project.remarks_json.get('family_history', None),
             'report_file_name': os.path.basename(project.report_file_path) if project.report_file_path else '无',
         } for project in projects]
         return Response(Success({'count': count, 'rows': rows}))
