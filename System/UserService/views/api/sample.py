@@ -14,9 +14,12 @@
 __auth__ = 'diklios'
 
 import os
+from io import BytesIO
 
+import pandas as pd
 from django.contrib.auth import authenticate, login, logout
 from django.db.models import F
+from django.http import HttpResponse
 from django.shortcuts import redirect
 from rest_framework.response import Response
 
@@ -114,3 +117,42 @@ class SampleProjectUploadReportFileAPIView(SampleManagerIsAuthenticatedAPIView):
         project = Project.objects.get(id=project_id)
         handle_upload_project_report(project, report_file)
         return Response(FileUploadSuccess(chinese_msg='上传文件成功'))
+
+
+class SampleExportAllDataAPIView(SampleManagerIsAuthenticatedAPIView):
+    def get(self, request):
+        projects = Project.objects.filter(name='用户自采样')
+        rows = [{
+            'id': project.id,
+            'serial_number': project.sequence.serial_number,
+            'name': project.remarks_json.get('name', None),
+            'gender': project.remarks_json.get('gender', None),
+            'age': project.remarks_json.get('age', None),
+            'birthday': project.remarks_json.get('birthday', None),
+            'native_place': project.remarks_json.get('native_place', None),
+            'contact_phone': project.remarks_json.get('contact_phone', ''),
+            'nationality': project.remarks_json.get('nationality', None),
+            'education': project.remarks_json.get('education', None),
+            'progress': project.get_progress_display(),
+            'wear_glasses_first_time': project.remarks_json.get('wear_glasses_first_time', None),
+            'optometry_left': project.remarks_json.get('optometry_left', None),
+            'optometry_right': project.remarks_json.get('optometry_right', None),
+            'family_history': project.remarks_json.get('family_history', None),
+        } for project in projects]
+        df = pd.DataFrame(rows)
+        print(df)
+        file = BytesIO()
+        # By setting the 'engine' in the ExcelWriter constructor.
+        writer = pd.ExcelWriter(file, engine='xlsxwriter')
+        df.to_excel(writer, sheet_name='Sheet1', index=False)
+        # Save the workbook
+        writer.save()
+        # Seek to the beginning and read to copy the workbook to a variable in memory
+        file.seek(0)
+        response = HttpResponse(file.read(),
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+
+        # set the file name in the Content-Disposition header
+        response['Content-Disposition'] = 'attachment;filename=all_data.xlsx'
+        # response['Content-Disposition'] = 'inline;filename=文件名.txt'
+        return response

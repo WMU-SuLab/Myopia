@@ -17,7 +17,7 @@ from django.urls import path, include
 
 from UserService import app_name
 from .sample import SampleManagerLoginAPIView, SampleManagerLogoutAPIView, SampleUserProjectsAPIView, \
-    SampleProjectUpdateAPIView, SampleProjectUploadReportFileAPIView
+    SampleProjectUpdateAPIView, SampleProjectUploadReportFileAPIView, SampleExportAllDataAPIView
 from .user import UserFeedbackToAPIView, UserFeedbackToEmailAPIView
 
 urlpatterns = [
@@ -30,4 +30,5 @@ urlpatterns = [
     path('sample/update_project', SampleProjectUpdateAPIView.as_view(), name='sample_project_update'),
     path('sample/upload_report_file/<int:project_id>', SampleProjectUploadReportFileAPIView.as_view(),
          name='sample_project_upload_report_file'),
+    path('sample/export_all_data', SampleExportAllDataAPIView.as_view(), name='sample_project_export_all_data'),
 ]

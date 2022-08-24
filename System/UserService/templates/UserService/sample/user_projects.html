@@ -47,9 +47,15 @@
         <a class="layui-btn layui-btn-xs" lay-event="upload">上传</a>
         {#<a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>#}
     </script>
+    <script type="text/html" id="toolbar">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="exportAllData">导出所有用户数据</button>
+        </div>
+    </script>
     <script>
         var sample_project_update_api = '{% url 'UserService:api:sample_project_update' %}';
         var sample_user_projects_api = '{% url 'UserService:api:sample_user_projects' %}';
+        var sample_project_export_all_data_api = '{% url 'UserService:api:sample_project_export_all_data' %}';
         var sample_project_upload_report_file_api = '{% url 'UserService:api:sample_project_upload_report_file' 1 %}'.slice(0, -1);
         var progress_choices ={{ progress_choices|safe }};
         layui.use(['table', 'form', 'upload'], function () {
@@ -88,6 +94,7 @@
                         "data": res.data.rows //解析数据列表
                     };
                 },
+                toolbar: '#toolbar',
                 defaultToolbar: ['filter', 'exports', 'print', {
                     title: '提示',
                     layEvent: 'LAYTABLE_TIPS',
@@ -204,6 +211,18 @@
                             });
                         }
                     });
+                }
+            });
+
+            table.on('toolbar(sampleProject)', function (obj) {
+                //获得当前行数据
+                //var data = obj.data;
+                var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+                var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+                var id = obj.config.id;
+                var checkStatus = table.checkStatus(id);
+                if (layEvent === 'exportAllData') {
+                    window.open(sample_project_export_all_data_api);
                 }
             });
 
