@@ -112,7 +112,7 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 # 仅通过https传输cookie
 SESSION_COOKIE_SECURE = True
 SESSION_COOKIE_HTTPONLY = True
-# 避免不甚用 HTTP 传输 CSRF cookie
+# 避免不慎用 HTTP 传输 CSRF cookie
 CSRF_COOKIE_SECURE = True
 # 严格要求使用https协议传输，SecurityMiddleware 在 HTTP 严格传输安全 头中添加 includeSubDomains 指令。除非 SECURE_HSTS_SECONDS 被设置为非零值，否则它没有任何效果。
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
@@ -122,6 +122,8 @@ SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_SECONDS = 60
 # 防止浏览器猜测资产的内容类型
 SECURE_CONTENT_TYPE_NOSNIFF = True
+# 防止跨域
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 MANAGERS = (
     *MANAGERS,

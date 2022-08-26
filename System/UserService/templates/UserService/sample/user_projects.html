@@ -26,6 +26,14 @@
                             </div>
                         </div>
                         <div class="layui-inline">
+                            <label class="layui-form-label" for="searchFormPhoneNumber">电话</label>
+                            <div class="layui-input-inline">
+                                <!--注意此处input标签里的id-->
+                                <input class="layui-input" name="phone_number" id="searchFormPhoneNumber"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
                             <!--注意此处button标签里的type属性-->
                             <button type="button" class="layui-btn layui-btn-primary" data-type="reload"
                                     lay-filter="data-search-btn"><i class="layui-icon"></i> 搜 索
@@ -104,6 +112,7 @@
                     {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'},
                     {field: 'serial_number', title: '序列号', sort: true, width: 120},
                     {field: 'name', title: '采样者名称', sort: true, width: 120},
+                    {field: 'phone_number', title: '采样者电话', width: 120},
                     {field: 'gender', title: '性别', sort: true, width: 100},
                     {field: 'age', title: '年龄', sort: true, width: 100},
                     {field: 'birthday', title: '出生日期', sort: true,},
