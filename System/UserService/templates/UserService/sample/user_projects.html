@@ -29,7 +29,7 @@
                             <label class="layui-form-label" for="searchFormPhoneNumber">电话</label>
                             <div class="layui-input-inline">
                                 <!--注意此处input标签里的id-->
-                                <input class="layui-input" name="phone_number" id="searchFormPhoneNumber"
+                                <input class="layui-input" name="phoneNumber" id="searchFormPhoneNumber"
                                        autocomplete="off">
                             </div>
                         </div>
@@ -244,13 +244,15 @@
                 reload: function () {
                     var searchFormSerialNumber = $('#searchFormSerialNumber');
                     var searchFormName = $('#searchFormName');
+                    var phoneNumber=$('#phoneNumber');
                     //执行重载
                     table.reload('sampleProjectTable', {
                         page: {
                             curr: 1 //重新从第 1 页开始
                         }, where: {//条件
                             serial_number: searchFormSerialNumber.val(),
-                            name: searchFormName.val()
+                            name: searchFormName.val(),
+                            phone_number:phoneNumber.val(),
                         }
                     });
                 }
