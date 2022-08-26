@@ -62,7 +62,6 @@ class SampleManagerLogoutAPIView(SampleManagerIsAuthenticatedAPIView):
 class SampleUserProjectsAPIView(SampleManagerIsAuthenticatedAPIView):
     def get(self, request):
         projects = Project.objects.filter(name='用户自采样')
-        count = projects.count()
         # 过滤
         if serial_number := request.GET.get('serial_number', ''): projects = projects.filter(
             sequence__serial_number__contains=serial_number)
@@ -70,6 +69,7 @@ class SampleUserProjectsAPIView(SampleManagerIsAuthenticatedAPIView):
             remarks_json_name=F('remarks_json__name')).filter(remarks_json_name__icontains=name)
         if phone_number := request.GET.get('phone_number', ''): projects = projects.filter(
             user__phone_number__icontains=phone_number)
+        count = projects.count()
         page = request.GET.get('page', 1)
         limit = request.GET.get('limit', 10)
         projects = projects.order_by('-id')[(int(page) - 1) * int(limit):int(page) * int(limit)]
