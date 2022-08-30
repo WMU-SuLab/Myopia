@@ -92,6 +92,7 @@ class SampleUserProjectsAPIView(SampleManagerIsAuthenticatedAPIView):
             'optometry_right': project.remarks_json.get('optometry_right', None),
             'family_history': project.remarks_json.get('family_history', None),
             'report_file_name': os.path.basename(project.report_file_path) if project.report_file_path else '无',
+            'created_time':project.created_time.strftime('%Y-%m-%d')
         } for project in projects]
         return Response(Success({'count': count, 'rows': rows}))
 
@@ -143,6 +144,7 @@ class SampleExportAllDataAPIView(SampleManagerIsAuthenticatedAPIView):
             'optometry_left': project.remarks_json.get('optometry_left', None),
             'optometry_right': project.remarks_json.get('optometry_right', None),
             'family_history': project.remarks_json.get('family_history', None),
+            'created_time': project.created_time.strftime('%Y-%m-%d')
         } for project in projects]
         df = pd.DataFrame(rows)
         file = BytesIO()
