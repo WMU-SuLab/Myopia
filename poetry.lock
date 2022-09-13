@@ -569,7 +569,7 @@ reference = "tsinghua"
 [[package]]
 name = "django-simpleui"
 version = "2022.4.9"
-description = "django admin theme 鍚庡彴妯℃澘"
+description = "django admin theme 后台模板"
 category = "main"
 optional = false
 python-versions = "*"

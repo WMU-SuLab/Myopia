@@ -10,17 +10,17 @@ license = "MIT"
 #name = "aliyun"
 #url = "https://mirrors.aliyun.com/pypi/simple/"
 
-#豆瓣：
+# 豆瓣：
 #[[tool.poetry.source]]
 #name = "douban"
 #url = "https://pypi.doubanio.com/simple/"
 
-#网易：
+# 网易：
 #[[tool.poetry.source]]
 #name = "163"
 #url = "https://mirrors.163.com/pypi/simple/"
 
-#清华
+# 清华
 [[tool.poetry.source]]
 name = "tsinghua"
 url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
@@ -35,6 +35,7 @@ pycryptodome = "^3.15.0"
 cryptography = "^36.0.2"
 pandas = "^1.4.2"
 openpyxl = "^3.0.9"
+xlsxwriter = "^3.0.3"
 PyPDF2 = "^1.27.4"
 pillow = "^9.1.0"
 pydantic = "^1.9.0"
@@ -68,7 +69,6 @@ gunicorn = { version = "^20.1.0", markers = "sys_platform != 'win32'" }
 alibabacloud-tea-openapi = "^0.3.3"
 alibabacloud-dysmsapi20170525 = "^2.0.13"
 oss2 = "^2.15.0"
-xlsxwriter = "^3.0.3"
 
 
 
