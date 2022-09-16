@@ -22,7 +22,7 @@ from Common.utils.text_handler.validator import validate_phone_number
 
 class SampleForm(forms.Form):
     serial_number = forms.CharField(min_length=9, validators=[
-        RegexValidator(regex=r'\d{2}[A-Z]{2}\d{5}', message='序列号规则验证错误，不是合法的序列号', code='invalid serial_number'),
+        RegexValidator(regex=r'\d{2}[A-Z]{2}[A-Za-z0-9]{5,12}', message='序列号规则验证错误，不是合法的序列号', code='invalid serial_number'),
     ])
     # person info
     name = forms.CharField(max_length=32)
