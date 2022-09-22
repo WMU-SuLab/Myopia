@@ -97,5 +97,5 @@ def generate_user_report_data(
             project.informed_consent.file_url,
             project.informed_consent.file_path),
         'report_file_url': report_file_url,
-        'report_file_full': project.remarks_json.get('report_file_full', False),
+        'popup':project.remarks_json.get('popup', {}),
     }
