@@ -22,7 +22,7 @@ from rest_framework.response import Response
 from Common.models.equipments import InformedConsent
 from Common.models.project import Project
 from Common.utils.alibabacloud.oss.obj import generate_obj_file_path, upload_obj, delete_obj
-from Common.utils.file_handler import handle_upload_file, remove_file
+from Common.utils.file_handler.file import handle_upload_file, remove_file
 from Common.utils.file_handler.image_handler import is_image_file
 from Common.utils.http.exceptions import ParameterError, NotFound, Conflict
 from Common.utils.http.successes import Success

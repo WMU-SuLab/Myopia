@@ -15,21 +15,26 @@ __auth__ = 'diklios'
 
 
 # 交集
-def intersection_set(list1, list2):
+def intersection_set(list1: list or set, list2: list or set) -> list:
     return list(set(list1) & set(list2))
 
 
 # 并集
-def union_set(list1, list2):
+def union_set(list1: list or set, list2: list or set) -> list:
     return list(set(list1) | set(list2))
 
 
 # 差集或者补集
-def difference_set(list1, list2):
+def difference_set(list1: list or set, list2: list or set) -> list:
     return list(set(list1) - set(list2))
 
 
 # 对称差集
 # 项在list1或list2中，但不会同时出现在二者中
-def symmetric_difference_set(list1, list2):
+def symmetric_difference_set(list1: list or set, list2: list or set) -> list:
     return list(set(list1) ^ set(list2))
+
+
+# 是否是子集
+def is_subset(superset: list or set, subset: list or set) -> bool:
+    return set(subset).issubset(set(superset))

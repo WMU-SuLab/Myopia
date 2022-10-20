@@ -16,7 +16,7 @@ import os
 from typing import Any
 from django.conf import settings
 from Common.utils.alibabacloud.oss.obj import upload_obj, generate_obj_file_path, delete_obj
-from Common.utils.file_handler import handle_upload_file, remove_file
+from Common.utils.file_handler.file import handle_upload_file, remove_file
 
 
 from django.db.models import JSONField

@@ -25,12 +25,12 @@ from Common.utils.alibabacloud.oss.obj import upload_obj, generate_obj_file_path
 from Common.utils.alibabacloud.oss.url import generate_file_url, generate_image_url
 from Common.utils.alibabacloud.sms.verification import send_verification_sms
 from Common.utils.auth.views.api import IsAuthenticatedAPIView
-from Common.utils.file_handler import handle_upload_file, rename_file
+from Common.utils.file_handler.file import handle_upload_file, rename_file
 from Common.utils.file_handler.image_handler import is_image_file
 from Common.utils.http.exceptions import NotFound, ParameterError, MethodNotAllowed
 from Common.utils.http.successes import Success, PhoneSMSSendSuccess
-from Common.viewModels.equipments.informed_consent import generate_project_informed_consent_file_name
-from Common.viewModels.equipments.informed_consent import handle_upload_informed_consent
+from Common.viewModels.equipments.informed_consent import generate_project_informed_consent_file_name, \
+    handle_upload_informed_consent
 from Common.views.api.user import SendPhoneSMSAPIView as _SendPhoneSMSAPIView
 from UserService.utils.forms.sample import SampleForm, SampleFormUpdate
 
@@ -65,7 +65,8 @@ class SerialNumberList(IsAuthenticatedAPIView):
 
 class SerialNumberRetrieve(IsAuthenticatedAPIView):
     def get(self, request, serial_number, *args, **kwargs):
-        sequence = Sequence.objects.filter(serial_number=serial_number)
+        sequence = Sequence.objects.filter(serial_number=serial_number) \
+            .prefetch_related('project', 'project__informed_consent')
         if sequence.exists():
             sequence = sequence.first()
             project = sequence.project

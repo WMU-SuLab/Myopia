@@ -64,3 +64,25 @@ def remove_dir(dir_path):
         return True
     else:
         return False
+
+
+def rename_dir(dir_path, new_dir_path):
+    """
+    重命名目录
+    """
+    if os.path.isdir(dir_path):
+        os.rename(dir_path, new_dir_path)
+        return True
+    else:
+        return False
+
+
+def rename_dir_by_name(dir_path, new_name):
+    """
+    重命名目录，目录名为 new_name
+    """
+    if os.path.isdir(dir_path):
+        os.rename(dir_path, os.path.join(os.path.dirname(dir_path), new_name))
+        return True
+    else:
+        return False
