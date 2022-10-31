@@ -143,6 +143,9 @@ dmypy.json
 out
 gen
 
+# Fleet 的配置文件
+.fleet
+
 #visual studio code的设置文件夹
 .vscode
 
