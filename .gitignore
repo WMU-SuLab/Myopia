@@ -146,16 +146,16 @@ gen
 # Fleet 的配置文件
 .fleet
 
-#visual studio code的设置文件夹
+# Visual Studio Code的设置文件夹
 .vscode
 
-#python缓存
+# python缓存
 *.pyc
 
-#测试文件夹
+# 测试文件夹
 test
 
-# 本项目特有的文件或文件夹
+# 项目特有配置
 Libs
 System/data/user
 System/logs
