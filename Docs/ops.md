@@ -24,7 +24,8 @@
         - NGINX(1.20+)
         - MySQL(8.0+)
         - Supervisor(3.1+)
-            - supervisor在不同的服务器的最新版本不同，但是使用Python安装的一定是最新的
+            - supervisor在不同的服务器的最新版本不同，但是使用Pip安装的一定是最新的
+            - 如：`dnf install supervisor`安装的是`4.2.2`版本
         - Memcached(1.5+)
         - pango(1.40+)/gtk3(3.24.31+)
             - pango是Unix/Linux/MacOS环境
@@ -195,7 +196,7 @@ VERIFICATION_CODE_LENGTH=4
         - 有可能数据很大，需要保存在另一个有很大空间的磁盘中
 - 配置NGINX
     - 先收集静态文件:`python manage.py collectstatic`
-    - 修改`nginx.conf`
+    - 修改`nginx.conf`，如果是测试服需要使用`nginx-test.conf`
         - 修改端口号
         - 修改域名或者ip地址
         - 修改用户名相关部分
@@ -203,17 +204,19 @@ VERIFICATION_CODE_LENGTH=4
         - 修改日志文件路径
         - 修改django服务器相关部分
         - 修改ssl相关配置，拷贝证书到对应目录下
-    - 全部修改完成后将配置链接到nginx的配置文件:`sudo ln -s /.../ProjectRoot/System/nginx.conf /etc/nginx/conf.d/myopia.conf`
+    -
+    全部修改完成后将配置链接到nginx的配置文件:`sudo ln -s /.../ProjectRoot/System/nginx.conf /etc/nginx/conf.d/myopia.conf`
     - 启动NGINX：`sudo systemctl start nginx`
         - 或者`sudo service nginx start`
         - 如果已经启动，则重载配置：`sudo nginx -s reload`
 - 配置MySQL(需要先启动并设置好用户名和密码)
     - 进入MySQL：`mysql -u root -p`
     - 创建数据库：django对于除了sqlite的数据库都要求提前建好库
-        - `CREATE DATABASE DjangoAuth;`
-        - `CREATE DATABASE SilencerAtlas;`
+        - `CREATE DATABASE Myopia;`
+        - `CREATE DATABASE MyopiaTest;`
         - 其余步骤自己查，或者用数据库管理工具建表，更加方便快速
-        - ☆☆☆☆☆***一定要使用utf8mb4编码和utf8mb4_0900_as_cs排序规则，否则字段内容大小写不敏感，导致插入内容插不进去***☆☆☆☆☆
+        - ☆☆☆☆☆***一定要使用utf8mb4编码和utf8mb4_0900_as_cs排序规则，否则字段内容大小写不敏感，导致插入内容插不进去***
+          ☆☆☆☆☆
     - 启用时区，具体参考[问题文档](issues.md#mysql)
     - 配置`System/Manage/settings/product.py`
         - 修改`DATABASES`数据库用户和密码
@@ -242,6 +245,7 @@ VERIFICATION_CODE_LENGTH=4
         - 以下操作都使用**创建supervisor配置文件夹**的形式配置，如果不需要，请删除路径中的`supervisor`文件夹
             - 备份supervisor配置文件：`echo_supervisord_conf > /etc/supervisor/supervisord.conf`
             - 修改supervisord.conf文件最后的include部分为：`files = /etc/supervisor/supervisord.d/*.ini`
+                - 请注意`[include]`和`files`前面的`;`要删除，这是注释
             -
           链接本项目的supervisor配置文件：`sudo ln -s /.../ProjectRoot/System/supervisor.ini /etc/supervisor/supervisord.d/myopia.ini`
             - 启动服务：`supervisord -c /etc/supervisor/supervisord.conf`

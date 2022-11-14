@@ -25,7 +25,7 @@ from Common.utils.email.verification import send_verification_email
 from Common.utils.forms.user import RegisterByUsernameForm, ResetPasswordForm, RegisterByPhoneSMSForm, \
     ResetPasswordByPhoneSMSForm, RegisterByEmailForm, ResetPasswordByEmailForm
 from Common.utils.http.exceptions import ParameterError, ValidationError, VerificationCodeError, ServerError, \
-    PhoneSendSMSError, EmailSendError,UserExist
+    PhoneSendSMSError, EmailSendError, UserExist
 from Common.utils.http.successes import UserRegisterSuccess, UserPasswordUpdateSuccess, PhoneSMSSendSuccess, \
     EmailSendSuccess
 from Common.utils.text_handler.validator import validate_phone_number
@@ -82,9 +82,9 @@ class SendPhoneSMSAPIView(SendVerificationCodeAPIView):
     def validate_identity(self, identity):
         if not validate_phone_number(identity):
             raise ValidationError(msg_detail=f'{self.identity_field} is invalid')
-        if self.usage =='register':
+        if self.usage == 'register':
             if User.objects.filter(**{self.identity_field: identity}).exists():
-                raise UserExist(msg_detail=f'{self.identity_field} is exists',chinese_msg='该用户已经存在')
+                raise UserExist(msg_detail=f'{self.identity_field} is exists', chinese_msg='该用户已经存在')
         return True
 
     def check_send(self, request):
@@ -119,7 +119,6 @@ class RegisterAPIView(AllowAnyAPIView):
             identity = form.cleaned_data[self.identity_field]
             if verify_verification_code(identity, form.cleaned_data['verification_code'], self.usage):
                 User.objects.create_user(
-                    username=form.cleaned_data[self.identity_field],
                     password=form.cleaned_data['password'],
                     **{self.identity_field: form.cleaned_data[self.identity_field]})
                 return Response(UserRegisterSuccess())
@@ -136,7 +135,7 @@ class ResetPasswordAPIView(AllowAnyAPIView):
     def validate(self, form):
         if form.is_valid():
             identity = form.cleaned_data[self.identity_field]
-            if verify_verification_code(identity, form.cleaned_data['verification_code'],self.usage):
+            if verify_verification_code(identity, form.cleaned_data['verification_code'], self.usage):
                 user = User.objects.get(**{self.identity_field: identity})
                 user.set_password(form.cleaned_data['password'])
                 user.save()
