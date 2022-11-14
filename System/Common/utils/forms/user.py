@@ -79,7 +79,8 @@ class RegisterByPhoneSMSForm(PasswordForm):
         phone_number = self.cleaned_data['phone_number']
         if not phone_number:
             raise forms.ValidationError('手机号码不能为空')
-        if User.objects.filter(Q(phone_number=phone_number) | Q(username=phone_number)).exists():
+        # if User.objects.filter(Q(phone_number=phone_number) | Q(username=phone_number)).exists():
+        if User.objects.filter(phone_number=phone_number).exists():
             raise forms.ValidationError('手机号已被注册')
         return phone_number
 

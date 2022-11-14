@@ -239,6 +239,7 @@ VERIFICATION_CODE_LENGTH=4
     - **配置项目文件夹和启动命令**
         - 根据自己的服务器情况更换文件路径、虚拟环境路径、启动命令
     - 你可以选择使用默认的`/etc/supervisord.conf`和`/etc/supervisord.d`文件夹，或者像下面这样进行配置
+        - supervisor自带这两个文件了，如果需要重新配置，最好删除，否则容易引起冲突
         - 创建supervisor配置文件夹
             - `mkdir -p /etc/supervisor`
             - `mkdir -p /etc/supervisor/supervisord.d`
@@ -252,7 +253,7 @@ VERIFICATION_CODE_LENGTH=4
 - 配置阿里云OSS
     - 购买，获得AccessKeyId和AccessKeySecret
     - 创建bucket
-    - **创建文件夹**，这很重要，一定要提交创建好文件夹，否则502
+    - **创建文件夹**，这很重要，一定要提前创建好文件夹，否则502
 
 ## 数据库
 
