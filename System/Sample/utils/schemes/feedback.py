@@ -13,9 +13,11 @@
 """
 __auth__ = 'diklios'
 
+from django.core.validators import validate_email as _validate_email
 from pydantic import BaseModel, validator
 
 from Common.utils.http.exceptions import ParameterError
+from Common.utils.text_handler.validator import validate_phone_number
 
 
 class UserFeedbackModel(BaseModel):
@@ -24,6 +26,17 @@ class UserFeedbackModel(BaseModel):
     feedback_content: str
     email: str = None
     wechat_id: str = None
+
+    @validator('email')
+    def validate_email(cls, v):
+        _validate_email(v)
+        return v
+
+    @validator('phone')
+    def validate_phone(cls, v):
+        if not validate_phone_number(v):
+            raise ParameterError('手机号格式错误')
+        return v
 
     @validator('feedback_content')
     def validate_feedback_content(cls, v):

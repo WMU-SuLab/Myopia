@@ -61,9 +61,9 @@ def server_send_mail(
         fail_silently=False,
         connection=None,
         html_message=None, ):
-    auth_user = settings.EMAIL_HOST_USER,
+    auth_user = settings.EMAIL_HOST_USER
     from_email = auth_user
-    auth_password = settings.EMAIL_HOST_PASSWORD,
+    auth_password = settings.EMAIL_HOST_PASSWORD
     return send_mail(
         subject, message, from_email, recipient_list, fail_silently=fail_silently, auth_user=auth_user,
         auth_password=auth_password, connection=connection, html_message=html_message)

@@ -25,4 +25,4 @@ def mail_managers_user_feedback(user_feedback: UserFeedbackModel):
         邮箱:{user_feedback.email}
         留言:{user_feedback.feedback_content}
     """
-    return server_send_mail('用户反馈', email_message, 'dzl@psi-gene.com', fail_silently=False)
+    return server_send_mail('用户反馈', email_message, ['dzl@psi-gene.com'], fail_silently=False)
