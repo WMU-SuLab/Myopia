@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   __init__.py.py    
+@File Name      :   __init__.py
 @Create Time    :   2022/4/4 16:09
 @Description    :   
 @Version        :   
@@ -18,7 +18,7 @@ from django.urls import path, include
 from Screening import app_name
 
 urlpatterns = [
-    path('', include(('Screening.views.web',app_name),namespace='web')),
+    path('', include(('Screening.views.web', app_name), namespace='web')),
     path('api/', include(('Screening.views.api', app_name), namespace='api')),
     path('manage/', include(('Screening.views.manage', app_name), namespace='manage')),
 ]

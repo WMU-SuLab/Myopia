@@ -18,27 +18,21 @@ from datetime import datetime
 from django.conf import settings
 from django.db import models
 
+from Common.libs.choices import common_progress_choices
 from .base import Base, handle_object_does_not_exist
 from .user import User
 
 
 class Project(Base):
-    progress_choices = (
-        (-1, '未知'),
-        (1, '已登记'),
-        (2, '采样中'),
-        (3, '已收样'),
-        (4, '分析中'),
-        (5, '出报告'),
-        (6, '已完成'),
-    )
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='projects', verbose_name='用户')
     name = models.CharField(max_length=63, null=True, blank=True, default=None, verbose_name='项目名称')
-    progress = models.IntegerField(choices=progress_choices, null=True, blank=True, default=-1, verbose_name='当前进度')
+    progress = models.IntegerField(choices=common_progress_choices, null=True, blank=True, default=0,
+                                   verbose_name='当前进度')
     finished_time = models.DateTimeField(null=True, blank=True, default=None, verbose_name='完成时间')
     report_data = models.JSONField(null=True, blank=True, default=dict, verbose_name='报告数据')
     report_file_url = models.URLField(max_length=512, null=True, blank=True, default=None, verbose_name='报告文件url')
-    report_file_path = models.CharField(max_length=512, null=True, blank=True, default=None, verbose_name='报告文件路径')
+    report_file_path = models.CharField(max_length=512, null=True, blank=True, default=None,
+                                        verbose_name='报告文件路径')
 
     class Meta:
         verbose_name = verbose_name_plural = '项目'

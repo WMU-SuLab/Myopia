@@ -17,37 +17,39 @@ from Common.models.regions import *
 
 from . import base_exclude, BaseSerializer
 
+regions_exclude = list({*base_exclude, 'status', 'remarks', 'remarks_json'})
+
 
 class CountryBaseSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
         model = Country
         # fields = '__all__'
-        exclude = base_exclude
+        exclude = regions_exclude
 
 
 class ProvinceBaseSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
         model = Province
         # fields = '__all__'
-        exclude = base_exclude
+        exclude = regions_exclude
 
 
 class CityBaseSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
         model = City
         # fields = '__all__'
-        exclude = base_exclude
+        exclude = regions_exclude
 
 
 class AreaBaseSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
         model = Area
         # fields = '__all__'
-        exclude = base_exclude
+        exclude = regions_exclude
 
 
 class StreetBaseSerializer(BaseSerializer):
     class Meta(BaseSerializer.Meta):
         model = Street
         # fields = '__all__'
-        exclude = base_exclude
+        exclude = regions_exclude

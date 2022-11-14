@@ -16,6 +16,7 @@ __auth__ = 'diklios'
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 
+from Common.libs.choices import gender_choices, identification_card_type_choices, education_choices
 from Common.utils.text_handler.random import random_content
 from .base import BaseManager, Base, handle_object_does_not_exist
 from .regions import Country, Province, City, Area, Street
@@ -127,35 +128,19 @@ class UserManager(BaseManager, BaseUserManager):
 
 
 class User(Base, AbstractBaseUser, PermissionsMixin):
-    gender_choices = (
-        (0, '未知'),
-        (1, '男'),
-        (2, '女')
-    )
-    identification_card_type_choices = (
-        (0, '其他'),
-        (1, '居民身份证'),
-        (2, '港澳居民来往内地通行证'),
-        (3, '台湾居民来往大陆通行证'),
-        (4, '护照'),
-        (5, '军官证'),
-        (6, '士兵证'),
-        (7, '外国人居留证'),
-    )
-
     username = models.CharField(max_length=128, db_index=True, unique=True, verbose_name='用户名')
     nickname = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name='昵称')
     openid = models.CharField(
         max_length=255, blank=True, null=True, default=None, db_index=True, verbose_name='给第三方用的openid')
     email = models.EmailField(max_length=32, blank=True, null=True, default=None, unique=True, verbose_name='邮箱')
 
-    phone_number = models.CharField(max_length=32, blank=True, null=True, default=None, unique=True, verbose_name='手机号')
+    phone_number = models.CharField(max_length=32, blank=True, null=True, default=None, unique=True,
+                                    verbose_name='手机号')
     name = models.CharField(max_length=64, blank=True, null=True, default=None, db_index=True, verbose_name='姓名')
     identification_card_type = models.IntegerField(
         choices=identification_card_type_choices, blank=True, null=True, default=1, verbose_name='证件类型')
     identification_card_number = models.CharField(
-        max_length=32, null=True,
-        blank=True, default=None, db_index=True, unique=True, verbose_name='身份证号')
+        max_length=32, blank=True, null=True, default=None, db_index=True, unique=True, verbose_name='身份证号')
     gender = models.IntegerField(choices=gender_choices, blank=True, null=True, default=0, verbose_name='性别')
 
     @property
@@ -166,24 +151,12 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
     def sex(self, sex):
         self.gender = sex
 
-    education_choices = (
-        (-1, '其他'),
-        (0, '未受过教育'),
-        (1, '幼儿园'),
-        (2, '小学'),
-        (3, '初级中学'),
-        (4, '高级中学（中专）'),
-        (5, '大学专科'),
-        (6, '大学本科'),
-        (7, '硕士研究生'),
-        (8, '博士研究生'),
-    )
-
     age = models.SmallIntegerField(blank=True, null=True, default=None, verbose_name='年龄')
     birthday = models.DateField(blank=True, null=True, default=None, verbose_name='出生日期')
     native_place = models.CharField(max_length=64, blank=True, null=True, default=None, verbose_name='籍贯')
     nationality = models.ForeignKey(Nationality, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='民族')
-    education = models.IntegerField(choices=education_choices, blank=True, null=True, default=-1, verbose_name='受教育程度')
+    education = models.IntegerField(choices=education_choices, blank=True, null=True, default=-1,
+                                    verbose_name='受教育程度')
     address = models.CharField(max_length=255, blank=True, null=True, default=None, verbose_name='地址')
     detailed_address = models.CharField(max_length=128, blank=True, null=True, default=None, verbose_name='详细住址')
     street = models.ForeignKey(Street, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='街道')

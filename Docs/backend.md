@@ -19,8 +19,8 @@
         - data: 数据文件
         - libs: 资源文件
         - logs: 日志文件
-        - Screening: 采样程序
-        - UserService: 用户服务程序
+        - Screening: 高度近视筛查应用
+        - Sample: 谱希基因采样应用
         - .env: 系统环境变量
         - gunicorn.py: gunicorn配置文件
         - manage.py: 主程序入口
@@ -103,15 +103,28 @@
 
 ## Screening
 
-### 管理员Web端，基于Session:views/manage
+### 管理员Web端，基于Session
 
-### 筛查采样小程序:views/api/mina
+- 页面：views/manage
+- api：views/api/manage
 
-## UserService
+### 高度近视筛查小程序:views/api/mina
 
-### 用户自采样:views/api/sample
-
-### 报告:views/api
+### 高度近视筛查用户报告小程序:views/api/report
 
 - report_data:获得报告
 - report_file:获得报告文件
+
+## Sample
+
+### 管理员Web端，基于Session
+
+- 页面：views/manage
+- api：views/api/manage
+
+### 采样小程序
+
+- 高度近视遗传风险评估:views/api/mina/high_myopia
+- TGFBI角膜营养不良基因检测：views/api/mina/tgfbi
+- 单基因遗传性眼病检测：views/api/mina/single_gene
+- 眼全科疾病辅助诊断：views/api/mina/eye_disease

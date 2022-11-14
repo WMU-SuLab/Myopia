@@ -87,6 +87,10 @@ LOGS_DIR_PATH_LIST = [
     SUPERVISOR_LOGS_DIR_PATH,
 ]
 
+# SimpleUI settings
+
+# MINA
+
 # 阿里云API配置
 ALIBABACLOUD_ACCOUNT_ID = os.environ.get('ALIBABACLOUD_ACCOUNT_ID', '')
 ALIBABACLOUD_SMS_ACCESS_KEY_ID = os.environ.get('ALIBABACLOUD_SMS_ACCESS_KEY_ID', '')
@@ -102,6 +106,11 @@ SMS_EXPIRED_TIME = int(os.environ.get('SMS_EXPIRED_TIME', 600))
 # 验证码长度
 VERIFICATION_CODE_LENGTH = int(os.environ.get('VERIFICATION_CODE_LENGTH', 6))
 
-# SimpleUI settings
-
-# MINA
+# 顺丰API配置
+SF_EXPRESS_URL = os.environ.get('SF_EXPRESS_URL', 'https://bspgw.sf-express.com/std/service')
+SF_EXPRESS_URL_TEST = os.environ.get('SF_EXPRESS_URL_TEST', 'https://sfapi-sbox.sf-express.com/std/service')
+SF_EXPRESS_URL_HK = os.environ.get('SF_EXPRESS_URL_HK', 'https://sfapi-hk.sf-express.com/std/service')
+# 采样小程序应用配置
+SF_EXPRESS_SAMPLE_APP_PARTNER_ID = os.environ.get('SF_EXPRESS_SAMPLE_APP_PARTNER_ID', '')
+SF_EXPRESS_SAMPLE_APP_CHECKWORD = os.environ.get('SF_EXPRESS_SAMPLE_APP_CHECKWORD', '')
+SF_EXPRESS_SAMPLE_APP_CHECKWORD_TEST = os.environ.get('SF_EXPRESS_SAMPLE_APP_CHECKWORD_TEST', '')

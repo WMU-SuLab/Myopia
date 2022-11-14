@@ -5,6 +5,8 @@
 
 ## 项目表数据更新范例
 
+### 更新备注字段
+
 ```python
 import pandas as pd
 
@@ -20,4 +22,39 @@ for project in projects:
         new_remarks_json['popup']['astigmatism>=100'] = True
     project.remarks_json = new_remarks_json
     project.save()
+```
+
+### 更新项目表的名称
+
+```python
+from Common.models.project import Project
+
+projects = Project.objects.filter(name__icontains='用户自采样')
+for project in projects:
+    project.name = '高度近视遗传风险评估采样'
+    print(project.name)
+Project.objects.bulk_update(projects, ['name'])
+```
+
+### 迁移文件到OSS示例
+
+```python
+
+from django.conf import settings
+
+from Common.models.equipments import InformedConsent
+from Common.models.project import Project
+from Common.utils.alibabacloud.oss.obj import generate_obj_file_path
+
+projects = Project.objects.filter(report_file_path__isnull=False)
+for project in projects:
+    obj_name_index = project.report_file_path.find(settings.RELATIVE_USER_PDF_DIR_PATH)
+    project.report_file_url = generate_obj_file_path(project.report_file_path[obj_name_index:])
+Project.objects.bulk_update(projects, ['report_file_url'])
+
+informed_consents = InformedConsent.objects.filter(file_path__isnull=False)
+for informed_consent in informed_consents:
+    obj_name_index = informed_consent.file_path.find(settings.RELATIVE_INFORMED_CONSENT_DIR_PATH)
+    informed_consent.file_url = generate_obj_file_path(informed_consent.file_path[obj_name_index:])
+InformedConsent.objects.bulk_update(informed_consents, ['file_url'])
 ```

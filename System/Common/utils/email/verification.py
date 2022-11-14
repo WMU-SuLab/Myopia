@@ -13,11 +13,13 @@
 """
 __auth__ = 'diklios'
 
+from django.conf import settings
+
 from Common.utils.auth.verification import set_verification_code
 from . import server_send_mail
 
 
 def send_verification_email(email, usage='register'):
     verification_code = set_verification_code(email, usage)
-    message = f'您的验证码是{verification_code}，10分钟内有效，请勿泄露给他人。'
+    message = f'您的验证码是{verification_code}，{settings.SMS_EXPIRED_TIME / 60}分钟内有效，请勿泄露给他人。'
     return server_send_mail('验证码', message, recipient_list=[email])

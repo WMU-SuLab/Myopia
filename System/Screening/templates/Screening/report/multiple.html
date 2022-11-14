@@ -1,0 +1,7 @@
+{% extends 'Screening/report/base.html' %}
+
+{% block body %}
+    {% for user in users %}
+        {% include 'Screening/report/content.html' %}
+    {% endfor %}
+{% endblock %}

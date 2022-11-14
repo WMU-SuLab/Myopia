@@ -25,7 +25,6 @@ from Common.utils.text_handler.validator import validate_phone_number
 UserModel = get_user_model()
 
 
-# todo:完善微信的登录
 class UserBackend(ModelBackend):
     def authenticate(self, request, username: str = None, password: str = None, **kwargs):
         email = kwargs.get('email', None)
@@ -39,7 +38,7 @@ class UserBackend(ModelBackend):
         if username:
             user = UserModel.objects.filter(
                 Q(username__iexact=username) | Q(email__iexact=username) | Q(phone_number__iexact=username) |
-                Q(wechat_role__open_id__iexact=username) | Q(wechat_role__union_id__iexact=username)
+                Q(wechat_roles__open_id__iexact=username) | Q(wechat_roles__union_id__iexact=username)
             )
         elif email:
             user = UserModel.objects.filter(email=email)
@@ -69,10 +68,12 @@ class UserBackend(ModelBackend):
         elif verification_code:
             if (email and validate_email(email) and verify_verification_code(email, verification_code, 'login')) or \
                     (phone_number and validate_phone_number(phone_number)
-                    and verify_verification_code(phone_number,verification_code,'login')):
+                     and verify_verification_code(phone_number, verification_code, 'login')):
+                # todo:考虑登录之后是否需要删除验证码，不允许再使用
                 return user if self.user_can_authenticate(user) else None
             else:
                 raise ValidationError(msg='Verification_code is incorrect.', chinese_msg='验证码错误')
+        # todo:完善微信的登录验证
         else:
             raise ParameterError('password or verification_code is required')
         # return super().authenticate(request, username, password, **kwargs)

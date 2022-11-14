@@ -12,21 +12,21 @@
 @Motto          :   All our science, measured against reality, is primitive and childlike - and yet it is the most precious thing we have.
 """
 __auth__ = 'diklios'
+
 import os
 from typing import Any
+
 from django.conf import settings
-from Common.utils.alibabacloud.oss.obj import upload_obj, generate_obj_file_path, delete_obj
-from Common.utils.file_handler.file import handle_upload_file, remove_file
-
-
+from django.core.files.uploadedfile import UploadedFile
 from django.db.models import JSONField
 from pydantic import BaseModel
-from django.core.files.uploadedfile import UploadedFile
 
 from Common.models.equipments import *
 from Common.models.user import User
 from Common.serializers.equipments import VisualChartBaseSerializer, BioMeterBaseSerializer, OptometryBaseSerializer, \
     TonoMeterBaseSerializer, SequenceBaseSerializer
+from Common.utils.alibabacloud.oss.obj import upload_obj, generate_obj_file_path, delete_obj
+from Common.utils.file_handler.file import handle_upload_file, remove_file
 from Common.utils.text_handler.dicts import parameters_to_dict
 from Common.utils.text_handler.identity_card import get_age
 from Common.viewModels.equipments.optometry import count_spherical_equivalent
@@ -299,8 +299,10 @@ def generate_report_suggestions(eye_data: dict) -> list:
         suggestions.append(Suggestion(issue='双眼全部正常，请继续保持，注意日常生活健康用眼').dict())
     else:
         if not correct_eye:
-            suggestions.append(Suggestion(issue='您的矫正视力异常，请检查被测时是否配带眼镜，如果佩戴，请考虑更换眼镜').dict())
-        suggestions.append(Suggestion(issue='斜视弱视问题建议去医院斜视弱视专科检查，其他问题建议去医院视光学专科检查').dict())
+            suggestions.append(
+                Suggestion(issue='您的矫正视力异常，请检查被测时是否配带眼镜，如果佩戴，请考虑更换眼镜').dict())
+        suggestions.append(
+            Suggestion(issue='斜视弱视问题建议去医院斜视弱视专科检查，其他问题建议去医院视光学专科检查').dict())
     return suggestions
 
 
@@ -354,8 +356,7 @@ def generate_report_data_from_project(project: Project) -> JSONField | dict[str 
     return report_data
 
 
-
-def  handle_upload_project_report(project:Project,report_file:UploadedFile):
+def handle_upload_project_report(project: Project, report_file: UploadedFile):
     # 暂存原始数据
     raw_report_file_url = project.report_file_path
     raw_report_file_path = project.report_file_path
@@ -371,7 +372,8 @@ def  handle_upload_project_report(project:Project,report_file:UploadedFile):
     # 删除原本的文件
     if raw_report_file_url and raw_report_file_path != project.report_file_url:
         delete_obj(raw_report_file_url)
-    if raw_report_file_path and raw_report_file_path != project.report_file_path and os.path.exists(raw_report_file_path):
+    if raw_report_file_path and raw_report_file_path != project.report_file_path and os.path.exists(
+            raw_report_file_path):
         remove_file(raw_report_file_path)
     # 保存项目
     project.full_clean(exclude=['report_file_url'], validate_unique=True)

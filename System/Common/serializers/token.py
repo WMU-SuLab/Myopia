@@ -14,12 +14,16 @@
 __auth__ = 'diklios'
 
 from django.conf import settings
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import update_last_login
 from jwt import decode as jwt_decode
+from rest_framework import serializers, exceptions
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as _TokenObtainPairSerializer, \
     TokenRefreshSerializer as _TokenRefreshSerializer, TokenVerifySerializer as _TokenVerifySerializer, \
     TokenBlacklistSerializer as _TokenBlacklistSerializer, \
     TokenObtainSlidingSerializer as _TokenObtainSlidingSerializer, \
     TokenRefreshSlidingSerializer as _TokenRefreshSlidingSerializer
+from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 
 from Common.models.user import User
@@ -27,6 +31,30 @@ from Common.utils.http.exceptions import UserNotExist, TokenNotExist
 
 
 class TokenObtainPairSerializer(_TokenObtainPairSerializer):
+    email = serializers.EmailField(required=False)
+    phone_number = serializers.CharField(required=False)
+    open_id = serializers.CharField(required=False)
+    union_id = serializers.CharField(required=False)
+    verification_code = serializers.CharField(required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = None
+        data = kwargs.get('data', {})
+        if data.get('email', None) or data.get('phone_number', None) \
+                or data.get('open_id', None) or data.get('union_id', None):
+            self.fields[self.username_field].required = False
+        if data.get('email', None):
+            self.username_field = 'email'
+        elif data.get('phone_number', None):
+            self.username_field = 'phone_number'
+        elif data.get('open_id', None):
+            self.username_field = 'open_id'
+        elif data.get('union_id', None):
+            self.username_field = 'union_id'
+        if data.get('verification_code', None):
+            self.fields['password'].required = False
+
     @classmethod
     def get_token(cls, user):
         """
@@ -48,14 +76,27 @@ class TokenObtainPairSerializer(_TokenObtainPairSerializer):
         :param attrs: 請求參數
         :return: 响应数据
         """
-        data = super().validate(attrs)
+        # 验证
+        self.user = authenticate(**attrs)
+        if not api_settings.USER_AUTHENTICATION_RULE(self.user):
+            raise exceptions.AuthenticationFailed(
+                self.error_messages["no_active_account"],
+                "no_active_account",
+            )
         # 获取Token对象
         refresh = self.get_token(self.user)
-        # data['refresh_token'] = str(refresh)
-        # 令牌到期时间
-        data['refresh_expire_at'] = refresh.payload['exp']
-        data['access_expire_at'] = refresh.access_token.payload['exp']
-        data['username'] = refresh.payload['username']
+        data = {
+            "refresh": str(refresh),
+            # 'refresh_token': str(refresh),
+            "access": str(refresh.access_token),
+            # 令牌到期时间
+            'refresh_expire_at': refresh.payload['exp'],
+            'access_expire_at': refresh.access_token.payload['exp'],
+            'username': refresh.payload['username']
+        }
+        # 更新最后登录时间
+        if api_settings.UPDATE_LAST_LOGIN:
+            update_last_login(None, self.user)
         return data
 
 
