@@ -27,7 +27,8 @@ from Common.utils.http.exceptions import TokenNotExist
 
 
 class RequestMutableMixin:
-    def set_mutable_request_data(self, request):
+    @staticmethod
+    def set_mutable_request_data(request):
         if type(request.data) == dict:
             pass
         else:
@@ -36,7 +37,7 @@ class RequestMutableMixin:
 
 
 # 全部改造为 HTTP Only 的方式，如果需要切换回来，将所有的 get 和 post 方法注释即可
-class TokenObtainPairView(RequestMutableMixin, _TokenObtainPairView):
+class TokenObtainPairView(_TokenObtainPairView):
     serializer_class = TokenObtainPairSerializer
 
     def post(self, request, *args, **kwargs):
@@ -49,7 +50,7 @@ class TokenObtainPairView(RequestMutableMixin, _TokenObtainPairView):
         return response
 
 
-class TokenRefreshView(RequestMutableMixin, _TokenRefreshView):
+class TokenRefreshView(_TokenRefreshView, RequestMutableMixin):
     serializer_class = TokenRefreshSerializer
 
     def get(self, request, *args, **kwargs):
@@ -62,7 +63,7 @@ class TokenRefreshView(RequestMutableMixin, _TokenRefreshView):
             return Response(TokenNotExist())
 
 
-class TokenVerifyView(RequestMutableMixin, _TokenVerifyView):
+class TokenVerifyView(_TokenVerifyView, RequestMutableMixin):
     serializer_class = TokenVerifySerializer
 
     def get(self, request, *args, **kwargs):
@@ -80,7 +81,7 @@ class TokenVerifyView(RequestMutableMixin, _TokenVerifyView):
         return Response(TokenNotExist())
 
 
-class TokenBlacklistView(RequestMutableMixin, _TokenBlacklistView):
+class TokenBlacklistView(_TokenBlacklistView, RequestMutableMixin):
     serializer_class = TokenBlacklistSerializer
 
     def get(self, request, *args, **kwargs):
@@ -97,9 +98,9 @@ class TokenBlacklistView(RequestMutableMixin, _TokenBlacklistView):
         return Response(TokenNotExist(msg_detail='None refresh token'))
 
 
-class TokenObtainSlidingView(RequestMutableMixin, _TokenObtainSlidingView):
+class TokenObtainSlidingView(_TokenObtainSlidingView, RequestMutableMixin):
     serializer_class = TokenObtainSlidingSerializer
 
 
-class TokenRefreshSlidingView(RequestMutableMixin, _TokenRefreshSlidingView):
+class TokenRefreshSlidingView(_TokenRefreshSlidingView, RequestMutableMixin):
     serializer_class = TokenRefreshSlidingSerializer

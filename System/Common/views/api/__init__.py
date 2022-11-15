@@ -20,19 +20,26 @@ from .file import DownloadFileAPIView, DownloadImageAPIView
 from .info import GenderAPIView, EducationAPIView, NationalityAPIView
 from .regions import CountryListAPIView, ProvinceListAPIView, CityListAPIView, AreaListAPIView, StreetListAPIView
 from .test import test
-from .user import RegisterByUsernameAPIView, RestPasswordByLoginAPIView, RegisterByPhoneNumberAPIView, \
-    ResetPasswordByPhoneNumberAPIView, RegisterByEmailAPIView, ResetPasswordByEmailAPIView
+from .user import RegisterByUsernameAPIView, RestPasswordByLoginAPIView, \
+    RegisterByPhoneNumberAndVerificationCodeAPIView, ResetPasswordByPhoneNumberAndVerificationCodeAPIView, \
+    RegisterByEmailAndVerificationCodeAPIView, ResetPasswordByEmailAndVerificationCodeAPIView, \
+    RegisterAndLoginAPIView
 
 urlpatterns = [
     path('test', test, name='test'),
     # 用户
     path('user/register_by_username', RegisterByUsernameAPIView.as_view(), name='user_register_by_username'),
     path('user/reset_password_by_login', RestPasswordByLoginAPIView.as_view(), name='user_rest_password_by_login'),
-    path('user/register_by_phone_number', RegisterByPhoneNumberAPIView.as_view(), name='user_register_by_phone_number'),
-    path('user/reset_password_by_phone_number', ResetPasswordByPhoneNumberAPIView.as_view(),
-         name='user_reset_password_by_phone_number'),
-    path('user/register_by_email', RegisterByEmailAPIView.as_view(), name='user_register_by_email'),
-    path('user/reset_password_by_email', ResetPasswordByEmailAPIView.as_view(), name='user_reset_password_by_email'),
+    path('user/register_by_phone_number', RegisterByPhoneNumberAndVerificationCodeAPIView.as_view(),
+         name='user_register_by_phone_number_and_verification_code'),
+    path('user/reset_password_by_phone_number', ResetPasswordByPhoneNumberAndVerificationCodeAPIView.as_view(),
+         name='user_reset_password_by_phone_number_and_verification_code'),
+    path('user/register_by_email', RegisterByEmailAndVerificationCodeAPIView.as_view(),
+         name='user_register_by_email_and_verification_code'),
+    path('user/reset_password_by_email', ResetPasswordByEmailAndVerificationCodeAPIView.as_view(),
+         name='user_reset_password_by_email_and_verification_code'),
+    path('user/register_and_login', RegisterAndLoginAPIView.as_view(),
+         name='user_register_and_login'),
     path('user/login', TokenObtainPairView.as_view(), name='user_login'),
     path('user/logout', TokenBlacklistView.as_view(), name='user_logout'),
     path('user/token/refresh', TokenRefreshView.as_view(), name='user_token_refresh'),

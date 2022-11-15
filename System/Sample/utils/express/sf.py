@@ -41,6 +41,7 @@ def create_pay_on_arrival_order(
         county: str,
         address: str,
         send_time: str,
+        remark: str = '',
 ) -> dict:
     return call_sf_express_service_by_digital_signatures(
         *base_config(),
@@ -94,6 +95,8 @@ def create_pay_on_arrival_order(
             'isReturnRoutelabel': 1,
             # 是否需求分配运单号，1：分配，0：不分配（若带单号下单，请传值0）
             'isGenWaybillNo': 1,
+            # 备注
+            'remark': remark,
         }
     )
 

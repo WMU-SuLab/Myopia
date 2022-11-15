@@ -42,7 +42,7 @@ class SubmitTGFBISampleBindingFormAPIView(IsAuthenticatedAPIView, HandlePost):
             remarks_json=tgfbi_sample_binding_form.cleaned_data,
         )
         Sequence.objects.create(project=project, serial_number=serial_number)
-        return Response(Success(chinese_msg='提交成功'))
+        return Response(Success(chinese_msg='提交样本绑定成功'))
 
     def patch(self, request, *args, **kwargs):
         tgfbi_sample_binding_form = TGFBISampleBindingForm(request.data)
@@ -79,7 +79,7 @@ class SubmitTGFBISampleSendFormAPIView(IsAuthenticatedAPIView):
             raise MethodNotAllowed(chinese_msg='已经提交过订单，不允许再提交')
         project.progress = 2
         order_id = f"TGFBI-{timezone.now().strftime('%Y%m%d%H:%M:%S')}-{project.id}"
-        res = create_pay_on_arrival_order(
+        sf_res = create_pay_on_arrival_order(
             order_id=order_id,
             contact=tgfbi_sample_send_form.cleaned_data['contact_name'],
             mobile=tgfbi_sample_send_form.cleaned_data['contact_phone_number'],
@@ -88,13 +88,16 @@ class SubmitTGFBISampleSendFormAPIView(IsAuthenticatedAPIView):
             county=tgfbi_sample_send_form.cleaned_data['county'],
             address=tgfbi_sample_send_form.cleaned_data['address'],
             send_time=tgfbi_sample_send_form.cleaned_data['send_time'],
+            remark=tgfbi_sample_send_form.cleaned_data['remark'],
         )
-        if not res.get('apiResultData', '{}').get('success', False):
-            raise ParameterError(chinese_msg=res['apiErrorMsg'], extra=res)
+        if not sf_res.get('apiResultData', '{}').get('success', False):
+            raise ParameterError(chinese_msg=sf_res['apiErrorMsg'], extra=sf_res)
         project.remarks_json['courier'] = {
             **project.remarks_json.get('courier', {}),
             **tgfbi_sample_send_form.cleaned_data,
+            'waybillNoInfoList': sf_res.get('apiResultData', {}).get('msgData', {}).get('waybillNoInfoList', []),
             'update_time': timezone.now().strftime('%Y-%m-%d %H:%M:%S'),
+            'sf_express_info': sf_res,
         }
         project.save()
-        return Response(Success(chinese_msg='提交寄件成功', extra=res))
+        return Response(Success(chinese_msg='提交寄件成功', extra=sf_res))

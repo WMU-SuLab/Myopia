@@ -41,8 +41,12 @@ class UserBackend(ModelBackend):
                 Q(wechat_roles__open_id__iexact=username) | Q(wechat_roles__union_id__iexact=username)
             )
         elif email:
+            if not validate_email(email):
+                raise ValidationError('Invalid email address.')
             user = UserModel.objects.filter(email=email)
         elif phone_number:
+            if not validate_phone_number(phone_number):
+                raise ValidationError('Invalid phone number.')
             user = UserModel.objects.filter(phone_number=phone_number)
         elif open_id:
             user = UserModel.objects.filter(wechat_role__open_id=open_id)
@@ -66,13 +70,17 @@ class UserBackend(ModelBackend):
                 # UserModel().set_password(password)
                 raise ValidationError(msg='Password is incorrect.', chinese_msg='密码错误')
         elif verification_code:
-            if (email and validate_email(email) and verify_verification_code(email, verification_code, 'login')) or \
-                    (phone_number and validate_phone_number(phone_number)
-                     and verify_verification_code(phone_number, verification_code, 'login')):
+            email_login = verify_verification_code(email, verification_code, 'login') if email else False
+            email_register_and_login = verify_verification_code(email, 'register_and_login') if email else False
+            phone_number_login = verify_verification_code(
+                phone_number, verification_code, 'login') if phone_number else False
+            phone_number_register_and_login = verify_verification_code(
+                phone_number, verification_code, 'register_and_login') if phone_number else False
+            if email_login or email_register_and_login or phone_number_login or phone_number_register_and_login:
                 # todo:考虑登录之后是否需要删除验证码，不允许再使用
                 return user if self.user_can_authenticate(user) else None
             else:
-                raise ValidationError(msg='Verification_code is incorrect.', chinese_msg='验证码错误')
+                raise ValidationError(msg='Verification code is incorrect.', chinese_msg='验证码错误')
         # todo:完善微信的登录验证
         else:
             raise ParameterError('password or verification_code is required')

@@ -25,6 +25,7 @@ def get_project_info(project: Project):
         'project_name': project.name,
         'username': project.remarks_json.get('name', None),
         'progress': project.get_progress_display(),
+        'progress_code': project.progress,
         # 数据库中取出来的是UTC时间
         'created_time': localtime(project.created_time).strftime('%Y-%m-%d %H:%M:%S'),
         'tzname': get_current_timezone_name(),

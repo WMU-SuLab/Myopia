@@ -101,7 +101,8 @@ class TokenObtainPairSerializer(_TokenObtainPairSerializer):
 
 
 class ExistMixin:
-    def refresh_token_exist(self, token):
+    @staticmethod
+    def refresh_token_exist(token):
         """
         检查token是否存在
         :param token: token
@@ -111,7 +112,8 @@ class ExistMixin:
             raise TokenNotExist(msg_detail='Token不存在')
         return True
 
-    def user_exist(self, user_id, username):
+    @staticmethod
+    def user_exist(user_id, username):
         """
         检查用户是否存在
         :param user_id:

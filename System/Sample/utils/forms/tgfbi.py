@@ -49,6 +49,7 @@ class TGFBISampleSendForm(forms.Form):
     county = forms.CharField(label='区县', max_length=32)
     address = forms.CharField(label='详细地址', max_length=128)
     send_time = forms.DateTimeField(label='寄送时间', input_formats=['%Y-%m-%d %H:%M:%S'])
+    remark = forms.CharField(label='备注', max_length=256, required=False)
 
     def clean_send_time(self):
         return self.cleaned_data['send_time'].strftime('%Y-%m-%d %H:%M:%S')

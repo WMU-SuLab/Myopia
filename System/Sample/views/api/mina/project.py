@@ -24,9 +24,8 @@ from Sample.viewModels.project import get_project_info
 
 class ProjectsListAPIView(IsAuthenticatedAPIView):
     def get(self, request, *args, **kwargs):
-        high_myopia_projects = HighMyopiaSampleProject.objects.filter(user=request.user,
-                                                                      name='高度近视遗传风险评估采样') \
-            .prefetch_related('sequence')
+        high_myopia_projects = HighMyopiaSampleProject.objects.filter(
+            user=request.user, name='高度近视遗传风险评估采样').prefetch_related('sequence')
         high_myopia_projects_data = [get_project_info(project) for project in high_myopia_projects]
         tgfbi_projects = TGFBISampleProject.objects.filter(user=request.user, name='TGFBI角膜营养不良基因检测采样') \
             .prefetch_related('sequence')
@@ -43,7 +42,9 @@ class ProjectRetrieveAPIView(IsAuthenticatedAPIView):
                 project = HighMyopiaSampleProject.objects.get(user=request.user, sequence__serial_number=serial_number)
                 data = {
                     'serial_number': serial_number,
+                    'project_name': project.name,
                     'progress': project.get_progress_display(),
+                    'progress_code': project.progress,
                     'user': {
                         'name': project.remarks_json.get('name', None),
                         'gender': project.remarks_json.get('gender', None),
@@ -65,7 +66,9 @@ class ProjectRetrieveAPIView(IsAuthenticatedAPIView):
                 project = TGFBISampleProject.objects.get(user=request.user, sequence__serial_number=serial_number)
                 data = {
                     'serial_number': serial_number,
+                    'project_name': project.name,
                     'progress': project.get_progress_display(),
+                    'progress_code': project.progress,
                     'user': {
                         'name': project.remarks_json.get('name', None),
                         'gender': project.remarks_json.get('gender', None),

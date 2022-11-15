@@ -17,7 +17,6 @@ from secrets import compare_digest
 
 from django import forms
 from django.conf import settings
-from django.db.models import Q
 
 from Common.models.user import User
 from .validators import phone_number_validator, password_validators
@@ -34,6 +33,30 @@ class PasswordForm(forms.Form):
         if not compare_digest(password, confirm_password):
             raise forms.ValidationError('两次输入的密码不一致，请修改!')
         return password
+
+
+class PhoneSMSForm(forms.Form):
+    phone_number = forms.CharField(validators=phone_number_validator)
+    verification_code = forms.CharField(
+        min_length=settings.VERIFICATION_CODE_LENGTH,
+        max_length=settings.VERIFICATION_CODE_LENGTH)
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data['phone_number']
+        if not phone_number:
+            raise forms.ValidationError('手机号码不能为空')
+        return phone_number
+
+
+class EmailVerificationCodeForm(forms.Form):
+    email = forms.EmailField()
+    verification_code = forms.CharField()
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email', None)
+        if not email:
+            raise forms.ValidationError('邮箱不能为空')
+        return email
 
 
 class RegisterByUsernameForm(PasswordForm):
@@ -70,45 +93,27 @@ class ResetPasswordForm(forms.Form):
         return confirm_password
 
 
-class RegisterByPhoneSMSForm(PasswordForm):
-    phone_number = forms.CharField(validators=phone_number_validator)
-    verification_code = forms.CharField(min_length=settings.VERIFICATION_CODE_LENGTH,
-                                        max_length=settings.VERIFICATION_CODE_LENGTH)
-
+class RegisterByPhoneSMSForm(PhoneSMSForm, PasswordForm):
     def clean_phone_number(self):
-        phone_number = self.cleaned_data['phone_number']
-        if not phone_number:
-            raise forms.ValidationError('手机号码不能为空')
+        phone_number = super().clean_phone_number()
         # if User.objects.filter(Q(phone_number=phone_number) | Q(username=phone_number)).exists():
         if User.objects.filter(phone_number=phone_number).exists():
             raise forms.ValidationError('手机号已被注册')
         return phone_number
 
 
-class ResetPasswordByPhoneSMSForm(RegisterByPhoneSMSForm):
-    def clean_phone_number(self):
-        phone_number = self.cleaned_data['phone_number']
-        if not phone_number:
-            raise forms.ValidationError('手机号码不能为空')
-        return phone_number
+class ResetPasswordByPhoneSMSForm(PhoneSMSForm, PasswordForm):
+    pass
 
 
-class RegisterByEmailForm(PasswordForm):
-    email = forms.EmailField()
-    verification_code = forms.CharField()
-
+class RegisterByEmailForm(EmailVerificationCodeForm, PasswordForm):
     def clean_email(self):
-        email = self.cleaned_data.get('email', None)
-        if not email:
-            raise forms.ValidationError('邮箱不能为空')
-        if User.objects.filter(Q(email=email) | Q(username=email)).exists():
+        email = super().clean_email()
+        # if User.objects.filter(Q(email=email) | Q(username=email)).exists():
+        if User.objects.filter(email=email).exists():
             raise forms.ValidationError('邮箱已被注册')
         return email
 
 
-class ResetPasswordByEmailForm(RegisterByEmailForm):
-    def clean_email(self):
-        email = self.cleaned_data.get('email', None)
-        if not email:
-            raise forms.ValidationError('邮箱不能为空')
-        return email
+class ResetPasswordByEmailForm(EmailVerificationCodeForm, PasswordForm):
+    pass

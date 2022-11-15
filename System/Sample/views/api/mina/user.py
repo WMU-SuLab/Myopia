@@ -15,6 +15,7 @@ __auth__ = 'diklios'
 
 from rest_framework.response import Response
 
+from Common.utils.text_handler.enum import code_usage_names
 from Common.utils.alibabacloud.sms.verification import send_verification_sms
 from Common.utils.http.exceptions import ParameterError
 from Common.utils.http.successes import PhoneSMSSendSuccess
@@ -24,7 +25,7 @@ from Common.views.api.user import SendPhoneSMSAPIView as _SendPhoneSMSAPIView
 class SendPhoneSMSAPIView(_SendPhoneSMSAPIView):
     def post(self, request):
         usage = request.GET.get('usage', None)
-        if not usage:
+        if not usage or usage not in code_usage_names:
             raise ParameterError(msg_detail='usage field is required')
         data = send_verification_sms(self.validate(request), '谱希基因', 'SMS_244615604', usage)
         return Response(PhoneSMSSendSuccess(data=data))
