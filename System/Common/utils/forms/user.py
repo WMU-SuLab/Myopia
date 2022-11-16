@@ -19,7 +19,7 @@ from django import forms
 from django.conf import settings
 
 from Common.models.user import User
-from .validators import phone_number_validator, password_validators
+from .validators import phone_number_validators, password_validators
 
 
 class PasswordForm(forms.Form):
@@ -36,7 +36,7 @@ class PasswordForm(forms.Form):
 
 
 class PhoneSMSForm(forms.Form):
-    phone_number = forms.CharField(validators=phone_number_validator)
+    phone_number = forms.CharField(validators=phone_number_validators)
     verification_code = forms.CharField(
         min_length=settings.VERIFICATION_CODE_LENGTH,
         max_length=settings.VERIFICATION_CODE_LENGTH)

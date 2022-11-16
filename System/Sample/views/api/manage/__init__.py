@@ -17,6 +17,7 @@ from django.urls import path
 
 from .high_myopia import HighMyopiaProjectsAPIView, HighMyopiaProjectUpdateAPIView, \
     HighMyopiaProjectUploadReportFileAPIView, HighMyopiaProjectsExportAPIView
+from .tgfbi import TGFBISampleLIMSUpdateReportAPIView
 from .user import SampleManagerLoginAPIView, SampleManagerLogoutAPIView
 
 urlpatterns = [
@@ -30,5 +31,6 @@ urlpatterns = [
     path('high_myopia/export_all_data', HighMyopiaProjectsExportAPIView.as_view(),
          name='high_myopia_projects_export'),
     # TGFBI角膜营养不良基因检测
-
+    path('tgfbi/lims_upload_report_file', TGFBISampleLIMSUpdateReportAPIView.as_view(),
+         name='tgfbi_lims_upload_report_file'),
 ]

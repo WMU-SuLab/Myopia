@@ -55,10 +55,9 @@ class SerialNumberList(IsAuthenticatedAPIView):
 
 class SerialNumberRetrieve(IsAuthenticatedAPIView):
     def get(self, request, serial_number, *args, **kwargs):
-        sequence = Sequence.objects.filter(serial_number=serial_number) \
-            .prefetch_related('project', 'project__informed_consent')
-        if sequence.exists():
-            sequence = sequence.first()
+        sequence = Sequence.objects.prefetch_related('project', 'project__informed_consent')\
+            .get(serial_number=serial_number)
+        if sequence:
             project = sequence.project
             data = {
                 'serial_number': serial_number,
@@ -135,12 +134,11 @@ class SubmitHighMyopiaFormAPIView(IsAuthenticatedAPIView, HandlePost):
         high_myopia_form = HighMyopiaFormUpdate(request.POST, request.FILES)
         if not high_myopia_form.is_valid():
             return Response(ParameterError(msg='form not valid', msg_detail=str(high_myopia_form.errors)))
-        projects = HighMyopiaSampleProject.objects.filter(
+        project = HighMyopiaSampleProject.objects.prefetch_related('user').get(
             name='高度近视遗传风险评估采样',
-            sequence__serial_number=high_myopia_form.cleaned_data['serial_number']).prefetch_related('user')
-        if not projects.exists():
+            sequence__serial_number=high_myopia_form.cleaned_data['serial_number'])
+        if not project:
             return Response(ParameterError(chinese_msg='序列号不存在'))
-        project = projects.first()
         # 判断用户
         if project.user.username != request.user.username:
             return Response(ParameterError(chinese_msg='该序列号不属于当前用户'))

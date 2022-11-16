@@ -32,9 +32,8 @@ class SubmitTGFBISampleBindingFormAPIView(IsAuthenticatedAPIView, HandlePost):
         if not tgfbi_sample_binding_form.is_valid():
             raise ParameterError(msg_detail=tgfbi_sample_binding_form.errors)
         serial_number = tgfbi_sample_binding_form.cleaned_data['serial_number']
-        if Sequence.objects.filter(serial_number=serial_number).exists():
+        if Sequence.objects.get(serial_number=serial_number):
             raise MethodNotAllowed(chinese_msg='序列号已存在，不允许使用此方法')
-        print(tgfbi_sample_binding_form.cleaned_data)
         project = TGFBISampleProject.objects.create(
             user=request.user,
             name='TGFBI角膜营养不良基因检测采样',
@@ -48,12 +47,11 @@ class SubmitTGFBISampleBindingFormAPIView(IsAuthenticatedAPIView, HandlePost):
         tgfbi_sample_binding_form = TGFBISampleBindingForm(request.data)
         if not tgfbi_sample_binding_form.is_valid():
             raise ParameterError(msg_detail=tgfbi_sample_binding_form.errors)
-        projects = TGFBISampleProject.objects.filter(
+        project = TGFBISampleProject.objects.prefetch_related('user').get(
             name='TGFBI角膜营养不良基因检测采样',
-            sequence__serial_number=tgfbi_sample_binding_form.cleaned_data['serial_number']).prefetch_related('user')
-        if not projects.exists():
+            sequence__serial_number=tgfbi_sample_binding_form.cleaned_data['serial_number'])
+        if not project:
             raise ParameterError(chinese_msg='序列号不存在')
-        project = projects.first()
         # 判断用户
         if project.user.username != request.user.username:
             raise ParameterError(chinese_msg='该序列号不属于当前用户')
@@ -67,14 +65,13 @@ class SubmitTGFBISampleSendFormAPIView(IsAuthenticatedAPIView):
         tgfbi_sample_send_form = TGFBISampleSendForm(request.data)
         if not tgfbi_sample_send_form.is_valid():
             raise ParameterError(msg_detail=tgfbi_sample_send_form.errors)
-        projects = TGFBISampleProject.objects.filter(
+        project = TGFBISampleProject.objects.get(
             user=request.user,
             name='TGFBI角膜营养不良基因检测采样',
             sequence__serial_number=tgfbi_sample_send_form.cleaned_data['serial_number']
         )
-        if not projects.exists():
+        if not project:
             raise NotFound(chinese_msg='该项目不存在')
-        project = projects.first()
         if project.progress == 2:
             raise MethodNotAllowed(chinese_msg='已经提交过订单，不允许再提交')
         project.progress = 2
@@ -90,14 +87,16 @@ class SubmitTGFBISampleSendFormAPIView(IsAuthenticatedAPIView):
             send_time=tgfbi_sample_send_form.cleaned_data['send_time'],
             remark=tgfbi_sample_send_form.cleaned_data['remark'],
         )
-        if not sf_res.get('apiResultData', '{}').get('success', False):
-            raise ParameterError(chinese_msg=sf_res['apiErrorMsg'], extra=sf_res)
+
         project.remarks_json['courier'] = {
             **project.remarks_json.get('courier', {}),
             **tgfbi_sample_send_form.cleaned_data,
             'waybillNoInfoList': sf_res.get('apiResultData', {}).get('msgData', {}).get('waybillNoInfoList', []),
             'update_time': timezone.now().strftime('%Y-%m-%d %H:%M:%S'),
-            'sf_express_info': sf_res,
+            'sf_express_full_info': sf_res,
         }
         project.save()
+        # lims_res = send_order_to_lims(project, tgfbi_sample_send_form.cleaned_data['serial_number'])
+        # project.remarks_json['lims_full_info'] = lims_res
+        # project.save()
         return Response(Success(chinese_msg='提交寄件成功', extra=sf_res))

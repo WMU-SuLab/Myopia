@@ -16,7 +16,6 @@ __auth__ = 'diklios'
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.core.validators import validate_email
-from django.db.models import Q
 
 from Common.utils.auth.verification import verify_verification_code
 from Common.utils.http.exceptions import ValidationError, ParameterError
@@ -33,31 +32,30 @@ class UserBackend(ModelBackend):
         union_id = kwargs.get('union_id', None)
         verification_code = kwargs.get('verification_code', None)
         # user = UserModel._default_manager.get_by_natural_key(username)
-        if username is None:
-            username = kwargs.get(UserModel.USERNAME_FIELD, '')
         if username:
-            user = UserModel.objects.filter(
-                Q(username__iexact=username) | Q(email__iexact=username) | Q(phone_number__iexact=username) |
-                Q(wechat_roles__open_id__iexact=username) | Q(wechat_roles__union_id__iexact=username)
-            )
+            # user = UserModel.objects.get(
+            #     Q(username__iexact=username) | Q(email__iexact=username) | Q(phone_number__iexact=username) |
+            #     Q(wechat_roles__open_id__iexact=username) | Q(wechat_roles__union_id__iexact=username)
+            # )
+            user = UserModel.objects.get(username=username)
+        elif username := kwargs.get(UserModel.USERNAME_FIELD, ''):
+            user = UserModel.objects.get(**{UserModel.USERNAME_FIELD: username})
         elif email:
             if not validate_email(email):
                 raise ValidationError('Invalid email address.')
-            user = UserModel.objects.filter(email=email)
+            user = UserModel.objects.get(email=email)
         elif phone_number:
             if not validate_phone_number(phone_number):
                 raise ValidationError('Invalid phone number.')
-            user = UserModel.objects.filter(phone_number=phone_number)
+            user = UserModel.objects.get(phone_number=phone_number)
         elif open_id:
-            user = UserModel.objects.filter(wechat_role__open_id=open_id)
+            user = UserModel.objects.get(wechat_role__open_id=open_id)
         elif union_id:
-            user = UserModel.objects.filter(wechat_role__union_id=union_id)
+            user = UserModel.objects.get(wechat_role__union_id=union_id)
         else:
             raise ParameterError('username or email or phone_number or open_id or union_id is required')
         # 验证用户是否存在
-        if user.exists():
-            user = user.first()
-        else:
+        if not user:
             raise ValidationError(msg='User dose not exist.', chinese_msg='用户不存在')
         # 验证用户密码或者验证码
         if password:
@@ -70,17 +68,17 @@ class UserBackend(ModelBackend):
                 # UserModel().set_password(password)
                 raise ValidationError(msg='Password is incorrect.', chinese_msg='密码错误')
         elif verification_code:
-            email_login = verify_verification_code(email, verification_code, 'login') if email else False
-            email_register_and_login = verify_verification_code(email, 'register_and_login') if email else False
-            phone_number_login = verify_verification_code(
-                phone_number, verification_code, 'login') if phone_number else False
+            email_login = verify_verification_code('email', email, verification_code, 'login') if email else False
+            email_register_and_login = verify_verification_code(
+                'email', email, verification_code, 'register_and_login') if email else False
+            phone_number_login = verify_verification_code('phone_number', phone_number, verification_code, 'login') \
+                if phone_number else False
             phone_number_register_and_login = verify_verification_code(
-                phone_number, verification_code, 'register_and_login') if phone_number else False
+                'phone_number', phone_number, verification_code, 'register_and_login') if phone_number else False
             if email_login or email_register_and_login or phone_number_login or phone_number_register_and_login:
-                # todo:考虑登录之后是否需要删除验证码，不允许再使用
                 return user if self.user_can_authenticate(user) else None
             else:
-                raise ValidationError(msg='Verification code is incorrect.', chinese_msg='验证码错误')
+                raise ValidationError(msg='Verification_code is incorrect.', chinese_msg='验证码错误')
         # todo:完善微信的登录验证
         else:
             raise ParameterError('password or verification_code is required')

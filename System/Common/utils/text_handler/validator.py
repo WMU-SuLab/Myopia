@@ -24,7 +24,7 @@ def validate_length(pwd, min_=8, max_=16):
 
 
 def validate_number(pwd):
-    match = re.search("\d+", pwd)
+    match = re.search(r"\d+", pwd)
     if match:
         return True, None
     else:

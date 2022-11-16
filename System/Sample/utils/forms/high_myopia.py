@@ -17,7 +17,7 @@ from django import forms
 
 from Common.libs.choices import education_choices
 from Common.models.user import Nationality
-from Common.utils.text_handler.validator import validate_phone_number
+from Common.utils.forms.validators import phone_number_validators
 from Common.viewModels.choices import choices_to_list
 from . import serial_number
 
@@ -28,9 +28,9 @@ class HighMyopiaForm(forms.Form):
     name = forms.CharField(label='姓名', max_length=32)
     gender = forms.CharField(label='性别')
     age = forms.IntegerField(required=False)
-    birthday = forms.DateField()
+    birthday = forms.DateField(label='出生日期', input_formats=['%Y-%m-%d'])
     native_place = forms.CharField(max_length=32)
-    contact_phone = forms.CharField(validators=[validate_phone_number])
+    contact_phone = forms.CharField(validators=phone_number_validators)
     nationality = forms.CharField(max_length=20)
     education = forms.CharField()
     # eye info

@@ -125,6 +125,7 @@ class VerifyVerificationCodeAPIView(AllowAnyAPIView):
     def validate(self, form: Form):
         if form.is_valid():
             if verify_verification_code(
+                    self.identity_field,
                     form.cleaned_data[self.identity_field],
                     form.cleaned_data['verification_code'],
                     self.usage):
@@ -200,6 +201,7 @@ class RegisterAndLoginAPIView(
         user = User.objects.filter(**{self.identity_field: form.cleaned_data[self.identity_field]})
         if not user.exists():
             User.objects.create_user(**{self.identity_field: form.cleaned_data[self.identity_field]})
+        return Response(UserRegisterSuccess(chinese_msg='用户注册成功或者已经存在'))
 
     def post(self, request, *args, **kwargs):
         if request.data.get('phone_number', None):
@@ -210,5 +212,7 @@ class RegisterAndLoginAPIView(
             form = EmailVerificationCodeForm(request.data)
         else:
             raise ParameterError(msg_detail='phone_number or email is required')
-        self.validate(form)
+        register_res = self.validate(form)
+        if not register_res.data.success:
+            return register_res
         return super().post(request, *args, **kwargs)

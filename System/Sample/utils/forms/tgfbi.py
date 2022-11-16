@@ -16,7 +16,7 @@ __auth__ = 'diklios'
 from django import forms
 
 from Common.libs.choices import gender_choices, identification_card_type_choices
-from Common.utils.text_handler.validator import validate_phone_number
+from Common.utils.forms.validators import phone_number_validators
 from Common.viewModels.choices import same_choices
 from . import serial_number
 
@@ -25,9 +25,9 @@ class TGFBISampleBindingForm(forms.Form):
     serial_number = serial_number
     name = forms.CharField(label='姓名', max_length=32)
     gender = forms.ChoiceField(label='性别', choices=same_choices(gender_choices))
-    birthday = forms.DateField(label='出生日期')
+    birthday = forms.DateField(label='出生日期', input_formats=['%Y-%m-%d'])
     bind_time = forms.DateTimeField(label='绑定时间', input_formats=['%Y-%m-%d %H:%M:%S'])
-    contact_phone_number = forms.CharField(label='手机号', validators=[validate_phone_number], required=False)
+    contact_phone_number = forms.CharField(label='手机号', validators=phone_number_validators, required=False)
     identification_card_type = forms.ChoiceField(
         label='证件类型', choices=same_choices(identification_card_type_choices), required=False)
     identification_card_number = forms.CharField(label='证件号码', max_length=32, required=False)
@@ -43,7 +43,7 @@ class TGFBISampleBindingForm(forms.Form):
 class TGFBISampleSendForm(forms.Form):
     serial_number = serial_number
     contact_name = forms.CharField(label='联系人姓名', max_length=32)
-    contact_phone_number = forms.CharField(label='联系电话', validators=[validate_phone_number])
+    contact_phone_number = forms.CharField(label='联系电话', validators=phone_number_validators)
     province = forms.CharField(label='省份', max_length=32)
     city = forms.CharField(label='城市', max_length=32)
     county = forms.CharField(label='区县', max_length=32)
@@ -53,3 +53,8 @@ class TGFBISampleSendForm(forms.Form):
 
     def clean_send_time(self):
         return self.cleaned_data['send_time'].strftime('%Y-%m-%d %H:%M:%S')
+
+
+class TGFBIReportForm(forms.Form):
+    encrypted_text = forms.CharField(label='加密数据', max_length=1024)
+    report_file = forms.FileField(label='报告文件')

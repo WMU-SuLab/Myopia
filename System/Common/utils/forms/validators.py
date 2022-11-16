@@ -13,14 +13,21 @@
 """
 __auth__ = 'diklios'
 
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
 from Common.utils.text_handler.validator import validate_phone_number
 
+
 # form表单需要的验证器
 
-phone_number_validator = [
-    validate_phone_number,
+def region_phone_number_validator(phone_number):
+    if not validate_phone_number(phone_number):
+        raise ValidationError("手机号码格式不正确")
+
+
+phone_number_validators = [
+    region_phone_number_validator,
     # RegexValidator(r'^1[3-9]\d{9}$', '手机号码格式不正确')
 ]
 
