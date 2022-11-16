@@ -25,8 +25,8 @@ def encrypt_tgfbi_project(project: TGFBISampleProject):
     return encrypt_text(f'{project.id}-{project.name}')
 
 
-def decrypt_tgfbi_text(project_text: str):
-    text = decrypt_text(project_text)
+def decrypt_tgfbi_text(encrypted_text: str):
+    text = decrypt_text(encrypted_text)
     if '-' not in text:
         return None
     text_list = text.split('-')
@@ -60,7 +60,7 @@ def send_order_to_lims(project: TGFBISampleProject, serial_number: str):
             'state': '1',
             'stateName': '完成'
         },
-        'file': []
+        'file': [],
+        'encrypted_text': encrypt_tgfbi_project(project),
     })
-
     return res.json()

@@ -13,9 +13,11 @@
 """
 __auth__ = 'diklios'
 
+from django.conf import settings
 from django.db import models
 
 from Common.libs.choices import student_type_choices
+from Common.viewModels.choices import list_to_choices
 from .base import Base
 from .user import User
 
@@ -89,50 +91,48 @@ class Teacher(Base):
         return f'<Teacher : {self.teacher_number}>'
 
 
-class WeChatPlatform(Base):
-    platform_name = models.CharField(max_length=20, unique=True, db_index=True, verbose_name='微信开放平台名称')
-
-    class Meta:
-        verbose_name = verbose_name_plural = '微信开放平台'
-
-    def __str__(self):
-        return f'<WeChatPlatform : {self.platform_name}>'
-
-
-class WeChatAPP(Base):
-    platform = models.ForeignKey(WeChatPlatform, on_delete=models.CASCADE, related_name='apps',
-                                 verbose_name='所属平台')
-
-    app_name = models.CharField(max_length=20, unique=True, db_index=True, verbose_name='微信应用名称')
-    app_id = models.CharField(max_length=128, verbose_name='微信应用app_id')
-
-    class Meta:
-        verbose_name = verbose_name_plural = '微信应用'
-
-    def __str__(self):
-        return f'<WeChatAPP : {self.app_name}>'
-
-
-class WeChat(Base):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wechat_roles', verbose_name='用户')
-    app = models.ForeignKey(WeChatAPP, on_delete=models.CASCADE, related_name='wechat_roles',
-                            verbose_name='微信公众号/小程序AppID')
-
-    open_id = models.CharField(max_length=32, db_index=True, verbose_name='微信open_id')
-    union_id = models.CharField(max_length=32, unique=True, db_index=True, verbose_name='微信union_id')
+class WeChatBaseRole:
     session_key = models.CharField(max_length=128, verbose_name='微信session_key')
 
-    wechat_id = models.CharField(max_length=64, unique=True, db_index=True, verbose_name='微信号')
     nickname = models.CharField(blank=True, null=True, default=None, max_length=32, verbose_name='微信昵称')
     avatar_url = models.URLField(blank=True, null=True, default=None, verbose_name='微信头像地址')
 
-    # todo:根据https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/UserInfo.html添加更多字段
+
+class WeChatPlatformRole(Base, WeChatBaseRole):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wechat_platform_roles', verbose_name='用户')
+
+    platform_name = models.CharField(max_length=32, choices=list_to_choices(settings.WECHAT_OPEN_PLATFORMS.keys()),
+                                     db_index=True, verbose_name='微信开放平台名称')
+    union_id = models.CharField(max_length=32, unique=True, db_index=True, verbose_name='微信开放平台union_id')
 
     class Meta:
-        verbose_name = verbose_name_plural = '微信'
+        verbose_name = verbose_name_plural = '微信开放平台角色'
+        unique_together = (('platform_name', 'union_id'),)
 
     def __str__(self):
-        return f'<WeChat : {self.nickname}>'
+        return f'<WeChatPlatformRole : {self.nickname}>'
+
+
+class WeChatAPPRole(Base, WeChatBaseRole):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wechat_app_roles', verbose_name='用户')
+    # 根据https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Launching_a_Mini_Program/Launching_a_Mini_Program.html
+    # 和https://developers.weixin.qq.com/community/develop/doc/0000ae1a3f0c386e24c7542245b400
+    # 同一个小程序只能绑定一个微信开放平台
+    platform_role = models.ForeignKey(WeChatPlatformRole, blank=True, null=True, default=None,
+                                      on_delete=models.SET_NULL, related_name='app_roles',
+                                      verbose_name='微信开放平台身份')
+    app_name = models.CharField(max_length=32, choices=list_to_choices(settings.WECHAT_MINAS.keys()),
+                                db_index=True, verbose_name='微信应用名称')
+
+    open_id = models.CharField(max_length=32, blank=True, null=True, default=None, db_index=True,
+                               verbose_name='微信open_id')
+
+    class Meta:
+        verbose_name = verbose_name_plural = '微信应用角色'
+        unique_together = (('app_name', 'open_id'),)
+
+    def __str__(self):
+        return f'<WeChatAPPRole : {self.nickname}>'
 
 
 class QQ(Base):

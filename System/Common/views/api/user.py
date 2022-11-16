@@ -24,9 +24,10 @@ from Common.utils.auth.views.api import AllowAnyAPIView
 from Common.utils.auth.views.api import IsAuthenticatedAPIView
 from Common.utils.auth.views.token import TokenObtainPairView
 from Common.utils.email.verification import send_verification_email
-from Common.utils.forms.user import PhoneSMSForm, EmailVerificationCodeForm, RegisterByUsernameForm, ResetPasswordForm, \
-    RegisterByPhoneSMSForm, \
-    ResetPasswordByPhoneSMSForm, RegisterByEmailForm, ResetPasswordByEmailForm
+from Common.utils.forms.user import RegisterByUsernameForm, ResetPasswordForm, \
+    PhoneSMSForm, RegisterByPhoneSMSForm, ResetPasswordByPhoneSMSForm, \
+    EmailVerificationCodeForm, RegisterByEmailForm, ResetPasswordByEmailForm, \
+    WechatAPPCodeForm
 from Common.utils.http.exceptions import ParameterError, ValidationError, VerificationCodeError, ServerError, \
     PhoneSendSMSError, EmailSendError, UserExist
 from Common.utils.http.successes import UserRegisterSuccess, UserPasswordUpdateSuccess, PhoneSMSSendSuccess, \
@@ -216,3 +217,11 @@ class RegisterAndLoginAPIView(
         if not register_res.data.success:
             return register_res
         return super().post(request, *args, **kwargs)
+
+
+class RegisterAndLoginByWeChatAPIView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        form = WechatAPPCodeForm(request.data)
+        if form.is_valid():
+            return super().post(request, *args, **kwargs)
+        return Response(ParameterError(msg_detail=str(form.errors)))

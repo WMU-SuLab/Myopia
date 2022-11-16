@@ -23,7 +23,7 @@ from .test import test
 from .user import RegisterByUsernameAPIView, RestPasswordByLoginAPIView, \
     RegisterByPhoneNumberAndVerificationCodeAPIView, ResetPasswordByPhoneNumberAndVerificationCodeAPIView, \
     RegisterByEmailAndVerificationCodeAPIView, ResetPasswordByEmailAndVerificationCodeAPIView, \
-    RegisterAndLoginAPIView
+    RegisterAndLoginAPIView, RegisterAndLoginByWeChatAPIView
 
 urlpatterns = [
     path('test', test, name='test'),
@@ -41,6 +41,7 @@ urlpatterns = [
     path('user/register_and_login', RegisterAndLoginAPIView.as_view(),
          name='user_register_and_login'),
     path('user/login', TokenObtainPairView.as_view(), name='user_login'),
+    path('user/wechat_register_and_login', RegisterAndLoginByWeChatAPIView.as_view(), name='wechat_register_and_login'),
     path('user/logout', TokenBlacklistView.as_view(), name='user_logout'),
     path('user/token/refresh', TokenRefreshView.as_view(), name='user_token_refresh'),
     path('user/token/verify', TokenVerifyView.as_view(), name='user_token_verify'),

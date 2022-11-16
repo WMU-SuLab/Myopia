@@ -17,6 +17,8 @@ from cryptography.fernet import Fernet
 
 from .base import *
 
+# SimpleUI settings
+
 # Hash
 # 必须使用Fernet.generate_key()生成，而且是字节类型
 CRYPTOGRAPHY_SECRET_KEY = os.environ.get('CRYPTOGRAPHY_SECRET_KEY', Fernet.generate_key().decode())
@@ -87,9 +89,41 @@ LOGS_DIR_PATH_LIST = [
     SUPERVISOR_LOGS_DIR_PATH,
 ]
 
-# SimpleUI settings
+# MINA微信小程序应用配置
+# 谱希基因采样小程序应用配置
+SAMPLE_APP_ID = os.environ.get('SAMPLE_APP_ID', '')
+SAMPLE_APP_SECRET = os.environ.get('SAMPLE_APP_SECRET', '')
 
-# MINA
+# 高度近视筛查小程序应用配置
+SCREENING_APP_ID = os.environ.get('SCREENING_APP_ID', '')
+SCREENING_APP_SECRET = os.environ.get('SCREENING_APP_SECRET', '')
+
+# 高度近视报告小程序应用配置
+SCREENING_REPORT_APP_ID = os.environ.get('SCREENING_REPORT_APP_ID', '')
+SCREENING_REPORT_APP_SECRET = os.environ.get('SCREENING_REPORT_APP_SECRET', '')
+
+WECHAT_MINAS = {
+    'sample': {
+        'app_id': SAMPLE_APP_ID,
+        'app_secret': SAMPLE_APP_SECRET,
+        'secret_key': SAMPLE_APP_SECRET,
+    },
+    'screening': {
+        'app_id': SCREENING_APP_ID,
+        'app_secret': SCREENING_APP_SECRET,
+        'secret_key': SCREENING_APP_SECRET,
+    },
+    'screening_report': {
+        'app_id': SCREENING_REPORT_APP_ID,
+        'app_secret': SCREENING_REPORT_APP_SECRET,
+        'secret_key': SCREENING_REPORT_APP_SECRET,
+    },
+}
+
+# 微信开放平台配置
+WECHAT_OPEN_PLATFORMS = {
+
+}
 
 # 阿里云API配置
 ALIBABACLOUD_ACCOUNT_ID = os.environ.get('ALIBABACLOUD_ACCOUNT_ID', '')

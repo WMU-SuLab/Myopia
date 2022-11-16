@@ -18,7 +18,7 @@ import uuid
 
 from django.conf import settings
 
-from Common.utils.express.sf import call_sf_express_service_by_digital_signatures
+from Common.utils.http.sf_express import call_sf_express_service_by_digital_signatures
 
 
 def base_config():

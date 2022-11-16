@@ -18,7 +18,7 @@ from rest_framework.response import Response
 from Common.utils.auth.views.api import IsAuthenticatedAPIView
 from Common.utils.http.exceptions import ParameterError
 from Common.utils.http.successes import Success
-from Sample.utils.express.sf import cancel_order
+from Sample.utils.http.sf_express import cancel_order
 
 
 class CancelSFExpressAPIView(IsAuthenticatedAPIView):

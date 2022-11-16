@@ -68,5 +68,9 @@ def choices_to_list(choices: tuple[tuple] or models.Choices, mode: str = 'val') 
     return list(choices_to_dict(choices).values()) if mode == 'val' else list(choices_to_dict(choices).keys())
 
 
+def list_to_choices(choices: list) -> tuple[tuple[Any, Any], ...]:
+    return tuple((v, v) for v in choices)
+
+
 def same_choices(choices: tuple[tuple] or models.Choices, mode: str = 'val') -> tuple[tuple[Any, Any], ...]:
-    return tuple((v, v) for v in choices_to_list(choices, mode))
+    return list_to_choices(choices_to_list(choices, mode))

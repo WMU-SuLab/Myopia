@@ -176,6 +176,28 @@ SMS_EXPIRED_TIME='600'
 # 验证码长度
 VERIFICATION_CODE_LENGTH=4
 
+# 顺丰快递API配置
+SF_EXPRESS_URL='https://bspgw.sf-express.com/std/service'
+SF_EXPRESS_URL_TEST='https://sfapi-sbox.sf-express.com/std/service'
+SF_EXPRESS_URL_HK='https://sfapi-hk.sf-express.com/std/service'
+
+# 采样小程序顺丰快递API配置
+SF_EXPRESS_SAMPLE_APP_PARTNER_ID=''
+SF_EXPRESS_SAMPLE_APP_CHECKWORD=''
+SF_EXPRESS_SAMPLE_APP_CHECKWORD_TEST=''
+
+# 小程序应用配置
+# 谱希基因采样小程序应用配置
+SAMPLE_APP_ID=''
+SAMPLE_APP_SECRET=''
+
+# 高度近视筛查小程序应用配置
+SCREENING_APP_ID=''
+SCREENING_APP_SECRET=''
+
+# 高度近视报告小程序应用配置
+SCREENING_REPORT_APP_ID=''
+SCREENING_REPORT_APP_SECRET=''
 ```
 
 - 初始化项目

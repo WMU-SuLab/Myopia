@@ -16,5 +16,6 @@ __auth__ = 'diklios'
 from .equipments import VisualChartAdmin, BioMeterAdmin, OptometryAdmin, TonoMeterAdmin, EyeGroundAdmin, SequenceAdmin, \
     InformedConsentAdmin, QuestionnaireAdmin
 from .project import ProjectAdmin
-from .role import ManagerAdmin, EmployeeAdmin, StudentAdmin, TeacherAdmin, WeChatAdmin, QQAdmin, WeiboAdmin
+from .role import ManagerAdmin, EmployeeAdmin, StudentAdmin, TeacherAdmin, WeChatPlatformRoleAdmin,WeChatAPPRoleAdmin,\
+    QQAdmin, WeiboAdmin
 from .user import UserAdmin

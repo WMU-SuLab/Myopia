@@ -22,8 +22,8 @@ from Common.utils.auth.views.request_method import HandlePost
 from Common.utils.http.exceptions import NotFound, ParameterError, MethodNotAllowed
 from Common.utils.http.successes import Success
 from Sample.models.project import TGFBISampleProject
-from Sample.utils.express.sf import create_pay_on_arrival_order
-from Sample.utils.forms.tgfbi import TGFBISampleBindingForm, TGFBISampleSendForm
+from Sample.utils.forms.tgfbi import TGFBISampleBindingForm, TGFBISampleBindingUpdateForm
+from Sample.utils.http.sf_express import create_pay_on_arrival_order
 
 
 class SubmitTGFBISampleBindingFormAPIView(IsAuthenticatedAPIView, HandlePost):
@@ -62,7 +62,7 @@ class SubmitTGFBISampleBindingFormAPIView(IsAuthenticatedAPIView, HandlePost):
 
 class SubmitTGFBISampleSendFormAPIView(IsAuthenticatedAPIView):
     def post(self, request, *args, **kwargs):
-        tgfbi_sample_send_form = TGFBISampleSendForm(request.data)
+        tgfbi_sample_send_form = TGFBISampleBindingUpdateForm(request.data)
         if not tgfbi_sample_send_form.is_valid():
             raise ParameterError(msg_detail=tgfbi_sample_send_form.errors)
         project = TGFBISampleProject.objects.get(

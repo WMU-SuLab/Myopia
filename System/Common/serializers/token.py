@@ -28,13 +28,15 @@ from rest_framework_simplejwt.token_blacklist.models import OutstandingToken
 
 from Common.models.user import User
 from Common.utils.http.exceptions import UserNotExist, TokenNotExist
+from Common.viewModels.choices import list_to_choices
 
 
 class TokenObtainPairSerializer(_TokenObtainPairSerializer):
     email = serializers.EmailField(required=False)
     phone_number = serializers.CharField(required=False)
-    open_id = serializers.CharField(required=False)
-    union_id = serializers.CharField(required=False)
+    app_name = serializers.ChoiceField(required=False, choices=list_to_choices(settings.WECHAT_MINAS.keys()))
+    platform_name = serializers.ChoiceField(required=False,
+                                            choices=list_to_choices(settings.WECHAT_OPEN_PLATFORMS.keys()))
     verification_code = serializers.CharField(required=False)
 
     def __init__(self, *args, **kwargs):
@@ -42,16 +44,12 @@ class TokenObtainPairSerializer(_TokenObtainPairSerializer):
         self.user = None
         data = kwargs.get('data', {})
         if data.get('email', None) or data.get('phone_number', None) \
-                or data.get('open_id', None) or data.get('union_id', None):
+                or data.get('app_name', None) or data.get('platform_name', None):
             self.fields[self.username_field].required = False
-        if data.get('email', None):
-            self.username_field = 'email'
-        elif data.get('phone_number', None):
-            self.username_field = 'phone_number'
-        elif data.get('open_id', None):
-            self.username_field = 'open_id'
-        elif data.get('union_id', None):
-            self.username_field = 'union_id'
+            # if data.get('email', None):
+            #     self.username_field = 'email'
+            # elif data.get('phone_number', None):
+            #     self.username_field = 'phone_number'
         if data.get('verification_code', None):
             self.fields['password'].required = False
 

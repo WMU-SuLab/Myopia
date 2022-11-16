@@ -156,6 +156,10 @@ gen
 test
 
 # 项目特有配置
-./Libs
-./System/data/user
-./System/logs
+Libs
+System/data/user
+System/logs
+System/*.sqlite*
+System/*.db
+System/*/migrations/*.py
+!System/*/migrations/__init__.py

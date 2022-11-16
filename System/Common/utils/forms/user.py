@@ -19,6 +19,7 @@ from django import forms
 from django.conf import settings
 
 from Common.models.user import User
+from Common.viewModels.choices import list_to_choices
 from .validators import phone_number_validators, password_validators
 
 
@@ -57,6 +58,11 @@ class EmailVerificationCodeForm(forms.Form):
         if not email:
             raise forms.ValidationError('邮箱不能为空')
         return email
+
+
+class WechatAPPCodeForm(forms.Form):
+    app_name = forms.ChoiceField(label='应用名称', choices=list_to_choices(settings.WECHAT_MINAS.keys()))
+    verification_code = forms.CharField(min_length=32, max_length=32)
 
 
 class RegisterByUsernameForm(PasswordForm):

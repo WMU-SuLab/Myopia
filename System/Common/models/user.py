@@ -80,9 +80,9 @@ class UserManager(BaseManager, BaseUserManager):
     use_in_migrations = True
 
     def _create_user(self, username=None, password=None, **extra_fields):
-        if not username:
-            username = random_username()
-            # raise ValueError('The given username must be set')
+        # if not username:
+        #     raise ValueError('The given username must be set')
+        username = username or random_username()
         username = self.model.normalize_username(username)
         user = self.model(username=username, **extra_fields)
         user.set_password(password or random_password())

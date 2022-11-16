@@ -19,7 +19,6 @@ from abc import ABCMeta
 from datetime import datetime
 
 import pandas as pd
-from django.conf import settings
 from django.contrib.auth.models import Group, Permission, ContentType
 from django.core.management.base import BaseCommand
 
@@ -58,7 +57,7 @@ def init_group():
     manager_group, manager_group_created = Group.objects.get_or_create(name='manager')
     if manager_group_created:
         content_types = ContentType.objects.get_for_models(
-            User, Employee, Student, Teacher, WeChat, QQ, Weibo,
+            User, Employee, Student, Teacher, WeChatPlatformRole, WeChatAPPRole, QQ, Weibo,
             Project, VisualChart, Optometry, TonoMeter, EyeGround, Sequence, InformedConsent, Questionnaire,
             Feedback
         ).values()
@@ -83,7 +82,8 @@ def init_group():
             codename__icontains='delete'
         )
         employee_group.permissions.add(*project_permissions)
-        user_role_content_types = ContentType.objects.get_for_models(User, Student, Teacher, WeChat, QQ, Weibo).values()
+        user_role_content_types = ContentType.objects.get_for_models(User, Student, Teacher, WeChatPlatformRole,
+                                                                     WeChatAPPRole, QQ, Weibo).values()
         user_role_permissions = Permission.objects.filter(content_type__in=user_role_content_types).filter(
             codename__icontains='view')
         employee_group.permissions.add(*user_role_permissions)
@@ -96,7 +96,8 @@ def init_group():
         project_permissions = Permission.objects.filter(content_type__in=project_content_types).filter(
             codename__icontains='view')
         normal_user_group.permissions.add(*project_permissions)
-        user_role_content_types = ContentType.objects.get_for_models(User, Student, Teacher, WeChat, QQ, Weibo).values()
+        user_role_content_types = ContentType.objects.get_for_models(User, Student, Teacher, WeChatPlatformRole,
+                                                                     WeChatAPPRole, QQ, Weibo).values()
         user_role_permissions = Permission.objects.filter(content_type__in=user_role_content_types)
         normal_user_group.permissions.add(*user_role_permissions)
     print('初始化用户组完毕')
