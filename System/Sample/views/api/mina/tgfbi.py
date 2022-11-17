@@ -22,7 +22,7 @@ from Common.utils.auth.views.request_method import HandlePost
 from Common.utils.http.exceptions import NotFound, ParameterError, MethodNotAllowed
 from Common.utils.http.successes import Success
 from Sample.models.project import TGFBISampleProject
-from Sample.utils.forms.tgfbi import TGFBISampleBindingForm, TGFBISampleBindingUpdateForm
+from Sample.utils.forms.tgfbi import TGFBISampleBindingForm, TGFBISampleBindingUpdateForm, TGFBISampleSendForm
 from Sample.utils.http.sf_express import create_pay_on_arrival_order
 
 
@@ -44,7 +44,7 @@ class SubmitTGFBISampleBindingFormAPIView(IsAuthenticatedAPIView, HandlePost):
         return Response(Success(chinese_msg='提交样本绑定成功'))
 
     def patch(self, request, *args, **kwargs):
-        tgfbi_sample_binding_form = TGFBISampleBindingForm(request.data)
+        tgfbi_sample_binding_form = TGFBISampleBindingUpdateForm(request.data)
         if not tgfbi_sample_binding_form.is_valid():
             raise ParameterError(msg_detail=tgfbi_sample_binding_form.errors)
         project = TGFBISampleProject.objects.prefetch_related('user').get(
@@ -62,7 +62,7 @@ class SubmitTGFBISampleBindingFormAPIView(IsAuthenticatedAPIView, HandlePost):
 
 class SubmitTGFBISampleSendFormAPIView(IsAuthenticatedAPIView):
     def post(self, request, *args, **kwargs):
-        tgfbi_sample_send_form = TGFBISampleBindingUpdateForm(request.data)
+        tgfbi_sample_send_form = TGFBISampleSendForm(request.data)
         if not tgfbi_sample_send_form.is_valid():
             raise ParameterError(msg_detail=tgfbi_sample_send_form.errors)
         project = TGFBISampleProject.objects.get(
@@ -87,7 +87,6 @@ class SubmitTGFBISampleSendFormAPIView(IsAuthenticatedAPIView):
             send_time=tgfbi_sample_send_form.cleaned_data['send_time'],
             remark=tgfbi_sample_send_form.cleaned_data['remark'],
         )
-
         project.remarks_json['courier'] = {
             **project.remarks_json.get('courier', {}),
             **tgfbi_sample_send_form.cleaned_data,
