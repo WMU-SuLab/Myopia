@@ -26,8 +26,8 @@ from .response import BaseHTTPJSONStructure
 # 将仅针对由引发的异常生成的响应调用异常处理程序，它不会用于视图直接返回的任何响应
 def exception_handler(exc, context):
     if isinstance(exc, APIException):
+        # 处理数据库中删除用户账户的情况
         if isinstance(exc, UserNotExist):
-            print(exc.to_dict())
             res = Response(exc.to_dict())
             # 是否需要清除cookies?
             # res.delete_cookie('refresh')

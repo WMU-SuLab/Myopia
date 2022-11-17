@@ -15,13 +15,14 @@ __auth__ = 'diklios'
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 
 def handle_object_does_not_exist(func):
     def wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
-        except models.ObjectDoesNotExist:
+        except ObjectDoesNotExist:
             return False
 
     return wrapper
@@ -37,6 +38,14 @@ class StatusChoices(models.IntegerChoices):
 class BaseManager(models.Manager):
     def get_queryset(self):
         return super().get_queryset().filter(status=1)
+
+    def get(self, *args, **kwargs):
+        try:
+            return super().get(*args, **kwargs)
+        except ObjectDoesNotExist:
+            return None
+        # except MultipleObjectsReturned:
+        #     return False
 
 
 class Base(models.Model):

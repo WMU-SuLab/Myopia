@@ -19,20 +19,20 @@ from abc import ABCMeta
 from datetime import datetime
 
 import pandas as pd
-from django.conf import settings
 from django.contrib.auth.models import Group, Permission, ContentType
 from django.core.management.base import BaseCommand
 
+from Common.libs.choices import common_progress_choices
 from Common.models.equipments import *
 from Common.models.regions import Country, Province, City, Area, Street
 from Common.models.role import *
+from Common.models.sundry import Feedback
 from Common.models.user import User, Nationality
-from Common.utils.file_handler.file import validate_file_path
 from Common.utils.file_handler.dir import make_dir
+from Common.utils.file_handler.file import validate_file_path
 from Common.utils.time import print_accurate_execute_time, create_tz_time
-from Common.viewModels import reverse_choices_to_dict
+from Common.viewModels.choices import reverse_choices_to_dict
 from Common.viewModels.project import update_or_create_project_data
-from UserService.models.user import Feedback
 
 
 @print_accurate_execute_time
@@ -51,13 +51,13 @@ def init_permission():
 def init_group():
     admin_group, admin_group_created = Group.objects.get_or_create(name='admin')
     if admin_group_created:
-        content_types = ContentType.objects.filter(app_label__in=['Common', 'Screening', 'UserService'])
+        content_types = ContentType.objects.filter(app_label__in=['Common', 'Screening', 'Sample'])
         permissions = Permission.objects.filter(content_type__in=content_types)
         admin_group.permissions.add(*permissions)
     manager_group, manager_group_created = Group.objects.get_or_create(name='manager')
     if manager_group_created:
         content_types = ContentType.objects.get_for_models(
-            User, Employee, Student, Teacher, WeChat, QQ, Weibo,
+            User, Employee, Student, Teacher, WeChatPlatformRole, WeChatAPPRole, QQ, Weibo,
             Project, VisualChart, Optometry, TonoMeter, EyeGround, Sequence, InformedConsent, Questionnaire,
             Feedback
         ).values()
@@ -82,7 +82,8 @@ def init_group():
             codename__icontains='delete'
         )
         employee_group.permissions.add(*project_permissions)
-        user_role_content_types = ContentType.objects.get_for_models(User, Student, Teacher, WeChat, QQ, Weibo).values()
+        user_role_content_types = ContentType.objects.get_for_models(User, Student, Teacher, WeChatPlatformRole,
+                                                                     WeChatAPPRole, QQ, Weibo).values()
         user_role_permissions = Permission.objects.filter(content_type__in=user_role_content_types).filter(
             codename__icontains='view')
         employee_group.permissions.add(*user_role_permissions)
@@ -95,7 +96,8 @@ def init_group():
         project_permissions = Permission.objects.filter(content_type__in=project_content_types).filter(
             codename__icontains='view')
         normal_user_group.permissions.add(*project_permissions)
-        user_role_content_types = ContentType.objects.get_for_models(User, Student, Teacher, WeChat, QQ, Weibo).values()
+        user_role_content_types = ContentType.objects.get_for_models(User, Student, Teacher, WeChatPlatformRole,
+                                                                     WeChatAPPRole, QQ, Weibo).values()
         user_role_permissions = Permission.objects.filter(content_type__in=user_role_content_types)
         normal_user_group.permissions.add(*user_role_permissions)
     print('初始化用户组完毕')
@@ -227,8 +229,8 @@ def import_student_sampling_data(file_path: str):
     df = pd.read_excel(file_path, sheet_name='Students', engine='openpyxl', dtype={"学籍号": str})
     # 解决MySQL数据库nan提交不了的问题
     df = df.astype(object).where(pd.notnull(df), None)
-    student_type = reverse_choices_to_dict(Student.student_type_choices)['大学生']
-    finished_progress = reverse_choices_to_dict(Project.progress_choices)['已完成']
+    student_type = reverse_choices_to_dict(student_type_choices)['大学生']
+    finished_progress = reverse_choices_to_dict(common_progress_choices)['已完成']
     for index, row in df.iterrows():
         print(index)
         try:

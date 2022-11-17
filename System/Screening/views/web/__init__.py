@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   __init__.py.py    
+@File Name      :   __init__.py
 @Create Time    :   2022/4/9 10:12
 @Description    :   
 @Version        :   
@@ -15,6 +15,6 @@ __auth__ = 'diklios'
 
 from django.urls import path
 
-urlpatterns=[
+urlpatterns = [
 
 ]

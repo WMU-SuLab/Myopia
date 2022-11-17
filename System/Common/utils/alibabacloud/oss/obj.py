@@ -66,7 +66,7 @@ def download_obj(obj_name, local_file_path):
 
 
 @handle_oss_exception
-def obj_sign_url(obj_name, expires):
+def obj_sign_url(obj_name, expires: int = 60):
     obj_name = parsing_obj_file_path(obj_name)
     if not obj_exist(obj_name):
         return None

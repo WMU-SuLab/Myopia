@@ -29,8 +29,8 @@ def index_redirect(request):
 urlpatterns = [
     path('', index_redirect, name='index'),
     path('common/', include('Common.views', namespace='Common')),
-    path('user_service/', include('UserService.views', namespace='UserService')),
     path('screening/', include('Screening.views', namespace='Screening')),
+    path('sample/', include('Sample.views', namespace='Sample')),
     # Django 后台
     path('admin/', admin.site.urls, name='admin'),
     # DRF 提供的一系列身份认证的接口，用于在页面中认证身份，详情查阅DRF文档

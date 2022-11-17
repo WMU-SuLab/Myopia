@@ -14,13 +14,13 @@
 __auth__ = 'diklios'
 
 from abc import ABCMeta
+from secrets import compare_digest
 
-from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group
+from django.core.management.base import BaseCommand
 
 from Common.models.role import Manager, Employee
 from Common.models.user import User
-from secrets import compare_digest
 
 
 class Command(BaseCommand, metaclass=ABCMeta):
@@ -32,7 +32,7 @@ class Command(BaseCommand, metaclass=ABCMeta):
         parser.add_argument('-p', '--phone', type=str, help='phone')
         parser.add_argument('-a', '--admin', action='store_true', help='admin role')
         parser.add_argument('-m', '--manage', action='store_true', help='manage role')
-        parser.add_argument('-em', '--employee', action='store_true',help='employee role')
+        parser.add_argument('-em', '--employee', action='store_true', help='employee role')
 
     def handle(self, *args, **options):
         username = options.get('username')
@@ -49,16 +49,16 @@ class Command(BaseCommand, metaclass=ABCMeta):
         phone = options.get('phone', None)
         if options.get('admin', False):
             user = User.objects.create_admin_user(username=username, password=password, email=email, phone=phone)
-            admin_group=Group.objects.get(name='admin')
+            admin_group = Group.objects.get(name='admin')
             user.groups.add(admin_group)
         else:
             user = User.objects.create_user(username=username, password=password, email=email, phone=phone)
         if options.get('manage', False):
             Manager.objects.create(user=user)
-            manage_group=Group.objects.get(name='manage')
+            manage_group = Group.objects.get(name='manage')
             user.groups.add(manage_group)
         if options.get('employee', False):
             Employee.objects.create(user=user)
-            employee_group=Group.objects.get(name='employee')
+            employee_group = Group.objects.get(name='employee')
             user.groups.add(employee_group)
         print('create user success')

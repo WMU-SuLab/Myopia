@@ -26,11 +26,11 @@ class HTTPJSONStructureModel(BaseModel):
     success: bool
     code: int
     status_code: int
-    msg: str
-    msg_detail: str = ''
+    msg: str = ''
+    msg_detail: str | JSON = ''
     chinese_msg: str = ''
-    data: JSON = None
-    extra: JSON = {}
+    data: str | JSON = None
+    extra: str | JSON = {}
 
 
 class BaseHTTPJSONStructure:

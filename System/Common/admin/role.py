@@ -39,8 +39,13 @@ class StudentAdmin(BaseAdmin):
     pass
 
 
-@admin.register(WeChat)
-class WeChatAdmin(BaseAdmin):
+@admin.register(WeChatPlatformRole)
+class WeChatPlatformRoleAdmin(BaseAdmin):
+    pass
+
+
+@admin.register(WeChatAPPRole)
+class WeChatAPPRoleAdmin(BaseAdmin):
     pass
 
 

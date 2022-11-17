@@ -13,8 +13,11 @@
 """
 __auth__ = 'diklios'
 
+from django.conf import settings
 from django.db import models
 
+from Common.libs.choices import student_type_choices
+from Common.viewModels.choices import list_to_choices
 from .base import Base
 from .user import User
 
@@ -52,17 +55,6 @@ class Employee(Base):
 
 
 class Student(Base):
-    student_type_choices = (
-        (-1, '未知'),
-        (1, '学龄前儿童'),
-        (2, '小学生'),
-        (3, '初中生'),
-        (4, '高中生'),
-        (5, '大学生'),
-        (6, '硕士研究生'),
-        (7, '博士研究生'),
-        (8, '博士后'),
-    )
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='student_role', verbose_name='用户')
     student_number = models.CharField(max_length=20, unique=True, db_index=True, verbose_name='学号')
     student_type = models.FloatField(
@@ -99,24 +91,54 @@ class Teacher(Base):
         return f'<Teacher : {self.teacher_number}>'
 
 
-class WeChat(Base):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='wechat_role', verbose_name='用户')
-    open_id = models.CharField(max_length=32, verbose_name='微信open_id')
-    union_id = models.CharField(max_length=32, unique=True, db_index=True, verbose_name='微信union_id')
+class WeChatBaseRole:
     session_key = models.CharField(max_length=128, verbose_name='微信session_key')
 
     nickname = models.CharField(blank=True, null=True, default=None, max_length=32, verbose_name='微信昵称')
     avatar_url = models.URLField(blank=True, null=True, default=None, verbose_name='微信头像地址')
 
+
+class WeChatPlatformRole(Base, WeChatBaseRole):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wechat_platform_roles', verbose_name='用户')
+
+    platform_name = models.CharField(max_length=32, choices=list_to_choices(settings.WECHAT_OPEN_PLATFORMS.keys()),
+                                     db_index=True, verbose_name='微信开放平台名称')
+    union_id = models.CharField(max_length=32, unique=True, db_index=True, verbose_name='微信开放平台union_id')
+
     class Meta:
-        verbose_name = verbose_name_plural = '微信'
+        verbose_name = verbose_name_plural = '微信开放平台角色'
+        unique_together = (('platform_name', 'union_id'),)
 
     def __str__(self):
-        return f'<WeChat : {self.nickname}>'
+        return f'<WeChatPlatformRole : {self.nickname}>'
+
+
+class WeChatAPPRole(Base, WeChatBaseRole):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wechat_app_roles', verbose_name='用户')
+    # 根据https://developers.weixin.qq.com/doc/oplatform/Mobile_App/Launching_a_Mini_Program/Launching_a_Mini_Program.html
+    # 和https://developers.weixin.qq.com/community/develop/doc/0000ae1a3f0c386e24c7542245b400
+    # 同一个小程序只能绑定一个微信开放平台
+    platform_role = models.ForeignKey(WeChatPlatformRole, blank=True, null=True, default=None,
+                                      on_delete=models.SET_NULL, related_name='app_roles',
+                                      verbose_name='微信开放平台身份')
+    app_name = models.CharField(max_length=32, choices=list_to_choices(settings.WECHAT_MINAS.keys()),
+                                db_index=True, verbose_name='微信应用名称')
+
+    open_id = models.CharField(max_length=32, blank=True, null=True, default=None, db_index=True,
+                               verbose_name='微信open_id')
+
+    class Meta:
+        verbose_name = verbose_name_plural = '微信应用角色'
+        unique_together = (('app_name', 'open_id'),)
+
+    def __str__(self):
+        return f'<WeChatAPPRole : {self.nickname}>'
 
 
 class QQ(Base):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='QQ_role', verbose_name='用户')
+
+    qq_id = models.CharField(max_length=32, unique=True, db_index=True, verbose_name='QQ号')
     nickname = models.CharField(max_length=32, blank=True, null=True, default=None, verbose_name='QQ昵称')
     avatar_url = models.URLField(blank=True, null=True, default=None, verbose_name='QQ头像地址')
 

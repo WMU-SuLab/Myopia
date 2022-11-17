@@ -51,7 +51,7 @@ INSTALLED_APPS = [
     'drf_spectacular',
     'Common',
     'Screening',
-    'UserService',
+    'Sample',
 ]
 
 # Django允许你通过修改setting.py文件中的 AUTH_USER_MODEL 设置覆盖默认的User模型
@@ -89,7 +89,7 @@ TEMPLATES = [
         'DIRS': [
             os.path.join(BASE_DIR, 'Common', 'templates'),
             os.path.join(BASE_DIR, 'Screening', 'templates'),
-            os.path.join(BASE_DIR, 'UserService', 'templates'),
+            os.path.join(BASE_DIR, 'Sample', 'templates'),
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -170,7 +170,7 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     'Common/static',
     'Screening/static',
-    'UserService/static',
+    'Sample/static',
 ]
 
 # Default primary key field type
@@ -296,7 +296,7 @@ SIMPLE_JWT = {
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
     # 确定是否允许用户进行身份验证，此规则在处理有效的令牌后应用。用户对象作为参数传递给可调用对象。
-    # 默认规则是检查is_active标志是否仍然为True。可调用对象必须返回一个布尔值，如果被授权则返回True，否则返回False，结果是401状态码。
+    # 默认规则是检查is_active标志是否仍然为True。可调用对象必须返回一个布尔值，如果被授权则返回True，否则返回False，结果是 401 状态码。
     'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
 
     # 指定允许验证身份的令牌类型

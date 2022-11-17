@@ -16,7 +16,7 @@ __auth__ = 'diklios'
 from pydantic import BaseModel, validator
 
 from Common.utils.http.exceptions import ParameterError
-from Common.utils.text_handler.validator import validate_phone_number
+from Common.utils.text_handler.validator import validate_phone_number as _validate_phone_number
 
 
 class SendSMSModel(BaseModel):
@@ -27,6 +27,6 @@ class SendSMSModel(BaseModel):
 
     @validator('phone_number')
     def validate_phone_number(cls, v):
-        if not validate_phone_number(v):
+        if not _validate_phone_number(v):
             raise ParameterError(msg='phone number not valid', chinese_msg='手机号码不合法')
         return v

@@ -24,7 +24,7 @@ def validate_length(pwd, min_=8, max_=16):
 
 
 def validate_number(pwd):
-    match = re.search("\d+", pwd)
+    match = re.search(r"\d+", pwd)
     if match:
         return True, None
     else:
@@ -48,7 +48,7 @@ def validate_lower(pwd):
 
 
 def validate_start(pwd):
-    res = re.search("^[a-zA-Z\d]+", pwd)
+    res = re.search(r"^[a-zA-Z\d]+", pwd)
     if res:
         return True, None
     else:
@@ -70,6 +70,19 @@ def validate_password(pwd):
         if not is_ok:
             return False, error
     return True, None
+
+
+def validate_tel_number(tel_number: str) -> bool:
+    """
+    验证座机号码
+    :param tel_number:
+    :return:
+    """
+    match = re.match(r"^0\d{2,3}-\d{7,8}$", tel_number)
+    if match:
+        return True
+    else:
+        return False
 
 
 def validate_phone_number(phone_number: str) -> bool:

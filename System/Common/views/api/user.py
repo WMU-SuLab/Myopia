@@ -14,6 +14,7 @@
 __auth__ = 'diklios'
 
 from django.core.validators import validate_email
+from django.forms import Form
 from rest_framework.response import Response
 
 from Common.models.user import User
@@ -21,18 +22,21 @@ from Common.utils.alibabacloud.sms.verification import send_verification_sms
 from Common.utils.auth.verification import verify_verification_code
 from Common.utils.auth.views.api import AllowAnyAPIView
 from Common.utils.auth.views.api import IsAuthenticatedAPIView
+from Common.utils.auth.views.token import TokenObtainPairView
 from Common.utils.email.verification import send_verification_email
-from Common.utils.forms.user import RegisterByUsernameForm, ResetPasswordForm, RegisterByPhoneSMSForm, \
-    ResetPasswordByPhoneSMSForm, RegisterByEmailForm, ResetPasswordByEmailForm
+from Common.utils.forms.user import RegisterByUsernameForm, ResetPasswordForm, \
+    PhoneSMSForm, RegisterByPhoneSMSForm, ResetPasswordByPhoneSMSForm, \
+    EmailVerificationCodeForm, RegisterByEmailForm, ResetPasswordByEmailForm, \
+    WechatAPPCodeForm
 from Common.utils.http.exceptions import ParameterError, ValidationError, VerificationCodeError, ServerError, \
-    PhoneSendSMSError, EmailSendError,UserExist
+    PhoneSendSMSError, EmailSendError, UserExist
 from Common.utils.http.successes import UserRegisterSuccess, UserPasswordUpdateSuccess, PhoneSMSSendSuccess, \
     EmailSendSuccess
 from Common.utils.text_handler.validator import validate_phone_number
 
 
 class RegisterByUsernameAPIView(AllowAnyAPIView):
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         form = RegisterByUsernameForm(request.POST)
         if form.is_valid():
             User.objects.create_user(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
@@ -42,7 +46,7 @@ class RegisterByUsernameAPIView(AllowAnyAPIView):
 
 
 class RestPasswordByLoginAPIView(IsAuthenticatedAPIView):
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         user: User = request.user
         reset_password_form = ResetPasswordForm(request.POST)
         if reset_password_form.is_valid():
@@ -62,10 +66,11 @@ class SendVerificationCodeAPIView(AllowAnyAPIView):
     def validate_identity(self, identity):
         raise NotImplementedError()
 
-    def validate(self, request):
+    def validate(self, request, *args, **kwargs):
         if not self.identity_field:
             raise ServerError(msg_detail='identity_field is not set')
-        identity = request.data.get(self.identity_field, None) or request.POST.get(self.identity_field, None) \
+        identity = request.data.get(self.identity_field, None) or \
+                   request.POST.get(self.identity_field, None) \
                    or request.GET.get(self.identity_field, None)
         if not identity:
             raise ParameterError(msg_detail=f'{self.identity_field} is required')
@@ -82,9 +87,8 @@ class SendPhoneSMSAPIView(SendVerificationCodeAPIView):
     def validate_identity(self, identity):
         if not validate_phone_number(identity):
             raise ValidationError(msg_detail=f'{self.identity_field} is invalid')
-        if self.usage =='register':
-            if User.objects.filter(**{self.identity_field: identity}).exists():
-                raise UserExist(msg_detail=f'{self.identity_field} is exists',chinese_msg='该用户已经存在')
+        if self.usage == 'register' and User.objects.filter(**{self.identity_field: identity}).exists():
+            raise UserExist(msg_detail=f'{self.identity_field} is exists', chinese_msg='该用户已经存在')
         return True
 
     def check_send(self, request):
@@ -94,90 +98,130 @@ class SendPhoneSMSAPIView(SendVerificationCodeAPIView):
         return Response(PhoneSMSSendSuccess())
 
 
-class SendEmailAPIView(SendVerificationCodeAPIView):
+class SendEmailVerificationCodeAPIView(SendVerificationCodeAPIView):
     identity_field = 'email'
     usage = None
 
     def validate_identity(self, identity):
         if not validate_email(identity):
             raise ValidationError(msg_detail=f'{self.identity_field} is invalid')
+        if self.usage == 'register' and User.objects.filter(**{self.identity_field: identity}).exists():
+            raise UserExist(msg_detail=f'{self.identity_field} is exists', chinese_msg='该用户已经存在')
         return True
 
-    def check_send(self, request):
+    def check_send(self, request, *args, **kwargs):
         if send_verification_email(self.validate(request), self.usage):
             return Response(EmailSendSuccess())
         else:
             return Response(EmailSendError(msg_detail='邮件发送失败'))
 
 
-class RegisterAPIView(AllowAnyAPIView):
+class VerifyVerificationCodeAPIView(AllowAnyAPIView):
     identity_field = None
     usage = None
 
-    def validate(self, form):
+    def validate_success(self, form: Form):
+        raise NotImplementedError()
+
+    def validate(self, form: Form):
         if form.is_valid():
-            identity = form.cleaned_data[self.identity_field]
-            if verify_verification_code(identity, form.cleaned_data['verification_code'], self.usage):
-                User.objects.create_user(
-                    username=form.cleaned_data[self.identity_field],
-                    password=form.cleaned_data['password'],
-                    **{self.identity_field: form.cleaned_data[self.identity_field]})
-                return Response(UserRegisterSuccess())
+            if verify_verification_code(
+                    self.identity_field,
+                    form.cleaned_data[self.identity_field],
+                    form.cleaned_data['verification_code'],
+                    self.usage):
+                return self.validate_success(form)
             else:
                 return Response(VerificationCodeError(msg_detail='验证码错误或者已过期'))
         else:
             return Response(ParameterError(msg_detail=str(form.errors)))
 
 
-class ResetPasswordAPIView(AllowAnyAPIView):
-    identity_field = None
-    usage = None
-
-    def validate(self, form):
-        if form.is_valid():
-            identity = form.cleaned_data[self.identity_field]
-            if verify_verification_code(identity, form.cleaned_data['verification_code'],self.usage):
-                user = User.objects.get(**{self.identity_field: identity})
-                user.set_password(form.cleaned_data['password'])
-                user.save()
-                return Response(UserPasswordUpdateSuccess())
-            else:
-                return Response(VerificationCodeError(msg_detail='验证码错误'))
-        else:
-            return Response(ParameterError(msg_detail=str(form.errors)))
-
-
-class RegisterByPhoneNumberAPIView(RegisterAPIView):
-    identity_field = 'phone_number'
+class RegisterByVerificationCodeAPIView(VerifyVerificationCodeAPIView):
     usage = 'register'
 
-    def post(self, request):
+    def validate_success(self, form: Form):
+        User.objects.create_user(
+            password=form.cleaned_data['password'],
+            **{self.identity_field: form.cleaned_data[self.identity_field]})
+        return Response(UserRegisterSuccess())
+
+
+class ResetPasswordByVerificationCodeAPIView(VerifyVerificationCodeAPIView):
+    usage = 'reset_password'
+
+    def validate_success(self, form: Form):
+        user = User.objects.get(**{self.identity_field: form.cleaned_data[self.identity_field]})
+        user.set_password(form.cleaned_data['password'])
+        user.save()
+        return Response(UserPasswordUpdateSuccess())
+
+
+class RegisterByPhoneNumberAndVerificationCodeAPIView(RegisterByVerificationCodeAPIView):
+    identity_field = 'phone_number'
+
+    def post(self, request, *args, **kwargs):
         form = RegisterByPhoneSMSForm(request.POST)
         return self.validate(form)
 
 
-class ResetPasswordByPhoneNumberAPIView(ResetPasswordAPIView):
+class ResetPasswordByPhoneNumberAndVerificationCodeAPIView(ResetPasswordByVerificationCodeAPIView):
     identity_field = 'phone_number'
-    usage = 'reset_password'
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         form = ResetPasswordByPhoneSMSForm(request.POST)
         return self.validate(form)
 
 
-class RegisterByEmailAPIView(RegisterAPIView):
+class RegisterByEmailAndVerificationCodeAPIView(RegisterByVerificationCodeAPIView):
     identity_field = 'email'
-    usage = 'register'
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         form = RegisterByEmailForm(request.POST)
         return self.validate(form)
 
 
-class ResetPasswordByEmailAPIView(ResetPasswordAPIView):
+class ResetPasswordByEmailAndVerificationCodeAPIView(ResetPasswordByVerificationCodeAPIView):
     identity_field = 'email'
-    usage = 'reset_password'
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
         form = ResetPasswordByEmailForm(request.POST)
         return self.validate(form)
+
+
+class RegisterAndLoginAPIView(
+    VerifyVerificationCodeAPIView,
+    TokenObtainPairView
+):
+    """
+    用于注册并同时登录
+    """
+    usage = 'register_and_login'
+
+    def validate_success(self, form: Form):
+        user = User.objects.filter(**{self.identity_field: form.cleaned_data[self.identity_field]})
+        if not user.exists():
+            User.objects.create_user(**{self.identity_field: form.cleaned_data[self.identity_field]})
+        return Response(UserRegisterSuccess(chinese_msg='用户注册成功或者已经存在'))
+
+    def post(self, request, *args, **kwargs):
+        if request.data.get('phone_number', None):
+            self.identity_field = 'phone_number'
+            form = PhoneSMSForm(request.data)
+        elif request.data.get('email', None):
+            self.identity_field = 'email'
+            form = EmailVerificationCodeForm(request.data)
+        else:
+            raise ParameterError(msg_detail='phone_number or email is required')
+        register_res = self.validate(form)
+        if not register_res.data.success:
+            return register_res
+        return super().post(request, *args, **kwargs)
+
+
+class RegisterAndLoginByWeChatAPIView(TokenObtainPairView):
+    def post(self, request, *args, **kwargs):
+        form = WechatAPPCodeForm(request.data)
+        if form.is_valid():
+            return super().post(request, *args, **kwargs)
+        return Response(ParameterError(msg_detail=str(form.errors)))

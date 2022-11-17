@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   __init__.py.py    
+@File Name      :   __init__.py
 @Create Time    :   2022/4/7 18:44
 @Description    :   
 @Version        :   
@@ -16,5 +16,6 @@ __auth__ = 'diklios'
 from .equipments import VisualChartAdmin, BioMeterAdmin, OptometryAdmin, TonoMeterAdmin, EyeGroundAdmin, SequenceAdmin, \
     InformedConsentAdmin, QuestionnaireAdmin
 from .project import ProjectAdmin
-from .role import ManagerAdmin, EmployeeAdmin, StudentAdmin, TeacherAdmin, WeChatAdmin, QQAdmin, WeiboAdmin
+from .role import ManagerAdmin, EmployeeAdmin, StudentAdmin, TeacherAdmin, WeChatPlatformRoleAdmin,WeChatAPPRoleAdmin,\
+    QQAdmin, WeiboAdmin
 from .user import UserAdmin

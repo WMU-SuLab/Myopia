@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   __init__.py.py    
+@File Name      :   __init__.py
 @Create Time    :   2022/6/21 16:01
 @Description    :   
 @Version        :   

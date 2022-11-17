@@ -16,7 +16,7 @@ __auth__ = 'diklios'
 import base64
 import json
 
-from crypto.Cipher import AES
+from Crypto.Cipher import AES
 
 
 class WXBizDataCrypt:

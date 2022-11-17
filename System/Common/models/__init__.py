@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   __init__.py.py    
+@File Name      :   __init__.py
 @Create Time    :   2022/4/4 15:24
 @Description    :   
 @Version        :   
@@ -18,3 +18,4 @@ from .project import Project
 from .regions import *
 from .role import *
 from .user import User
+from .sundry import *
