@@ -32,7 +32,6 @@ from Common.models.project import Project
 projects = Project.objects.filter(name__icontains='用户自采样')
 for project in projects:
     project.name = '高度近视遗传风险评估采样'
-    print(project.name)
 Project.objects.bulk_update(projects, ['name'])
 ```
 

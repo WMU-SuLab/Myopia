@@ -18,7 +18,6 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
-from rest_framework_simplejwt.authentication import JWTAuthentication
 
 from Common.utils.auth.permissions import DjangoModelPermissions
 from Common.utils.auth.permissions.user import IsMangerUser, IsEmployeeUser, IsInsiderUser
@@ -31,6 +30,7 @@ from Common.utils.http.throttling.role import ManagerSecondRateThrottle, Manager
     EmployeeHourRateThrottle, EmployeeDayRateThrottle
 from Common.utils.http.throttling.user import UserSecondRateThrottle, UserMinuteRateThrottle, UserHourRateThrottle, \
     UserDayRateThrottle
+from .authentication import JWTAuthentication
 
 
 class AllowAnyAPIView(APIView):
