@@ -17,14 +17,14 @@
 - 根目录
     - Dependencies: 各种依赖环境配置文件
     - Docs: 文档
+    - Libs: 资源文件
     - System: 系统主文件夹
         - Config: 系统配置部分
         - Common: 公共程序
         - data: 数据文件
-        - libs: 资源文件
         - logs: 日志文件
-        - Screening: 高度近视筛查应用
         - Sample: 谱希基因采样应用
+        - Screening: 高度近视筛查应用
         - .env: 系统环境变量
         - gunicorn.py: gunicorn配置文件
         - manage.py: 主程序入口
@@ -45,6 +45,16 @@
 
 ## Common
 
+### admin:后台管理模型
+
+- 放对于django自带的后台管理的配置和操作
+
+### libs:公用资源库
+
+### management:管理程序
+
+#### commands:自定义命令
+
 ### models:数据库模型
 
 ### serializers:数据库序列化部分
@@ -52,9 +62,60 @@
 - 基于 drf 的 serializers 模块构建
 - 大多数是关于 models 中 数据库模型的序列化部分，少部分是自定义的，所以和数据库模型同级别
 
+### static:通用静态文件目录
+
+- 生产环境部署到`System/static`，方便NGINX调用
+
+### templates:通用模板
+
 ### viewModels:视图-数据库结构
 
 - 常放置对于数据库模型的通用操作
+
+### utils:通用工具(重点看这个)
+
+- **其他的APP的utils基本遵照Common的结构**
+
+#### algorithm_handler:算法处理器
+
+#### alibabacloud:阿里云接口
+
+#### auth:认证相关
+
+##### OAuth2.0 双Token登录
+
+##### 古老的Session登录
+
+##### throttles:限流(节流)
+
+#### email:邮件处理
+
+#### file_handler:文件处理
+
+#### forms:表单验证
+
+- 基于django的forms模块构建
+- 注意
+    - **和数据库模型没有必然联系，所以是utils模块中的子模块，而不是和models模块同级**
+    - 在基于JSON数据传输的今天，可能表单都不怎么使用了，但是依留存这个模块，便于前后端不分离的情况下使用
+
+#### http:http相关
+
+##### 微信一键登录
+
+##### 顺丰快递API
+
+#### schemes:数据验证
+
+- 注意
+    - 这并不是django rest framework的Schemes
+    - 和form部分不同的是，本部分基于 pydantic 模块构建
+    - **虽然和数据库序列化很相似，但是实际上和数据库模型的字段没有必然关系，和form部分是一样的功效**
+- 完全服务于JSON形式的数据验证，可以更好的提高数据安全性和超高的解析速度
+
+#### text_handler:文本处理
+
+### viewModels:通用视图-数据库工具
 
 ### views:通用视图
 
@@ -67,51 +128,6 @@
     - reset_password:重置密码
 - 信息
 - 文件
-
-### admin:后台管理模型
-
-- 放对于django自带的后台管理的配置和操作
-
-### utils:通用工具(重点看这个)
-
-- **其他的APP的utils基本遵照Common的结构**
-
-#### auth:认证相关
-
-##### OAuth2.0 双Token登录
-
-##### 古老的Session登录
-
-
-##### throttles:限流(节流)
-
-##### 微信一键登录
-
-
-#### http:http相关
-
-#### forms:表单验证
-
-- 基于django的forms模块构建
-- 注意
-    - **和数据库模型没有必然联系，所以是utils模块中的子模块，而不是和models模块同级**
-    - 在基于JSON数据传输的今天，可能表单都不怎么使用了，但是依留存这个模块，便于前后端不分离的情况下使用
-
-#### schemes:数据验证
-
-- 注意
-    - 这并不是django rest framework的Schemes
-    - 和form部分不同的是，本部分基于 pydantic 模块构建
-    - **虽然和数据库序列化很相似，但是实际上和数据库模型的字段没有必然关系，和form部分是一样的功效**
-- 完全服务于JSON形式的数据验证，可以更好的提高数据安全性和超高的解析速度
-
-### templates:通用模板
-
-### static_dev:通用静态文件
-
-- 生产环境部署到static，方便NGINX调用
-
-### management:管理程序
 
 ## Screening
 
