@@ -71,8 +71,8 @@ class SerialNumberRetrieve(IsAuthenticatedAPIView):
                     'family_history': project.remarks_json.get('family_history', None),
                 },
                 'informed_consent': generate_image_url(
-                    image_url=project.informed_consent.file_url,
-                    image_path=project.informed_consent.file_path
+                    image_url=project.informed_consent.file_url if project.has_informed_consent else None,
+                    image_path=project.informed_consent.file_path if project.has_informed_consent else None,
                 ),
             }
             return Response(Success(data=data))
