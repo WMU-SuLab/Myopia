@@ -40,7 +40,7 @@ class TGFBISampleBindingForm(forms.Form):
         return self.cleaned_data['bind_time'].strftime('%Y-%m-%d %H:%M:%S')
 
 
-class TGFBISampleBindingUpdateForm(forms.Form):
+class TGFBISampleBindingUpdateForm(TGFBISampleBindingForm):
     serial_number = serial_number
     name = forms.CharField(label='姓名', max_length=32, required=False)
     gender = forms.ChoiceField(label='性别', choices=same_choices(gender_choices), required=False)
