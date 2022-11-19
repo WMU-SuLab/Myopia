@@ -231,7 +231,7 @@ SF_EXPRESS_SAMPLE_APP_CHECKWORD_TEST=''
         - 修改django服务器相关部分
         - 修改ssl相关配置，拷贝证书到对应目录下
     -
-    全部修改完成后将配置链接到nginx的配置文件:`sudo ln -s /.../ProjectRoot/System/nginx.conf /etc/nginx/conf.d/myopia.conf`
+  全部修改完成后将配置链接到nginx的配置文件:`sudo ln -s /.../ProjectRoot/System/nginx.conf /etc/nginx/conf.d/myopia.conf`
     - 启动NGINX：`sudo systemctl start nginx`
         - 或者`sudo service nginx start`
         - 如果已经启动，则重载配置：`sudo nginx -s reload`
@@ -280,6 +280,18 @@ SF_EXPRESS_SAMPLE_APP_CHECKWORD_TEST=''
     - 购买，获得AccessKeyId和AccessKeySecret
     - 创建bucket
     - **创建文件夹**，这很重要，一定要提前创建好文件夹，否则502
+
+### 维护
+
+- 项目复杂之后的不停止服务、零延时切换到新代码的方法
+    - 在以往项目简单，访问人数少的时候，直接重启即可解决
+    - 人数多一些，但是业务量还不大的时候，可以通过在夜间重启服务器解决
+    - 但是当项目、业务更加复杂，使用人数越来越多的时候，重启的方法终究会遇到瓶颈
+    - 根据查询大量的资料，现在研究出了如下方法
+        - 启动一个新的服务，如果是不涉及数据库的修改，只需要修改端口号，如果涉及数据库，那需要修改更多的配置
+        - 在nginx配置文件中，把端口号重新修改为这个新的端口号的服务
+        - 使用`nginx reload`方法进行重载，具体为什么可以查看后面的NGINX相关说明
+    - 如果没有使用NGINX，那只能另寻他法了
 
 ## 数据库
 
@@ -348,6 +360,11 @@ SF_EXPRESS_SAMPLE_APP_CHECKWORD_TEST=''
     - 通过测试配置文件查看NGINX配置文件位置：nginx -t
         - 可以测试配置文件是否有语法错误
     - 其余配置文件需要查看主配置文件最后有`include`语句的那一行
+- nginx reload
+    - 运行"service nginx reload"或者"/etc/init.d/nginx reload"将会热重载配置从而消除停机时间
+    - 如果还有等待的请求，只要连接还没有断开，nginx进程就会接着处理这些连接
+    - 因此这是一个非常优雅地重载配置的方式
+    - 来源于"Nginx config reload without downtime"on ServerFault
 
 ### Supervisor
 
