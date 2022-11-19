@@ -13,23 +13,15 @@
 """
 __auth__ = 'diklios'
 
-import os
-
-from django.conf import settings
 from django.utils.timezone import localtime, get_current_timezone_name
 from rest_framework.response import Response
 
-from Common.models.equipments import Sequence, InformedConsent
-from Common.utils.alibabacloud.oss.obj import upload_obj, generate_obj_file_path
+from Common.models.equipments import Sequence
 from Common.utils.alibabacloud.oss.url import generate_file_url, generate_image_url
 from Common.utils.auth.views.api import IsAuthenticatedAPIView
 from Common.utils.auth.views.request_method import HandlePost
-from Common.utils.file_handler.file import handle_upload_file, rename_file
-from Common.utils.file_handler.image_handler import is_image_file
 from Common.utils.http.exceptions import NotFound, ParameterError, MethodNotAllowed
 from Common.utils.http.successes import Success
-from Common.viewModels.equipments.informed_consent import generate_project_informed_consent_file_name, \
-    handle_upload_informed_consent
 from Sample.models.project import HighMyopiaSampleProject
 from Sample.utils.forms.high_myopia import HighMyopiaForm, HighMyopiaFormUpdate
 
@@ -55,7 +47,7 @@ class SerialNumberList(IsAuthenticatedAPIView):
 
 class SerialNumberRetrieve(IsAuthenticatedAPIView):
     def get(self, request, serial_number, *args, **kwargs):
-        sequence = Sequence.objects.prefetch_related('project', 'project__informed_consent')\
+        sequence = Sequence.objects.prefetch_related('project', 'project__informed_consent') \
             .get(serial_number=serial_number)
         if sequence:
             project = sequence.project
@@ -107,27 +99,29 @@ class SubmitHighMyopiaFormAPIView(IsAuthenticatedAPIView, HandlePost):
             remarks_json=high_myopia_form.cleaned_data,
         )
         Sequence.objects.create(project=project, serial_number=serial_number)
-        # 上传到本地文件
-        informed_consent_dir_path = settings.INFORMED_CONSENT_DIR_PATH
-        informed_consent_file_path = os.path.join(informed_consent_dir_path, informed_consent_file.name)
-        handle_upload_file(informed_consent_file, informed_consent_file_path)
-        if not is_image_file(informed_consent_file_path):
-            return Response(ParameterError(chinese_msg='上传的不是图片文件'))
-        # 重命名为规范的文件名
-        informed_consent = InformedConsent.objects.create(project=project)
-        informed_consent_new_file_name = generate_project_informed_consent_file_name(
-            informed_consent, file_type=informed_consent_file.name.split('.')[-1])
-        informed_consent_new_file_path = os.path.join(informed_consent_dir_path, informed_consent_new_file_name)
-        rename_file(informed_consent_file_path, informed_consent_new_file_path)
-        informed_consent.file_path = informed_consent_new_file_path
-        # 上传OSS
-        informed_consent_file_obj_name = os.path.join(
-            settings.RELATIVE_INFORMED_CONSENT_DIR_PATH,
-            informed_consent_new_file_name)
-        upload_obj(informed_consent_file_obj_name, informed_consent_new_file_path)
-        informed_consent.file_url = generate_obj_file_path(informed_consent_file_obj_name)
-        informed_consent.full_clean(exclude=['file_url'], validate_unique=True)
-        informed_consent.save()
+        # # 上传到本地文件
+        # informed_consent_dir_path = settings.INFORMED_CONSENT_DIR_PATH
+        # informed_consent_file_path = os.path.join(informed_consent_dir_path, informed_consent_file.name)
+        # handle_upload_file(informed_consent_file, informed_consent_file_path)
+        # if not is_image_file(informed_consent_file_path):
+        #     return Response(ParameterError(chinese_msg='上传的不是图片文件'))
+        # # 重命名为规范的文件名
+        # informed_consent = InformedConsent.objects.create(project=project)
+        # informed_consent_new_file_name = generate_project_informed_consent_file_name(
+        #     informed_consent, file_type=informed_consent_file.name.split('.')[-1])
+        # informed_consent_new_file_path = os.path.join(informed_consent_dir_path, informed_consent_new_file_name)
+        # rename_file(informed_consent_file_path, informed_consent_new_file_path)
+        # informed_consent.file_path = informed_consent_new_file_path
+        # # 上传OSS
+        # informed_consent_file_obj_name = os.path.join(
+        #     settings.RELATIVE_INFORMED_CONSENT_DIR_PATH,
+        #     informed_consent_new_file_name)
+        # upload_obj(informed_consent_file_obj_name, informed_consent_new_file_path)
+        # informed_consent.file_url = generate_obj_file_path(informed_consent_file_obj_name)
+        # informed_consent.full_clean(exclude=['file_url'], validate_unique=True)
+        # informed_consent.save()
+        # 新版本方法
+        # handle_upload_informed_consent(project,informed_consent_file)
         return Response(Success(chinese_msg='提交成功'))
 
     def patch(self, request, *args, **kwargs):
@@ -143,10 +137,10 @@ class SubmitHighMyopiaFormAPIView(IsAuthenticatedAPIView, HandlePost):
         if project.user.username != request.user.username:
             return Response(ParameterError(chinese_msg='该序列号不属于当前用户'))
         # 判断是否更新图片
-        informed_consent_file = high_myopia_form.cleaned_data.pop('informed_consent_file')
-        if informed_consent_file:
-            handle_upload_informed_consent(project, informed_consent_file)
-        # 简便写法
+        # informed_consent_file = high_myopia_form.cleaned_data.pop('informed_consent_file')
+        # if informed_consent_file:
+        #     handle_upload_informed_consent(project, informed_consent_file)
+        # remarks_json简便写法
         project.remarks_json = {**project.remarks_json, **high_myopia_form.cleaned_data}
         project.full_clean(exclude=['report_file_url'], validate_unique=True)
         project.save()

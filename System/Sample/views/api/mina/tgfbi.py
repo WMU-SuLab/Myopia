@@ -75,7 +75,7 @@ class SubmitTGFBISampleSendFormAPIView(IsAuthenticatedAPIView):
         if project.progress == 2:
             raise MethodNotAllowed(chinese_msg='已经提交过订单，不允许再提交')
         project.progress = 2
-        order_id = f"TGFBI-{timezone.now().strftime('%Y%m%d%H:%M:%S')}-{project.id}"
+        order_id = f"TGFBI-{timezone.now().strftime('%Y%m%d%H%M%S')}-{project.id}"
         sf_res = create_pay_on_arrival_order(
             order_id=order_id,
             contact=tgfbi_sample_send_form.cleaned_data['contact_name'],

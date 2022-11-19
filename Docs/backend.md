@@ -80,15 +80,24 @@
 
 #### alibabacloud:阿里云接口
 
+- oss:对象存储
+- sms:短信
+
 #### auth:认证相关
 
-##### OAuth2.0 双Token登录
-
-##### 古老的Session登录
-
-##### throttles:限流(节流)
+- permissions:根据数据库自己设计的权限验证类
+- views:整合了各种权限的自定义类视图函数
+    - authentication:身份验证
+    - permission:权限验证
+    - throttle:限流(节流)
+- authentication:自定义验证机制
+- backends:重写django用户登录验证机制
+- verification:验证码底层接口
 
 #### email:邮件处理
+
+- 封装了django发送邮件的函数
+- 发送验证码
 
 #### file_handler:文件处理
 
@@ -98,12 +107,18 @@
 - 注意
     - **和数据库模型没有必然联系，所以是utils模块中的子模块，而不是和models模块同级**
     - 在基于JSON数据传输的今天，可能表单都不怎么使用了，但是依留存这个模块，便于前后端不分离的情况下使用
+- validators:通用的验证器
 
-#### http:http相关
+#### http
 
-##### 微信一键登录
-
-##### 顺丰快递API
+- throtting:自定义限流规则
+- exceptions:自定义异常
+- renderer:重写JSON数据相关处理规则，统一各个框架下的异常处理，保证返回JSON数据格式一致性
+- response:自定义JSON返回格式及其处理
+- sf_express:顺丰快递API
+- successes:自定义成功返回
+- url:url处理相关工具
+- wechat:微信一键登录
 
 #### schemes:数据验证
 
@@ -117,17 +132,34 @@
 
 ### viewModels:通用视图-数据库工具
 
+- cache:封装django缓存功能
+
 ### views:通用视图
 
 - 用户管理，基于Token
-    - register: 用户注册
-    - login:输入验证信息，获得access和refresh token
-    - logout:退出登录
-    - refresh:输入refresh token刷新access token
-    - verify:获得token解析的信息
-    - reset_password:重置密码
-- 信息
-- 文件
+    - 同一个API可能能够适用于多种使用场景
+    - 基于用户名
+        - register_by_username
+    - 基于手机号
+        - register_by_phone_number：手机号+密码+验证码注册
+        - login：手机号+密码登录
+        - user_register_by_phone_number_and_verification_code：手机号+验证码注册
+        - user_reset_password_by_phone_number_and_verification_code：手机号+验证码重置密码
+        - user_register_and_login：手机号+验证码注册并登录
+    - 基于邮箱
+        - user_register_by_email_and_verification_code：邮箱+密码+验证码注册
+        - user_reset_password_by_email_and_verification_code：邮箱+验证码重置密码
+    - 基于微信
+        - wechat_register_and_login：微信一键注册并登录
+    - 通用操作
+        - logout:退出登录
+        - refresh:输入refresh token刷新access token
+        - verify:获得token解析的信息
+        - reset_password_by_login:重置密码
+- 可公开使用的信息
+    - 地区信息
+    - 身份相关信息
+- 文件和图片处理
 
 ## Screening
 
