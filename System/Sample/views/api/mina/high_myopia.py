@@ -89,9 +89,9 @@ class SubmitHighMyopiaFormAPIView(IsAuthenticatedAPIView, HandlePost):
         if Sequence.objects.filter(serial_number=serial_number).exists():
             return Response(MethodNotAllowed(chinese_msg='序列号已存在，不允许使用此方法'))
         # 处理知情同意书
-        informed_consent_file = high_myopia_form.cleaned_data.pop('informed_consent_file')
-        if not informed_consent_file:
-            return Response(ParameterError(chinese_msg='请上传同意书'))
+        # informed_consent_file = high_myopia_form.cleaned_data.pop('informed_consent_file')
+        # if not informed_consent_file:
+        #     return Response(ParameterError(chinese_msg='请上传同意书'))
         project = HighMyopiaSampleProject.objects.create(
             user=request.user,
             name='高度近视遗传风险评估采样',
