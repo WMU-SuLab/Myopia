@@ -57,3 +57,70 @@ for informed_consent in informed_consents:
     informed_consent.file_url = generate_obj_file_path(informed_consent.file_path[obj_name_index:])
 InformedConsent.objects.bulk_update(informed_consents, ['file_url'])
 ```
+
+## 顺丰API
+
+### 面单打印
+
+- 目前没有这个需求，记录一下测试代码（同步版本）
+
+```python
+import base64
+import json
+import time
+import uuid
+from hashlib import md5
+from urllib import parse
+
+import requests
+
+req_url = 'https://sfapi-sbox.sf-express.com/std/service'
+partner_id = 'PXYXJUX9BKhO'
+checkword = 'QH5F5FF7UyQKakYfGvgX7A6nRk34FZUJ'
+# 生成uuid
+request_id = uuid.uuid1()
+# 获取时间戳
+timestamp = str(int(time.time()))
+
+service_code = 'COM_RECE_CLOUD_PRINT_WAYBILLS',
+msg_data = {
+    'templateCode': 'fm_150_standard_PXYXJUX9BKhO',
+    'documents': [{
+        'masterWaybillNo': 'SF7444460351755'
+    }],
+    'sync': True,
+    'version': '2.0'
+}
+
+msg_data = json.dumps(msg_data)
+text = parse.quote_plus(msg_data + timestamp + checkword)
+# 先md5加密然后base64加密
+m = md5()
+m.update(text.encode('utf-8'))
+md5_str = m.digest()
+msg_digest = base64.b64encode(md5_str).decode('utf-8')
+data = {
+    "partnerID": partner_id,
+    "requestID": request_id,
+    "serviceCode": service_code,
+    "timestamp": timestamp,
+    "msgDigest": msg_digest,
+    "msgData": msg_data}
+# 发送post请求
+res = requests.post(req_url, data=data, headers={
+    "Content-type": "application/x-www-form-urlencoded;charset=UTF-8"
+})
+res_data = json.loads(res.text)
+res_data['apiResultData'] = json.loads(res_data.get('apiResultData', '{}'))
+
+print(res_data)
+file_data = res_data['apiResultData']['obj']['files'][0]
+download_url = file_data['url']
+token = file_data['token']
+
+file_res = requests.get(download_url, headers={
+    'X-Auth-token': token
+})
+with open('test.pdf', 'wb') as f:
+    f.write(file_res.content)
+```

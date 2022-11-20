@@ -95,6 +95,8 @@ def create_pay_on_arrival_order(
             'isReturnRoutelabel': 1,
             # 是否需求分配运单号，1：分配，0：不分配（若带单号下单，请传值0）
             'isGenWaybillNo': 1,
+            # 是否通过手持终端通知顺丰收派员上门收件，支持以下值： 1：要求 0：不要求
+            'isDocall': 1,
             # 备注
             'remark': remark,
         }
