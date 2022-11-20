@@ -56,7 +56,6 @@ class SubmitTGFBISampleBindingFormAPIView(IsAuthenticatedAPIView, HandlePost):
         if project.user.username != request.user.username:
             raise ParameterError(chinese_msg='该序列号不属于当前用户')
         project.remarks_json = {**project.remarks_json, **tgfbi_sample_binding_form.cleaned_data}
-        print(project.remarks_json)
         project.save()
         return Response(Success(chinese_msg='更新成功'))
 
@@ -73,8 +72,8 @@ class SubmitTGFBISampleSendFormAPIView(IsAuthenticatedAPIView):
         )
         if not project:
             raise NotFound(chinese_msg='该项目不存在')
-        # if project.progress == 2:
-        #     raise MethodNotAllowed(chinese_msg='已经提交过订单，不允许再提交')
+        if project.progress == 2:
+            raise MethodNotAllowed(chinese_msg='已经提交过订单，不允许再提交')
         project.progress = 2
         order_id = f"TGFBI-{timezone.now().strftime('%Y%m%d%H%M%S')}-{project.id}"
         sf_res = create_pay_on_arrival_order(
@@ -95,8 +94,7 @@ class SubmitTGFBISampleSendFormAPIView(IsAuthenticatedAPIView):
             'update_time': timezone.now().strftime('%Y-%m-%d %H:%M:%S'),
             'sf_express_full_info': sf_res,
         }
-        project.save()
         # lims_res = send_order_to_lims(project, tgfbi_sample_send_form.cleaned_data['serial_number'])
         # project.remarks_json['lims_full_info'] = lims_res
-        # project.save()
+        project.save()
         return Response(Success(chinese_msg='提交寄件成功', extra=sf_res))
