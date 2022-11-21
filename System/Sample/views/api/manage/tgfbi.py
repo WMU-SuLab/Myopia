@@ -25,7 +25,7 @@ from Sample.viewModels.tgfbi import decrypt_tgfbi_text
 
 class TGFBISampleLIMSUpdateReportAPIView(AllowAnyAPIView):
     def post(self, request, *args, **kwargs):
-        form = TGFBIReportForm(request.POST)
+        form = TGFBIReportForm(request.POST, request.FILES)
         if not form.is_valid():
             raise ParameterError(chinese_msg='数据格式错误', msg_detail=form.errors)
         project = decrypt_tgfbi_text(form.cleaned_data['encrypted_text'])

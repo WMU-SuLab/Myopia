@@ -19,6 +19,7 @@ from django.utils import timezone
 from Common.utils.text_handler.hash import encrypt_text, decrypt_text
 from Common.viewModels.cache import get_cache, set_cache
 from Sample.models.project import TGFBISampleProject
+from Common.utils.http.exceptions import ServerError
 
 
 def encrypt_tgfbi_project(project: TGFBISampleProject):
@@ -63,4 +64,7 @@ def send_order_to_lims(project: TGFBISampleProject, serial_number: str):
         'file': [],
         'encrypted_text': encrypt_tgfbi_project(project),
     })
-    return res.json()
+    res_data = res.json()
+    if not res_data.get('success', False):
+        raise ServerError(extra=res_data)
+    return res_data

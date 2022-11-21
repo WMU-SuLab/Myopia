@@ -24,6 +24,7 @@ from Common.utils.http.successes import Success
 from Sample.models.project import TGFBISampleProject
 from Sample.utils.forms.tgfbi import TGFBISampleBindingForm, TGFBISampleBindingUpdateForm, TGFBISampleSendForm
 from Sample.utils.http.sf_express import create_pay_on_arrival_order
+from Sample.viewModels.tgfbi import send_order_to_lims
 
 
 class SubmitTGFBISampleBindingFormAPIView(IsAuthenticatedAPIView, HandlePost):
@@ -94,7 +95,7 @@ class SubmitTGFBISampleSendFormAPIView(IsAuthenticatedAPIView):
             'update_time': timezone.now().strftime('%Y-%m-%d %H:%M:%S'),
             'sf_express_full_info': sf_res,
         }
-        # lims_res = send_order_to_lims(project, tgfbi_sample_send_form.cleaned_data['serial_number'])
-        # project.remarks_json['lims_full_info'] = lims_res
+        lims_res = send_order_to_lims(project, tgfbi_sample_send_form.cleaned_data['serial_number'])
+        project.remarks_json['lims_full_info'] = lims_res
         project.save()
         return Response(Success(chinese_msg='提交寄件成功', extra=sf_res))
