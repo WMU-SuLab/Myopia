@@ -40,7 +40,7 @@ class TGFBISampleBindingForm(forms.Form):
     def clean_bind_time(self):
         # 统一保存到数据库的时间都是UTC时间
         # Django的form表单默认是带时区的，但是我们不是直接保存form表单的数据，而是存放到JSON（JSON无法处理datetime类，后续会增加自动处理）再保存，所以不会自动转换为UTC时区
-        return self.cleaned_data['send_time'].astimezone(UTC_TZ_INFO).strftime('%Y-%m-%d %H:%M:%S')
+        return self.cleaned_data['bind_time'].astimezone(UTC_TZ_INFO).strftime('%Y-%m-%d %H:%M:%S')
 
 
 class TGFBISampleBindingUpdateForm(TGFBISampleBindingForm):
