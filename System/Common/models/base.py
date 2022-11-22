@@ -73,6 +73,7 @@ class Base(models.Model):
     # 即使不在choices中也是可以成功的，只是get_FOO_display()显示的还是自身值
     status = models.IntegerField(default=STATUS_NORMAL, choices=STATUS_ITEMS, verbose_name='状态')
     remarks = models.CharField(max_length=1000, null=True, blank=True, default=None, verbose_name='备注')
+    # todo:重写一个JSONEncoder，能够处理时间相关或者其他常用对象
     remarks_json = models.JSONField(null=True, blank=True, default=dict, verbose_name='json类型的额外信息')
 
     # Meta用于配置Model的一些属性

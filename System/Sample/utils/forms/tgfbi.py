@@ -17,6 +17,7 @@ from django import forms
 
 from Common.libs.choices import gender_choices, identification_card_type_choices
 from Common.utils.forms.validators import phone_number_validators
+from Common.libs.time import UTC_TZ_INFO
 from Common.viewModels.choices import same_choices
 from . import serial_number
 
@@ -37,7 +38,9 @@ class TGFBISampleBindingForm(forms.Form):
         return self.cleaned_data['birthday'].strftime('%Y-%m-%d')
 
     def clean_bind_time(self):
-        return self.cleaned_data['bind_time'].strftime('%Y-%m-%d %H:%M:%S')
+        # 统一保存到数据库的时间都是UTC时间
+        # Django的form表单默认是带时区的，但是我们不是直接保存form表单的数据，而是存放到JSON（JSON无法处理datetime类，后续会增加自动处理）再保存，所以不会自动转换为UTC时区
+        return self.cleaned_data['bind_time'].astimezone(UTC_TZ_INFO).strftime('%Y-%m-%d %H:%M:%S')
 
 
 class TGFBISampleBindingUpdateForm(TGFBISampleBindingForm):
@@ -59,7 +62,7 @@ class TGFBISampleSendForm(forms.Form):
     remark = forms.CharField(label='备注', max_length=256, required=False)
 
     def clean_send_time(self):
-        return self.cleaned_data['send_time'].strftime('%Y-%m-%d %H:%M:%S')
+        return self.cleaned_data['send_time'].astimezone(UTC_TZ_INFO).strftime('%Y-%m-%d %H:%M:%S')
 
 
 class TGFBIReportForm(forms.Form):
