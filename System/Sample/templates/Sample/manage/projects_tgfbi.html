@@ -26,10 +26,18 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label" for="searchFormContactPhone">电话</label>
+                            <label class="layui-form-label" for="searchFormExpressCode">顺丰运单号</label>
                             <div class="layui-input-inline">
                                 <!--注意此处input标签里的id-->
-                                <input class="layui-input" name="contactPhone" id="searchFormContactPhone"
+                                <input class="layui-input" name="expressCode" id="searchFormExpressCode"
+                                       autocomplete="off">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label" for="searchFormOrderCode">LIMS订单号</label>
+                            <div class="layui-input-inline">
+                                <!--注意此处input标签里的id-->
+                                <input class="layui-input" name="orderCode" id="searchFormOrderCode"
                                        autocomplete="off">
                             </div>
                         </div>
@@ -61,10 +69,10 @@
         </div>
     </script>
     <script>
-        var high_myopia_projects_api = '{% url 'Sample:api:manage:high_myopia_projects' %}';
-        var high_myopia_project_update_api = '{% url 'Sample:api:manage:high_myopia_project_update' %}';
-        var high_myopia_project_upload_report_file_api = '{% url 'Sample:api:manage:high_myopia_project_upload_report_file' 1 %}'.slice(0, -1);
-        var high_myopia_projects_export_api = '{% url 'Sample:api:manage:high_myopia_projects_export' %}';
+        var tgfbi_projects_api = '{% url 'Sample:api:manage:tgfbi_projects' %}';
+        var tgfbi_project_update_api = '{% url 'Sample:api:manage:tgfbi_project_update' %}';
+        var tgfbi_project_upload_report_file_api = '{% url 'Sample:api:manage:tgfbi_project_upload_report_file' 1 %}'.slice(0, -1);
+        var tgfbi_projects_export_api = '{% url 'Sample:api:manage:tgfbi_projects_export' %}';
         var progress_choices ={{ progress_choices|safe }};
         layui.use(['table', 'form', 'upload'], function () {
             var editLayerIndex = null;
@@ -81,7 +89,7 @@
                 //width: '100%',
                 //size: 'sm',
                 //数据接口
-                url: high_myopia_projects_api,
+                url: tgfbi_projects_api,
                 method: 'get',
                 dataType: 'json',
                 //开启分页
@@ -115,15 +123,12 @@
                     {field: 'gender', title: '性别', sort: true, width: 100},
                     {field: 'age', title: '年龄', sort: true, width: 100},
                     {field: 'birthday', title: '出生日期', sort: true, width: 150},
-                    {field: 'native_place', title: '籍贯', width: 200},
-                    {field: 'contact_phone', title: '联系方式', width: 150},
-                    {field: 'nationality', title: '民族', width: 100},
-                    {field: 'education', title: '受教育程度', sort: true, width: 150},
+                    {field: 'contact_phone_number', title: '联系方式', width: 150},
+                    {field: 'bind_time', title: '绑定时间', sort: true, width: 150},
+                    {field: 'send_time', title: '寄件时间', sort: true, width: 150},
+                    {field: 'express_code', title: '顺丰运单号', sort: true, width: 150},
+                    {field: 'order_code', title: 'LIMS系统订单号', sort: true, width: 200},
                     {field: 'progress', title: '进度', sort: true, width: 150},
-                    {field: 'wear_glasses_first_time', title: '第一次戴镜时间', sort: true, width: 150},
-                    {field: 'optometry_left', title: '左眼近视度数', sort: true, width: 150},
-                    {field: 'optometry_right', title: '右眼近视度数', sort: true, width: 150},
-                    {field: 'family_history', title: '家族史', sort: true, width: 200},
                     {field: 'report_file_name', title: '报告文件名称'},
                     {field: 'created_time', title: '创建时间', width: 150, sort: true},
                     {fixed: 'right', title: '操作', width: 125, minWidth: 125, toolbar: '#operation'}
@@ -179,7 +184,7 @@
                             form.on('submit(sampleProjectUpdateSubmit)', function (data) {
                                 var formData = new FormData(data.form);
                                 formData.append('project_id', obj.data.id);
-                                axios.post(high_myopia_project_update_api, formData).then(function (response) {
+                                axios.post(tgfbi_project_update_api, formData).then(function (response) {
                                     layer.close(editLayerIndex);
                                     table.reload('sampleProjectTable');
                                     console.log(response);
@@ -202,7 +207,7 @@
                         success: function (layero, index) {
                             upload.render({
                                 elem: '#uploadReportFile' + obj.data.id,
-                                url: high_myopia_project_upload_report_file_api + obj.data.id,
+                                url: tgfbi_project_upload_report_file_api + obj.data.id,
                                 //auto: false,
                                 accept: 'file',
                                 data: {
@@ -235,7 +240,7 @@
                 var id = obj.config.id;
                 var checkStatus = table.checkStatus(id);
                 if (layEvent === 'exportAllData') {
-                    window.open(high_myopia_projects_export_api);
+                    window.open(tgfbi_projects_export_api);
                 }
             });
 
@@ -244,7 +249,8 @@
                 reload: function () {
                     var searchFormSerialNumber = $('#searchFormSerialNumber');
                     var searchFormName = $('#searchFormName');
-                    var contactPhone = $('#searchFormContactPhone');
+                    var expressCode = $('#searchFormExpressCode');
+                    var orderCode = $('#searchFormOrderCode');
                     //执行重载
                     table.reload('sampleProjectTable', {
                         page: {
@@ -252,7 +258,8 @@
                         }, where: {//条件
                             serial_number: searchFormSerialNumber.val(),
                             name: searchFormName.val(),
-                            contact_phone: contactPhone.val(),
+                            express_code: expressCode.val(),
+                            order_code:orderCode.val(),
                         }
                     });
                 }

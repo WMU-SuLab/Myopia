@@ -13,7 +13,7 @@
 """
 __auth__ = 'diklios'
 
-from .response import BaseHTTPJSONStructure
+from .response_structure import BaseHTTPJSONStructure
 
 
 class Success(BaseHTTPJSONStructure):

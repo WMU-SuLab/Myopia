@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 """
-@File Name      :   response.py    
+@File Name      :   response_structure.py
 @Create Time    :   2022/4/7 17:43
 @Description    :   
 @Version        :   

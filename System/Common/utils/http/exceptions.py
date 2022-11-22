@@ -20,7 +20,7 @@ from rest_framework.exceptions import APIException as RestFrameWorkAPIException
 from rest_framework.views import Response
 from rest_framework.views import exception_handler as _exception_handler
 
-from .response import BaseHTTPJSONStructure
+from .response_structure import BaseHTTPJSONStructure
 
 
 # 将仅针对由引发的异常生成的响应调用异常处理程序，它不会用于视图直接返回的任何响应

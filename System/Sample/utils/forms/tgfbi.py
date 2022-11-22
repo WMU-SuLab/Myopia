@@ -16,8 +16,8 @@ __auth__ = 'diklios'
 from django import forms
 
 from Common.libs.choices import gender_choices, identification_card_type_choices
-from Common.utils.forms.validators import phone_number_validators
 from Common.libs.time import UTC_TZ_INFO
+from Common.utils.forms.validators import phone_number_validators
 from Common.viewModels.choices import same_choices
 from . import serial_number
 
@@ -68,3 +68,8 @@ class TGFBISampleSendForm(forms.Form):
 class TGFBIReportForm(forms.Form):
     encrypted_text = forms.CharField(label='加密数据', max_length=1024)
     report_file = forms.FileField(label='报告文件')
+
+
+class TGFBIManageForm(forms.Form):
+    project_id = forms.IntegerField()
+    progress = forms.IntegerField()

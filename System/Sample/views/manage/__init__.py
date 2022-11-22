@@ -16,6 +16,7 @@ __auth__ = 'diklios'
 from django.urls import path
 
 from .high_myopia import HighMyopiaProjectsManageView
+from .tgfbi import TGFBIProjectsManageView
 from .index import SampleManagerIndexView
 from .user import SampleManagerLoginView
 
@@ -23,4 +24,5 @@ urlpatterns = [
     path('login', SampleManagerLoginView.as_view(), name='login'),
     path('index', SampleManagerIndexView.as_view(), name='index'),
     path('projects/high_myopia', HighMyopiaProjectsManageView.as_view(), name='high_myopia_projects'),
+    path('projects/tgfbi', TGFBIProjectsManageView.as_view(), name='tgfbi_projects'),
 ]

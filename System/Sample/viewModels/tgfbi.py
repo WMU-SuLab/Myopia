@@ -25,7 +25,7 @@ def encrypt_tgfbi_project(project: TGFBISampleProject):
     return encrypt_text(f'{project.id}-{project.name}')
 
 
-def decrypt_tgfbi_text(encrypted_text: str):
+def decrypt_tgfbi_text(encrypted_text: str) -> TGFBISampleProject or None:
     text = decrypt_text(encrypted_text)
     if '-' not in text:
         return None
