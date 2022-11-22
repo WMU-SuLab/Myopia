@@ -98,4 +98,7 @@ class SubmitTGFBISampleSendFormAPIView(IsAuthenticatedAPIView):
         lims_res = send_order_to_lims(project, tgfbi_sample_send_form.cleaned_data['serial_number'])
         project.remarks_json['lims_full_info'] = lims_res
         project.save()
-        return Response(Success(chinese_msg='提交寄件成功', extra=sf_res))
+        return Response(Success(chinese_msg='提交寄件成功', extra={
+            'sf_res': sf_res,
+            'lims_res': lims_res,
+        }))
