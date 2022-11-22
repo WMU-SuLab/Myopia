@@ -17,7 +17,7 @@ from rest_framework.decorators import api_view
 from rest_framework.views import Response
 
 from Common.utils.http.successes import Success
-from Common.utils.http.response import RawHTTPJSONStructure
+from Common.utils.http.response_structure import RawHTTPJSONStructure
 from Screening.libs.menus import init_json
 from Screening.views.manage.index import screening_manage_login_required
 

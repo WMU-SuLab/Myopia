@@ -22,7 +22,7 @@ from django.utils.deprecation import MiddlewareMixin
 from pydantic import ValidationError as PydanticValidationError
 
 from Common.utils.http.exceptions import APIException, ParameterError
-from Common.utils.http.response import JsonResponse
+from Common.utils.http.response_structure import JsonResponse
 
 
 class TestMiddlewareMixin(MiddlewareMixin):

@@ -16,7 +16,7 @@ __auth__ = 'diklios'
 from pydantic import ValidationError
 from rest_framework.renderers import JSONRenderer as _JSONRenderer
 
-from .response import HTTPJSONStructureModel, BaseHTTPJSONStructure, RawHTTPJSONStructure
+from .response_structure import HTTPJSONStructureModel, BaseHTTPJSONStructure, RawHTTPJSONStructure
 from .successes import Success
 
 

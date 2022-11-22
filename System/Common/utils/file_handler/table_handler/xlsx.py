@@ -14,7 +14,9 @@
 __auth__ = 'diklios'
 
 import os
+from io import BytesIO
 
+import pandas as pd
 from django.conf import settings
 from openpyxl import Workbook
 
@@ -42,3 +44,15 @@ def generate_xlsx_file(filename, table_sheets, file_dir):
     else:
         wb.save(os.path.join(settings.BASE_DIR, filename))
     return True
+
+
+def generate_xlsx_file_io(df: pd.DataFrame):
+    file = BytesIO()
+    # By setting the 'engine' in the ExcelWriter constructor.
+    writer = pd.ExcelWriter(file, engine='xlsxwriter')
+    df.to_excel(writer, sheet_name='Sheet1', index=False)
+    # Save the workbook
+    writer.save()
+    # Seek to the beginning and read to copy the workbook to a variable in memory
+    file.seek(0)
+    return file
