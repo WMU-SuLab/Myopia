@@ -16,7 +16,7 @@ __auth__ = 'diklios'
 import requests
 from django.conf import settings
 
-from Common.utils.http.exceptions import ServerError
+from Common.utils.http.exceptions import ServerError, ValidationError
 from Common.utils.text_handler.hash import encrypt_text, decrypt_text
 from Sample.models.project import TGFBISampleProject
 
@@ -39,11 +39,19 @@ def decrypt_tgfbi_text(encrypted_text: str) -> TGFBISampleProject or None:
 
 def send_order_to_lims(project: TGFBISampleProject, serial_number: str):
     encrypted_text = encrypt_tgfbi_project(project)
+    if 'JMF' in serial_number:
+        project_id = 'PSI20220003JMF'
+        product_name = '角膜营养不良检测-基础版'
+    elif 'JMA' in serial_number:
+        project_id = 'PSI20220004JMA'
+        product_name = '角膜营养不良检测-基础版'
+    else:
+        raise ValidationError(chinese_msg='无效的样本编号', msg_detail='样本编号不包含JMF或JMA')
     sample_order = {
         'barcode': serial_number,
-        'projectId': settings.SAMPLE_APP_LIMS_PROJECT_ID,
+        'projectId': project_id,
         'productId': '0102',
-        'productName': project.name,
+        'productName': product_name,
         'samplingDate': project.remarks_json.get('bind_time', None),
         'patientName': project.remarks_json.get('name', None),
         'gender': project.remarks_json.get('gender', ''),
