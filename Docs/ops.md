@@ -181,6 +181,7 @@ ALIBABACLOUD_OSS_ACCESS_KEY_ID=''
 ALIBABACLOUD_OSS_ACCESS_KEY_SECRET=''
 # 域名前面要加上https://，否则微信小程序禁止访问
 ALIBABACLOUD_OSS_ENDPOINT=''
+ALIBABACLOUD_OSS_ENDPOINT_TEST=''
 ALIBABACLOUD_OSS_BUCKET_NAME=''
 ALIBABACLOUD_OSS_BUCKET_NAME_TEST=''
 ALIBABACLOUD_OSS_BUCKET_DOMAIN=''
@@ -201,6 +202,9 @@ SF_EXPRESS_URL_HK='https://sfapi-hk.sf-express.com/std/service'
 SF_EXPRESS_SAMPLE_APP_PARTNER_ID=''
 SF_EXPRESS_SAMPLE_APP_CHECKWORD=''
 SF_EXPRESS_SAMPLE_APP_CHECKWORD_TEST=''
+
+# 谱希基因额外配置
+SAMPLE_APP_LIMS_TGFBI_URL='https://lims.psi-gene.com:8088/rest/RestfulService/pushOrderInfoToCrm'
 
 ```
 
@@ -252,7 +256,7 @@ SF_EXPRESS_SAMPLE_APP_CHECKWORD_TEST=''
         - 创建数据库表：`python manage.py migrate`
     - 数据库初始化
         - 初始化权限、组、用户:`python manage.py init_data -i`
-        - 初始化学生数据:`python manage.py init_data -S -f 文件路径`
+        - [其他APP需要初始化的数据](backend.md)
 - 启动Memcached:`service memcached start`
     - `memcached -d -u root -l 127.0.0.1 -p 11211 -m 128`
 - 启动Redis:`service redis start`

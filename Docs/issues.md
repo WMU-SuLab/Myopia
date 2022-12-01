@@ -49,6 +49,9 @@
 ### NGINX
 
 - **巨坑**：配置文件不能使用`;`作为注释，一定要是`#`
+- host 的问题
+    - 经常收到`Invalid HTTP_HOST header: '${ip}:${port}'`的错误，总的来说似乎是发过来的请求中的host不正确，但是配置NGINX并没有成功拦截下来
+    - 目前仍未解决
 
 ## 数据库
 
@@ -73,11 +76,13 @@
         - 最后可能需要刷新一下:`mysql -u root -p -e "flush tables;" mysql`
         - 或者重启一下：`sudo service mysql restart`
     - 时区渲染
-        - 非常重要：**直接调用Python模型中的DateTimeField对象得到的永远是UTC时间，时区也是UTC时区，并非开启了时区就显示本地时区的**
+        - 非常重要：**
+          直接调用Python模型中的DateTimeField对象得到的永远是UTC时间，时区也是UTC时区，并非开启了时区就显示本地时区的**
         - 因为数据库中只存储UTC时间，所以在Python代码渲染的时候需要转换为本地时区
             - 使用`django.utils.timezone.localtime`方法
             - 表单和HTML中提供了方法进行时区转换
-        - 但是非常奇怪的是，timestamp()却是本地时区的时间戳，根据调试发现，这个timestamp()已经不是datetime对象中的timestamp()了
+        - 但是非常奇怪的是，timestamp()却是本地时区的时间戳，根据调试发现，这个timestamp()
+          已经不是datetime对象中的timestamp()了
             - 但是到底是如何作用的，机制是什么样还不清楚
     - 常见用法：<https://docs.djangoproject.com/zh-hans/4.0/topics/i18n/timezones/#usage>
         - 最重要的是如何将字符串转为需要的时区

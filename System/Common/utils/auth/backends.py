@@ -20,8 +20,7 @@ from django.core.validators import validate_email
 
 from Common.models.role import WeChatAPPRole, WeChatPlatformRole
 from Common.utils.auth.verification import verify_verification_code
-from Common.utils.http.exceptions import AuthenticationFailed
-from Common.utils.http.exceptions import ValidationError, ParameterError
+from Common.utils.http.exceptions import AuthenticationFailed, ValidationError, ParameterError
 from Common.utils.http.wechat import WeChatApi
 from Common.utils.text_handler.validator import validate_phone_number
 
@@ -64,6 +63,9 @@ class UserBackend(ModelBackend):
                     # difference between an existing and a nonexistent user (#20760).
                     # 使用密码验证
                     return user if self.user_can_authenticate(user) else None
+                # 处理数据库管理后台的登录逻辑，因为官方和本项目自定义的判断逻辑不大一样
+                elif user.is_superuser:
+                    return None
                 else:
                     # UserModel().set_password(password)
                     raise ValidationError(msg='Password is incorrect.', chinese_msg='密码错误')
