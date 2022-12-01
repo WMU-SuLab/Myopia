@@ -75,7 +75,8 @@
 - 使用
     - 开启JWT认证：`'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',)`
         - 现在默认关闭
-    - simplejwt的身份认证方式为：在请求的Headers里面里面添加设置参数，名称为：Authorization, 值是一个固定组成的字符串： Bearer +空格 + access_token
+    - simplejwt的身份认证方式为：在请求的Headers里面里面添加设置参数，名称为：Authorization, 值是一个固定组成的字符串：
+      Bearer +空格 + access_token
         - 未添加的时候，会显示：`Authentication credentials were not provided.`，即身份认证信息为提供
     - 跳过认证
         - `permission_classes`中设置`[AllowAny]`
@@ -83,15 +84,18 @@
 
 ### 接口结构（目前不够完善）
 
-- /
+- /：主界面，当前设计中无内容，会自动跳转到后台选择页面
     - api/
-    - screening/
-        - /:用户页面（比如介绍筛查项目，暂时用不到）
-        - api/
-          - mina/:筛查小程序使用的接口
-          - manage/:管理员后台使用的接口
+    - sample/
+        - /
+        - api/:
+            - mina/:谱希基因采样小程序使用的接口
+            - manage/:管理员后台使用的接口
         - manage/:管理员后台页面
-    - user_service/
-        - /:用户页面（暂时用不到）
-        - api/:用户服务小程序使用的接口
+    - screening/
+        - /
+        - api/
+            - mina/:筛高度近视筛查和报告小程序使用的接口
+            - manage/:管理员后台使用的接口
+        - manage/:管理员后台页面
     - admin/:超级管理员

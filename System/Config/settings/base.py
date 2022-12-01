@@ -367,7 +367,7 @@ ADMINS = (
     ('diklios', '1061995104@qq.com'),
 )
 MANAGERS = (
-    # ('xingsl', 'xingsl@wmu.edu.cn'),
+    ('xingsl', 'xingsl@wmu.edu.cn'),
     ('yaoyh', 'yhyao_corner@hotmail.com'),
 )
 # 发送邮件的后端

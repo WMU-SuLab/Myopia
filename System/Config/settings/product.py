@@ -124,8 +124,3 @@ SECURE_HSTS_SECONDS = 60
 SECURE_CONTENT_TYPE_NOSNIFF = True
 # 防止跨域
 SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
-
-MANAGERS = (
-    *MANAGERS,
-    ('psi-gene', 'dzl@psi-gene.com'),
-)

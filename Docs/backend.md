@@ -55,6 +55,8 @@
 
 #### commands:自定义命令
 
+- 初始化学生数据:`python manage.py init_data -S -f 文件路径`
+
 ### models:数据库模型
 
 ### serializers:数据库序列化部分
