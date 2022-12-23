@@ -17,3 +17,7 @@ from gunicorn import *
 
 port_standby = 8001
 bind = f"{ip}:{port_standby}"
+# 访问日志文件
+accesslog = os.path.join(GUNICORN_LOGS_DIR_PATH, "access_standby.log")
+# 错误日志文件
+errorlog = os.path.join(GUNICORN_LOGS_DIR_PATH, "error_standby.log")

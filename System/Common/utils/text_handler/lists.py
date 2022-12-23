@@ -14,6 +14,7 @@
 __auth__ = 'diklios'
 
 from collections import Counter
+from operator import itemgetter
 
 
 # 每n个分组
@@ -54,3 +55,7 @@ def add_index(list_obj: list[dict]) -> list:
 
 def count_list(list_obj: list) -> dict:
     return Counter(list_obj)
+
+
+def extract_list_from_index(source_list: list, index_list: list) -> list:
+    return list((itemgetter(*index_list)(source_list)))

@@ -58,12 +58,12 @@ def handle_upload_file(f, file_path):
         raise FileUploadError(msg_detail=str(e))
 
 
-def copy_file(source_file_path, target_path):
+def copy_file(source_file_path, target_file_path):
     """
     如果目标是目录，使用原文件名，否则使用目标路径的文件名
     """
     if os.path.isfile(source_file_path):
-        copy2(source_file_path, target_path)
+        copy2(source_file_path, target_file_path)
         return True
     else:
         return False

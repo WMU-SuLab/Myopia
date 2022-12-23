@@ -72,9 +72,9 @@ def create_pay_on_arrival_order(
                 # 收件方信息
                 'contactType': 2,
                 'company': '温州谱希医学检验实验室有限公司',
-                'contact': '收样员',
+                'contact': '谱希基因',
                 'mobile': '',
-                'tel': '0577-56651101',
+                'tel': '15356261235',
                 'zoneCode': 'CN',
                 'country': '中国',
                 'province': '浙江省',
