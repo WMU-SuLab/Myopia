@@ -85,7 +85,6 @@ class BaseAdmin(admin.ModelAdmin):
     ordering = ['id']
 
 
-
 class BaseUserAdminModel(BaseAdmin, UserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'password')}),

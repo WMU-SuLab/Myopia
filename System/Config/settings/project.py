@@ -89,6 +89,12 @@ LOGS_DIR_PATH_LIST = [
     SUPERVISOR_LOGS_DIR_PATH,
 ]
 
+# 短信过期时间
+SMS_EXPIRED_TIME = int(os.environ.get('SMS_EXPIRED_TIME', 600))
+
+# 验证码长度
+VERIFICATION_CODE_LENGTH = int(os.environ.get('VERIFICATION_CODE_LENGTH', 6))
+
 # MINA微信小程序应用配置
 # 谱希基因采样小程序应用配置
 SAMPLE_APP_ID = os.environ.get('SAMPLE_APP_ID', '')
@@ -137,12 +143,6 @@ ALIBABACLOUD_OSS_BUCKET_NAME = os.environ.get('ALIBABACLOUD_OSS_BUCKET_NAME', ''
 ALIBABACLOUD_OSS_BUCKET_NAME_TEST = os.environ.get('ALIBABACLOUD_OSS_BUCKET_NAME_TEST', '')
 ALIBABACLOUD_OSS_BUCKET_DOMAIN = os.environ.get('ALIBABACLOUD_OSS_BUCKET_DOMAIN', '')
 ALIBABACLOUD_OSS_BUCKET_DOMAIN_TEST = os.environ.get('ALIBABACLOUD_OSS_BUCKET_DOMAIN_TEST', '')
-
-# 短信过期时间
-SMS_EXPIRED_TIME = int(os.environ.get('SMS_EXPIRED_TIME', 600))
-
-# 验证码长度
-VERIFICATION_CODE_LENGTH = int(os.environ.get('VERIFICATION_CODE_LENGTH', 6))
 
 # 顺丰API配置
 SF_EXPRESS_URL = os.environ.get('SF_EXPRESS_URL', 'https://bspgw.sf-express.com/std/service')

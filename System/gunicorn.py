@@ -29,7 +29,7 @@ backlog = 512
 chdir = str(BASE_DIR)
 # 超时
 timeout = 30
-# 设置守护进程(linux有效)，请注意使用sunpervisor的时候不能后台运行
+# 设置守护进程(linux有效)，请注意使用 supervisor 的时候不能后台运行
 # daemon = 'true'
 # 使用gevent模式，还可以使用sync 模式，默认的是sync模式
 worker_class = 'gevent'
