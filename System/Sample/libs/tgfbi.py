@@ -19,6 +19,11 @@ tgfbi_contract_settings = {
         'project_id': 'PSI20220003JMF',
         'product_name': '角膜营养不良检测-基础版',
     },
+    # JMF是老的，应该被移除，但是为了兼容旧的数据，暂时保留
+    'JMF': {
+        'project_id': 'PSI20220003JMF',
+        'product_name': '角膜营养不良检测-基础版',
+    },
     'JMA': {
         'project_id': 'PSI20220004JMA',
         'product_name': '角膜营养不良检测-基础版',

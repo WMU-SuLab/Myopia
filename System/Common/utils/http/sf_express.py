@@ -21,7 +21,7 @@ from urllib import parse
 
 import requests
 
-from Common.utils.http.exceptions import ParameterError
+from Common.utils.http.exceptions import ServerError
 
 
 def call_sf_express_service_by_digital_signatures(
@@ -52,6 +52,9 @@ def call_sf_express_service_by_digital_signatures(
     })
     res_data = json.loads(res.text)
     res_data['apiResultData'] = json.loads(res_data.get('apiResultData', '{}'))
-    if not res_data.get('apiResultData', '{}').get('success', False):
-        raise ParameterError(chinese_msg=res_data['apiErrorMsg'], extra=res_data)
+    if res_data.get('apiResultCode', 'A1000') != 'A1000':
+        raise ServerError(chinese_msg=res_data['apiErrorMsg'], extra=res_data)
+    res_result_data = res_data.get('apiResultData', {})
+    if not res_result_data.get('success', False):
+        raise ServerError(chinese_msg=res_result_data.get('errorMsg', ''), extra=res_data)
     return res_data
