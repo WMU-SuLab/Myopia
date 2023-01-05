@@ -15,7 +15,7 @@ __auth__ = 'diklios'
 
 # 如果后续规则较为复杂，数据量较大，可以考虑使用小型SQL数据库或者键值对数据库（如Redis）来存储规则
 tgfbi_contract_settings = {
-    'JMF': {
+    'JMP': {
         'project_id': 'PSI20220003JMF',
         'product_name': '角膜营养不良检测-基础版',
     },

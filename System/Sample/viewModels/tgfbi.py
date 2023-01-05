@@ -16,9 +16,9 @@ __auth__ = 'diklios'
 import requests
 from django.conf import settings
 
-from Common.libs.tgfbi import tgfbi_contract_settings
 from Common.utils.http.exceptions import ServerError, ValidationError
 from Common.utils.text_handler.hash import encrypt_text, decrypt_text
+from Sample.libs.tgfbi import tgfbi_contract_settings
 from Sample.models.project import TGFBISampleProject
 
 
