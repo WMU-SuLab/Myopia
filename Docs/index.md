@@ -12,3 +12,4 @@
 - [运维文档](ops.md)
 - [版本记录/更新日志](changelog.md)
 - [问题记录](issues.md)
+- [迁移文档](migration.md)

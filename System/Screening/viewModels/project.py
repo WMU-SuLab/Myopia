@@ -69,7 +69,6 @@ def generate_user_report_data(
         project_id: int = None,
         project_name: str = None,
         finished_time=None):
-    print('a')
     projects = search_projects(identification_card_number, name, user_role, project_id, project_name, finished_time)
     project = projects.first()
     print(project)

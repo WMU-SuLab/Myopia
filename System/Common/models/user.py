@@ -157,14 +157,15 @@ class User(Base, AbstractBaseUser, PermissionsMixin):
     nationality = models.ForeignKey(Nationality, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='民族')
     education = models.IntegerField(choices=education_choices, blank=True, null=True, default=-1,
                                     verbose_name='受教育程度')
-    address = models.CharField(max_length=255, blank=True, null=True, default=None, verbose_name='地址')
+    language = models.CharField(max_length=32, blank=True, null=True, default='zh_CN', verbose_name='使用语言')
+    address = models.CharField(max_length=255, blank=True, null=True, default=None, verbose_name='完整地址')
     detailed_address = models.CharField(max_length=128, blank=True, null=True, default=None, verbose_name='详细住址')
     street = models.ForeignKey(Street, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='街道')
     area = models.ForeignKey(Area, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='区县')
     city = models.ForeignKey(City, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='城市')
     province = models.ForeignKey(Province, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='省份')
     country = models.ForeignKey(Country, blank=True, null=True, on_delete=models.SET_NULL, verbose_name='国家')
-    language = models.CharField(max_length=32, blank=True, null=True, default='zh_CN', verbose_name='使用语言')
+
 
     is_confirmed = models.BooleanField(blank=False, null=True, default=False, verbose_name='账户是否激活')
     # 用于查看区分用户是否长时间不使用
