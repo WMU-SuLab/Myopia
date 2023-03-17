@@ -22,7 +22,8 @@ from .base import BaseAdmin
 @admin.register(User)
 class UserAdmin(BaseAdmin):
     # 设置 list_display 来控制哪些字段显示在管理的变更列表页面。
-    list_display = ['id', 'username', 'nickname', 'name', 'email', 'phone_number', 'is_confirmed', 'is_active', 'is_staff',
+    list_display = ['id', 'username', 'nickname', 'name', 'email', 'phone_number', 'is_confirmed', 'is_active',
+                    'is_staff',
                     'is_superuser']
     # 使用 list_display_links 来控制 list_display 中的字段是否以及哪些字段应该被链接到对象的 “更改” 页面
     # 默认情况下，更改列表页将把第一列 —— list_display 中指定的第一个字段 —— 链接到每个项目的更改页面
@@ -43,8 +44,8 @@ class UserAdmin(BaseAdmin):
             ]}),
         ('家庭信息', {
             'fields': [
-                ('native_place', 'home_address', 'language'),
-                ('street', 'city', 'province', 'country')
+                ('native_place', 'nationality', 'education', 'language'),
+                ('address', 'detailed_address', 'street', 'city', 'province', 'country')
             ]}),
         ('权限', {'fields': ['is_staff', 'is_superuser', 'groups', 'user_permissions']}),
         ('备注', {'fields': ['remarks', 'remarks_json', 'status', ]}),

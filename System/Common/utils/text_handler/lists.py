@@ -58,4 +58,10 @@ def count_list(list_obj: list) -> dict:
 
 
 def extract_list_from_index(source_list: list, index_list: list) -> list:
+    """
+    从列表中提取指定索引的元素
+    :param source_list:
+    :param index_list:
+    :return:
+    """
     return list((itemgetter(*index_list)(source_list)))
