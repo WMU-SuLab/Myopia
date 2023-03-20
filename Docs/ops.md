@@ -60,7 +60,7 @@
         - conda
             - 使用导出的环境文件重建虚拟环境：`conda env create -f Dependencies/conda.yaml`
             - 单独创建
-                - 创建虚拟环境：`conda create -n django python=3.10`
+                - 创建虚拟环境：`conda create -n django python=3.10 -y`
                 - 激活虚拟环境：`conda activate django`
                 - 安装依赖：`pip install -r requirements-conda.txt`
                     - 此处也可以直接使用`Dependencies/requirements-pip.txt`安装依赖
@@ -85,9 +85,8 @@
     - `conda env export > conda.yaml`
     - 或者`conda list -e > requirements-conda.txt`
 - 导出pip环境：`pip freeze > requirements-pip.txt`
-    - 如果使用conda管理环境，导出的pip文件是有问题的，不能使用
-    - 可以使用`pip list --format=freeze > requirements-pip.txt`
-        - 但是需要手动删除一些基础包，也不好用
+    - 如果使用conda管理环境，导出的pip文件是可能有问题的，需要使用`pip list --format=freeze > requirements-pip.txt`
+    - 但是需要手动删除一些基础包
 - pipenv, poetry, pdm 环境管理不需要导出，会自动写入配置文件
 
 ### 服务器端口
@@ -210,12 +209,12 @@ SAMPLE_APP_LIMS_TGFBI_URL='https://lims.psi-gene.com:8088/rest/RestfulService/pu
 
 - 初始化项目
     - 拷贝数据文件到服务器
-    - `python3 manage.py init_data -i`
+    - `python3 /.../ProjectRoot/System/manage.py init_data -i`
         - 请详细看完代码之后再使用，根据当前的情况，可能需要修改命令参数，比如不需要创建用户、文件夹等等
 - 创建日志文件夹
     - 使用`mkdir -p 路径`
         - django:`/.../ProjectRoot/System/logs/django`
-    - 使用`python manage.py init_data -d`代替
+    - 使用`python /.../ProjectRoot/System/manage.py init_data -d`代替
         - gunicorn:`/.../ProjectRoot/System/logs/gunicorn`
         - supervisor:`/.../ProjectRoot/System/logs/supervisor`
         - NGINX:`/var/log/nginx`
@@ -225,7 +224,7 @@ SAMPLE_APP_LIMS_TGFBI_URL='https://lims.psi-gene.com:8088/rest/RestfulService/pu
         - 因为用户有很多数据无法存入数据库
         - 有可能数据很大，需要保存在另一个有很大空间的磁盘中
 - 配置NGINX
-    - 先收集静态文件:`python manage.py collectstatic`
+    - 先收集静态文件:`python /.../ProjectRoot/System/manage.py collectstatic`
     - 修改`nginx.conf`，如果是测试服需要使用`nginx-test.conf`
         - 修改端口号
         - 修改域名或者ip地址
@@ -250,12 +249,12 @@ SAMPLE_APP_LIMS_TGFBI_URL='https://lims.psi-gene.com:8088/rest/RestfulService/pu
     - 启用时区，具体参考[问题文档](issues.md#mysql)
     - 配置`System/Manage/settings/product.py`
         - 修改`DATABASES`数据库用户和密码
-    - 迁移数据库
-        - `python manage.py makemigrations`
-        - 创建表：`python manage.py migrate`
-        - 创建数据库表：`python manage.py migrate`
+    - 迁移数据库(此迁移非从一个服务器向另一个服务器迁移，是ORM模型对于数据库表结构的迁移)
+        - `python /.../ProjectRoot/System/manage.py makemigrations`
+        - 创建表：`python /.../ProjectRoot/System/manage.py migrate`
+        - 创建数据库表：`python /.../ProjectRoot/System/manage.py migrate`
     - 数据库初始化
-        - 初始化权限、组、用户:`python manage.py init_data -i`
+        - 初始化权限、组、用户:`python /.../ProjectRoot/System/manage.py init_data -i`
         - [其他APP需要初始化的数据](backend.md)
 - 启动Memcached:`service memcached start`
     - `memcached -d -u root -l 127.0.0.1 -p 11211 -m 128`
@@ -301,7 +300,7 @@ SAMPLE_APP_LIMS_TGFBI_URL='https://lims.psi-gene.com:8088/rest/RestfulService/pu
 
 ### SQL
 
-- 创建django-admin的超级用户：`python manage.py createsuperuser`
+- 创建django-admin的超级用户：`python /.../ProjectRoot/System/manage.py createsuperuser`
 
 ### MySQL
 

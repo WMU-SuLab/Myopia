@@ -41,6 +41,13 @@ waitress = { version = "*", sys_platform = "== 'win32'" }
 gunicorn = { version = "*", sys_platform = "!= 'win32'" }
 #supervisor建议装在全局环境下，通过系统的包管理工具进行安装
 #supervisor = "*"
+#gRPC
+grpcio = "*"
+grpcio-tools = "*"
+#aliyun
+alibabacloud-tea-openapi = "*"
+alibabacloud-dysmsapi20170525 = "*"
+oss2 = "*"
 
 [dev-packages]
 autopep8 = "*"

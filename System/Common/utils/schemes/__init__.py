@@ -12,3 +12,7 @@
 @Motto          :   All our science, measured against reality, is primitive and childlike - and yet it is the most precious thing we have.
 """
 __auth__ = 'diklios'
+
+from typing import Union, Dict, List, Any, Type
+
+JSONType = Union[Dict[str, Any], List[Any], int, str, float, bool, Type[None]]

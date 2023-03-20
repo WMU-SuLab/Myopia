@@ -14,12 +14,11 @@
 __auth__ = 'diklios'
 
 import json
-from typing import Union, Dict, List, Any, Type
+
 
 from django.http.response import JsonResponse as _JsonResponse
 from pydantic import BaseModel
-
-JSON = Union[Dict[str, Any], List[Any], int, str, float, bool, Type[None]]
+from Common.utils.schemes import JSONType
 
 
 class HTTPJSONStructureModel(BaseModel):
@@ -27,10 +26,10 @@ class HTTPJSONStructureModel(BaseModel):
     code: int
     status_code: int
     msg: str = ''
-    msg_detail: str | JSON = ''
+    msg_detail: JSONType = ''
     chinese_msg: str = ''
-    data: str | JSON = None
-    extra: str | JSON = {}
+    data: JSONType = None
+    extra: JSONType = {}
 
 
 class BaseHTTPJSONStructure:
@@ -117,7 +116,7 @@ class JsonResponse(_JsonResponse):
 
 
 class RawHTTPJSONStructure:
-    def __init__(self, data: JSON):
+    def __init__(self, data: JSONType):
         self.data = data
 
     def get_body(self):

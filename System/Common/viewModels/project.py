@@ -18,7 +18,7 @@ from typing import Any
 
 from django.conf import settings
 from django.core.files.uploadedfile import UploadedFile
-from django.db.models import JSONField
+from Common.utils.schemes import JSONType
 from pydantic import BaseModel
 
 from Common.models.equipments import *
@@ -306,7 +306,7 @@ def generate_report_suggestions(eye_data: dict) -> list:
     return suggestions
 
 
-def generate_report_data_from_project(project: Project) -> JSONField | dict[str | list | Any]:
+def generate_report_data_from_project(project: Project) -> JSONType:
     report_data = project.report_data
     if report_data:
         return report_data
