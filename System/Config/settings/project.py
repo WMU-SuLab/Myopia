@@ -23,10 +23,6 @@ from .base import *
 # 必须使用Fernet.generate_key()生成，而且是字节类型
 CRYPTOGRAPHY_SECRET_KEY = os.environ.get('CRYPTOGRAPHY_SECRET_KEY', Fernet.generate_key().decode())
 
-# Project settings
-SERVER_DOMAIN = os.environ.get('SERVER_DOMAIN', 'localhost')
-SERVER_PORT = os.environ.get('SERVER_PORT', '8000')
-
 # 数据文件夹
 DATA_DIR_PATH = os.path.join(BASE_DIR, 'data')
 RELATIVE_DATA_DIR_PATH = 'data'

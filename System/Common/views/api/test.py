@@ -41,6 +41,15 @@ from Common.utils.http.successes import Success
 @authentication_classes([])
 def test(request):
     return Response(Success(data={
+        'ip': {
+            # 从环境信息获取
+            'HTTP_X_REAL_IP': request.environ.get("HTTP_X_REAL_IP", None),
+            # 从头部信息获取
+            'X-Real-Ip': request.headers.get("X-Real-Ip", None),
+            # 获取一般的地址
+            'REMOTE_ADDR': request.META.get('REMOTE_ADDR',None),
+            'HTTP_X_FORWARDED_FOR': request.META.get('HTTP_X_FORWARDED_FOR',None),
+        },
         'headers': request.headers,
         'query': request.GET.dict(),
         'method': request.method,

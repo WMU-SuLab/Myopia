@@ -31,6 +31,8 @@ SECRET_KEY = os.environ.get('SECRET_KEY', get_random_secret_key())
 HASHID_FIELD_SALT = os.environ.get('HASHID_FIELD_SALT', get_random_secret_key())
 # 允许的主机
 ALLOWED_HOSTS = ['*']
+SERVER_DOMAIN = os.environ.get('SERVER_DOMAIN', None)
+SERVER_PORT = os.environ.get('SERVER_PORT', os.environ.get('PORT', '8000'))
 
 # Application definition
 # 加载顺序是从上往下
@@ -331,8 +333,8 @@ SPECTACULAR_SETTINGS = {
 CORS_ORIGIN_ALLOW_ALL = True
 # 或者指定白名单
 CORS_ORIGIN_WHITELIST = (
-    'http://127.0.0.1:8000',
-    'http://localhost:8000',
+    f'http://127.0.0.1:{SERVER_PORT}',
+    f'http://localhost:{SERVER_PORT}',
 )
 # 指明在跨域访问中，后端是否支持对cookie的操作
 CORS_ALLOW_CREDENTIALS = True
